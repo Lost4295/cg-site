@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Discord{% endblock %}
+
+{% block body %}
+    <p>Connexion en cours...</p>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', (e) => {
+            const urlSearchParams = new URLSearchParams(window.location.hash);
+            const accessToken = urlSearchParams.get('access_token');
+
+            if (accessToken) {
+                window.location.href = `/discord/check?access_token=${accessToken}`;
+                return;
+            }
+
+            window.location.href = "/";
+        });
+    </script>
+{% endblock %}
