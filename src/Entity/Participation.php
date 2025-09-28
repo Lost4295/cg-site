@@ -21,10 +21,6 @@ class Participation
     #[ORM\JoinColumn(nullable: false)]
     private ?Date $date = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getUser(): ?User
     {

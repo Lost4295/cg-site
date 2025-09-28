@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Point;
-use ContainerDz1IUxd\getConsole_ErrorListenerService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

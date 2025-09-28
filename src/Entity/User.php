@@ -34,7 +34,7 @@ class User implements UserInterface
     #[ORM\Column(type: 'string', length: 180, unique: true, nullable: true)]
     private ?string $email;
 
-    #[ORM\Column(type: 'json', nullable: true)]
+    #[ORM\Column(type: 'json', nullable: true, options: ["default"=>"[]"])]
     private array $roles = [];
 
 
@@ -477,5 +477,11 @@ class User implements UserInterface
     public function setExpiresIn(?DateTimeInterface $expiresIn): void
     {
         $this->expiresIn = $expiresIn;
+    }
+
+    public function setPassword(string $hashPassword)
+    {
+        $this->password = $hashPassword;
+        return $this;
     }
 }

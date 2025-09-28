@@ -44,7 +44,6 @@ class DiscordAuthenticator extends AbstractAuthenticator
         }
 
         $user = $this->userRepo->findOneBy(['accessToken' => $accessToken]);
-
         if (!$user) {
             throw new AuthenticationException('Wrong access token');
         }
