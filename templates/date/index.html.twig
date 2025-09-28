@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Prochaines dates {% endblock %}
+{% block javascripts %}
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.19/locales-all.global.min.js'></script>
+{% endblock %}
+{% block additionnal_javascripts %}
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    center: 'prev,next today',
+                    left: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay list'
+                },
+                weekNumberCalculation:"ISO",
+                navLinks:true,
+                events: '{{ path("get_dates") }}',
+                aspectRatio: 2,
+                locale:'fr'
+            });
+            calendar.setOption('locale', 'en');
+            calendar.setOption('locale', 'es');
+            calendar.setOption('locale', 'fr');
+            calendar.render();
+        });
+
+    </script>
+{% endblock %}
+{% block body %}
+
+    <div class="row">
+        <div class="col-10">
+            <div id='calendar'></div>
+        </div>
+    </div>
+
+{% endblock %}

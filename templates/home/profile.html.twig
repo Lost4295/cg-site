@@ -1,0 +1,16 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+
+{% block body %}
+
+<div class="card" style="width: 14rem;">
+    <img src="{{ app.user.avatar }}" class="card-img-top">
+    <div class="card-body">
+        <h5 class="card-title">{{ app.user.pseudo }}</h5>
+        <a href="{{ path('app_logout') }}" class="btn btn-primary">Déconnexion</a>
+    </div>
+</div>
+
+{% endblock %}

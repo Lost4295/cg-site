@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <main class="form-signin text-center w-100 m-auto">
+        <div class="container">
+             {% for message in app.flashes('danger') %}
+                    <div class="alert alert-danger">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+
+                {{ form_start(form) }}
+                {{ form_row(form.nom) }}
+                {{ form_row(form.prenom) }}
+                {{ form_row(form.classe) }}
+                {{ form_row(form.visibility) }}
+                {{ form_row(form._token) }}
+                    <button class="w-100 btn btn-lg btn-primary" type="submit">Finaliser l'inscription</button>
+                {{ form_end(form) }}
+
+        </div>
+    </main>
+{% endblock %}
