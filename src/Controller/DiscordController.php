@@ -98,7 +98,6 @@ final class DiscordController extends AbstractController
 
         $user = $userRepo->find($discordUser->id);
 
-
         if ($user) {
             $user->setId($discordUser->id);
             $user->setAccessToken($accessToken);
