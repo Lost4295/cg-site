@@ -24,7 +24,8 @@
             -moz-user-select: none;
             user-select: none
         }
-        body{
+
+        body {
             min-height: 100vh;
         }
 
@@ -168,7 +169,27 @@
         </li>
     </ul>
 </div>
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+    <div class="toast-container top-0 end-0 p-3">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="toast text-bg-{{ label }} show" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <img src="{{ asset("logo.png") }}" class="rounded me-2" alt="Logo" width="15" height="15">
+                        <strong class="me-auto">Couch Gaming</strong>
+                        <small class="text-body-secondary">À l'instant</small>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        {{ message }}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div>
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark" aria-label="Main navigation">
+
     <div class="container-fluid"><a class="navbar-brand" href="{{ path('app_home') }}">Couch Gaming</a>
         <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse"
                 aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
@@ -183,24 +204,28 @@
                         dates</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ (app == 'app_home') ?'active':'' }}" href="{{ path("app_points") }}">Points des participants</a>
+                    <a class="nav-link {{ (app == 'app_home') ?'active':'' }}" href="{{ path("app_points") }}">Points
+                        des participants</a>
                 </li>
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item">
-                        <a class="nav-link {{ (app == 'app_profile') ?'active':'' }}" href="{{ path("app_profile") }}">Profile</a>
+                        <a class="nav-link {{ (app == 'app_profile') ?'active':'' }}"
+                           href="{{ path("app_profile") }}">Profile</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
-                           aria-expanded="false">Settings</a>
+                           aria-expanded="false">Actions</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            {% if is_granted("ROLE_ADMIN") %}
+                            <li><a class="dropdown-item" href="{{ path('admin') }}">Administration</a></li>
+                            {% endif %}
                         </ul>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link {{ (app == 'app_login') ?'active':'' }}" href="{{ path("app_login") }}">Connexion
+                        <a class="nav-link {{ (app == 'app_login') ?'active':'' }}"
+                           href="{{ path("app_login") }}">Connexion
                             avec Discord</a>
                     </li>
                 {% endif %}
