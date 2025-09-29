@@ -98,8 +98,13 @@ final class DiscordController extends AbstractController
 
         $user = $userRepo->find($discordUser->id);
 
+
         if ($user) {
+            $user->setId($discordUser->id);
             $user->setAccessToken($accessToken);
+            $user->setPseudo($discordUser->username);
+            $user->setEmail($discordUser->email);
+            $user->setAvatar($discordUser->avatar);
             $user->setExpiresIn((new DateTime())->modify('+5 days'));
         } else {
             $user = new User();
