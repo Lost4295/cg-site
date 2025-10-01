@@ -2,89 +2,594 @@
 
 {% block title %}Hello HomeController!{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+          rel="stylesheet"/>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Couleurs principales */
+            --purple-primary: #6f42c1;
+            --purple-dark: #121214;
+            --purple-light: #8c68cd;
+            --blue-dark: #1a1a2e;
+            --blue-primary: #16213e;
+            --accent: #6f42c1;
+            --accent-gradient-end: #8c68cd;
+            --text-light: #f1f1f1;
+            --white: white;
+
+            /* Couleurs avec opacité */
+            --overlay-start: rgba(26, 26, 46, 0.9);
+            --overlay-end: rgba(22, 33, 62, 0.9);
+            --radial-purple: rgba(111, 66, 193, 0.3);
+            --radial-transparent: transparent;
+            --purple-shadow: rgba(111, 66, 193, 0.6);
+            --black-shadow-light: rgba(0, 0, 0, 0.4);
+            --black-shadow-medium: rgba(0, 0, 0, 0.8);
+            --purple-border: rgba(111, 66, 193, 0.2);
+            --purple-bg-light: rgba(111, 66, 193, 0.1);
+            --purple-bg-medium: rgba(111, 66, 193, 0.2);
+            --accent-shadow: rgba(111, 66, 193, 0.3);
+            --accent-shadow-medium: rgba(111, 66, 193, 0.4);
+            --accent-shadow-strong: rgba(111, 66, 193, 0.6);
+            --purple-glow: rgba(111, 66, 193, 0.8);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--text-light);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 48
+        }
+
+        /* Hero Section - Full Screen */
+        .hero-section {
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, var(--overlay-start) 0%, var(--overlay-end) 100%),
+            url('/home.png') center/cover;
+            background-attachment: fixed;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, var(--radial-purple) 0%, var(--radial-transparent) 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            padding: 2rem;
+        }
+
+        .hero-logo {
+            width: 150px;
+            height: 150px;
+            background: var(--blue-dark);
+            border-radius: 15%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            box-shadow: 0 20px 60px var(--purple-shadow);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .hero-logo-inner {
+            width: 135px;
+            height: 135px;
+            background: var(--blue-dark);
+            border-radius: 15%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 3rem;
+        }
+
+        .hero-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+            text-shadow: 3px 3px 10px var(--black-shadow-medium);
+            background: linear-gradient(135deg, var(--purple-light) 0%, var(--purple-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                filter: drop-shadow(0 0 10px var(--purple-dark));
+            }
+            50% {
+                filter: drop-shadow(0 0 20px var(--purple-dark));
+            }
+        }
+
+        .hero-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: var(--text-light);
+            margin-bottom: 3rem;
+            letter-spacing: 0.01em;
+            text-shadow: 2px 2px 4px var(--black-shadow-medium);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            cursor: pointer;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-20px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+        }
+
+        .scroll-indicator svg {
+            width: 40px;
+            height: 40px;
+            fill: var(--purple-light);
+            filter: drop-shadow(0 0 10px var(--purple-glow));
+        }
+
+        /* Content Section */
+        .content-section {
+            background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-primary) 100%);
+            min-height: 100vh;
+            padding: 4rem 0;
+            color: var(--text-light);
+        }
+
+        .container {
+            margin: 0 0;
+            padding: 0 1rem;
+        }
+
+        /* Content Cards */
+        .content-card {
+            background: var(--blue-primary);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 20px var(--black-shadow-light);
+            border: 1px solid var(--purple-border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .content-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .content-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .content-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .content-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .content-card:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px var(--accent-shadow-medium);
+        }
+
+        .section-title {
+            font-family: 'Inter', sans-serif;
+            color: var(--purple-light);
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+            border-bottom: 3px solid var(--purple-primary);
+            display: inline-block;
+        }
+
+        .lead {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.125rem;
+            font-weight: 400;
+            line-height: 1.8;
+        }
+
+        /* Activity Items */
+        .activity-item {
+            background: var(--purple-bg-light);
+            border-left: 4px solid var(--purple-primary);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: var(--purple-bg-medium);
+            border-left-color: var(--accent);
+            transform: translateX(10px);
+        }
+
+        .activity-title {
+            font-family: 'Inter', sans-serif;
+            color: var(--purple-light);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .activity-item p {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.7;
+        }
+
+        /* Point Badges */
+
+        .badges-title {
+            font-family: 'Inter', sans-serif;
+            color: var(--purple-light);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .badges-item {
+            background: var(--purple-bg-light);
+            border-left: 4px solid var(--purple-primary);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+
+        .badges-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+        }
+
+        .badges-container span {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-gradient-end) 100%);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px var(--accent-shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .badges-container span:hover {
+            transform: translateY(-3px);
+        }
+
+        /* CTA Section */
+        .text-center {
+            text-align: center;
+        }
+
+        .cta-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin: 1.5rem 0;
+            letter-spacing: -0.01em;
+        }
+
+        .cta-button {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-gradient-end) 100%);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px var(--accent-shadow-medium);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            letter-spacing: -0.01em;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px var(--accent-shadow-strong);
+        }
+
+        .cta-button img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        .cta-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .content-card p {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.7;
+        }
+
+        .content-card strong {
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.125rem;
+            }
+
+            .hero-logo {
+                width: 120px;
+                height: 120px;
+            }
+
+            .hero-logo-inner {
+                width: 100px;
+                height: 100px;
+                font-size: 2rem;
+            }
+
+            .content-card {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .badges-container {
+                justify-content: center;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
 
-    <main class="container">
-        <div class="d-flex align-items-center p-3 my-3 text-white bg-purple rounded shadow-sm">
-            <img class="me-3" src="{{ asset("logo.png") }}" alt="" width="48" height="38"/>
-            <div class="lh-1">
-                <h1 class=" mb-0 text-white lh-1">Bienvenue sur le site de l'association Couch Gaming !</h1>
+    <main>
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-logo">
+                    <div class="hero-logo-inner">
+                        <svg viewBox="0 0 24 24" style="width: 100%; height: 100%;">
+                            <image href="/logo.png" width="24" height="24"/>
+                        </svg>
+                    </div>
+                </div>
+                <h1 class="hero-title">Couch Gaming</h1>
+                <p class="hero-subtitle">Rejoignez la communauté de gamers passionnés</p>
             </div>
-        </div>
-        {#
-        <div class="my-3 p-3 bg-body rounded shadow-sm"><h6 class="border-bottom pb-2 mb-0">Recent updates</h6>
-            <div class="d-flex text-body-secondary pt-3">
-                <svg aria-label="Placeholder: 32x32" class="bd-placeholder-img flex-shrink-0 me-2 rounded" height="32"
-                     preserveAspectRatio="xMidYMid slice" role="img" width="32" xmlns="http://www.w3.org/2000/svg">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#007bff"></rect>
-                    <text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text>
+            <div class="scroll-indicator"
+                 onclick="document.querySelector('.content-section').scrollIntoView({behavior: 'smooth'})">
+                <svg viewBox="0 0 24 24" href="public/home.png">
+                    <path d="M12 4l-8 8h5v8h6v-8h5z" transform="rotate(180 12 12)"/>
                 </svg>
-                <p class="pb-3 mb-0 small lh-sm border-bottom"><strong class="d-block text-gray-dark">@username</strong>
-                    Some representative placeholder content, with some information about this user. Imagine this being
-                    some sort of status update, perhaps?
-                </p></div>
-            <div class="d-flex text-body-secondary pt-3">
-                <svg aria-label="Placeholder: 32x32" class="bd-placeholder-img flex-shrink-0 me-2 rounded" height="32"
-                     preserveAspectRatio="xMidYMid slice" role="img" width="32" xmlns="http://www.w3.org/2000/svg">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#e83e8c"></rect>
-                    <text x="50%" y="50%" fill="#e83e8c" dy=".3em">32x32</text>
-                </svg>
-                <p class="pb-3 mb-0 small lh-sm border-bottom"><strong class="d-block text-gray-dark">@username</strong>
-                    Some more representative placeholder content, related to this other user. Another status update,
-                    perhaps.
-                </p></div>
-            <div class="d-flex text-body-secondary pt-3">
-                <svg aria-label="Placeholder: 32x32" class="bd-placeholder-img flex-shrink-0 me-2 rounded" height="32"
-                     preserveAspectRatio="xMidYMid slice" role="img" width="32" xmlns="http://www.w3.org/2000/svg">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#6f42c1"></rect>
-                    <text x="50%" y="50%" fill="#6f42c1" dy=".3em">32x32</text>
-                </svg>
-                <p class="pb-3 mb-0 small lh-sm border-bottom"><strong class="d-block text-gray-dark">@username</strong>
-                    This user also gets some representative placeholder content. Maybe they did something interesting,
-                    and you really want to highlight this in the recent updates.
-                </p></div>
-            <small class="d-block text-end mt-3"> <a href="#">All updates</a> </small></div>
-        <div class="my-3 p-3 bg-body rounded shadow-sm"><h6 class="border-bottom pb-2 mb-0">Suggestions</h6>
-            <div class="d-flex text-body-secondary pt-3">
-                <svg aria-label="Placeholder: 32x32" class="bd-placeholder-img flex-shrink-0 me-2 rounded" height="32"
-                     preserveAspectRatio="xMidYMid slice" role="img" width="32" xmlns="http://www.w3.org/2000/svg">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#007bff"></rect>
-                    <text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text>
-                </svg>
-                <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
-                    <div class="d-flex justify-content-between"><strong class="text-gray-dark">Full Name</strong> <a
-                        href="#">Follow</a></div>
-                    <span class="d-block">@username</span></div>
             </div>
-            <div class="d-flex text-body-secondary pt-3">
-                <svg aria-label="Placeholder: 32x32" class="bd-placeholder-img flex-shrink-0 me-2 rounded" height="32"
-                     preserveAspectRatio="xMidYMid slice" role="img" width="32" xmlns="http://www.w3.org/2000/svg">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#007bff"></rect>
-                    <text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text>
-                </svg>
-                <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
-                    <div class="d-flex justify-content-between"><strong class="text-gray-dark">Full Name</strong> <a
-                        href="#">Follow</a></div>
-                    <span class="d-block">@username</span></div>
+        </section>
+
+        <!-- Content Section -->
+        <section class="content-section">
+            <div class="container">
+                <!-- Qui sommes-nous -->
+                <div class="content-card">
+                    <h2 class="section-title">Qui sommes-nous ?</h2>
+                    <p class="lead">
+                        Couch Gaming est une association dynamique qui réunit les passionnés de jeux vidéo autour d'une
+                        valeur commune : le plaisir de jouer ensemble. Que vous soyez un joueur occasionnel ou un
+                        compétiteur dans l'âme, notre association vous offre un espace convivial pour partager votre
+                        passion, découvrir de nouveaux jeux et tisser des liens avec d'autres gamers.
+                    </p>
+                </div>
+
+                <!-- Notre mission -->
+                <div class="content-card">
+                    <h2 class="section-title">Notre mission</h2>
+                    <p>
+                        Nous croyons que le jeu vidéo est avant tout un vecteur de rencontres et de partage. Notre
+                        objectif est de créer une communauté active où chacun peut s'épanouir, progresser et s'amuser,
+                        que ce soit en ligne ou lors de rencontres physiques.
+                    </p>
+                </div>
+
+                <!-- Nos activités -->
+                <div class="content-card">
+                    <h2 class="section-title">Nos activités</h2>
+
+                    <div class="activity-item">
+                        <div class="activity-title">🖥️ Séances LAN</div>
+                        <p>
+                            Le cœur de notre association, ce sont nos sessions de jeu en réseau local (LAN) qui
+                            permettent à nos membres de se retrouver, de s'affronter et de coopérer dans une ambiance
+                            détendue et conviviale.
+                        </p>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-title">🎮 Événements</div>
+                        <p>
+                            Si vous le souhaitez, rejoignez nous dans l'école, ou de nombreux autres endroits dédiés à
+                            Paris pour des séances spéciales ! C'est l'occasion idéale de se retrouver autour de jeux de
+                            combat, de sessions compétitives ou simplement de passer un bon moment ensemble. La
+                            fréquence des événements s'adapte en fonction du nombre de participants intéressés.
+                        </p>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-title">🎯 Découverte de jeux</div>
+                        <p>
+                            Nous organisons régulièrement des séances thématiques dédiées à un jeu spécifique, choisi
+                            par la communauté. Ces événements sont parfaits pour découvrir de nouveaux univers,
+                            s'initier à des genres différents et partager vos coups de cœur avec les autres membres.
+                            Vous avez un jeu à faire découvrir ? Proposez le !
+                        </p>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-title">🧠 Quizzes et défis</div>
+                        <p>
+                            Testez vos connaissances en jeux vidéo grâce à notre système de quiz interactif ! Participez
+                            régulièrement pour grimper dans le classement et gagner des points. Culture gaming et
+                            réactivité seront vos meilleurs alliés.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Système de points -->
+                <div class="content-card">
+                    <h2 class="section-title">⭐ Système de points</h2>
+                    <p>
+                        Pour récompenser l'engagement de nos membres, nous avons mis en place un système de points qui
+                        valorise votre participation aux différentes activités de l'association. Cumulez des points en :
+                    </p>
+                    <div class="badges-container">
+                        <div class="badges-item"><div class="badges-title">🎮 Participant aux sessions LAN</div></div>
+                        <div class="badges-item"><div class="badges-title">❓ Répondant aux quiz</div></div>
+                        <div class="badges-item"><div class="badges-title">🤝 Contribuant à l'association</div></div>
+                    </div>
+                    <p>
+                        <strong>Plus vous êtes actif, plus vous gagnez de points et de reconnaissance au sein de la
+                            communauté !</strong>
+                    </p>
+                </div>
+
+                <!-- Rejoignez-nous -->
+                <div class="content-card text-center">
+                    <h2 class="section-title">Rejoignez-nous !</h2>
+                    <p class="lead">
+                        Que vous soyez étudiant ou simplement passionné de jeux vidéo, Couch Gaming vous accueille à
+                        bras ouverts. Rejoignez notre serveur Discord, participez à nos événements et faites partie
+                        d'une communauté qui partage votre passion.
+                    </p>
+                    <div class="cta-buttons-container">
+                        <a href="login" class="cta-button">
+                            Connectez-vous pour rejoindre l'association
+                        </a>
+                        <a href="login" class="cta-button">
+                            <img src="/discord.png" alt="Discord"/>
+                            Rejoindre le Discord
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Contact -->
+                <div class="content-card">
+                    <h2 class="section-title">📬 Contact</h2>
+                    <p>
+                        Pour toute question, n'hésitez pas à nous contacter via notre serveur Discord ou lors de nos
+                        événements. Pour rejoindre l'association, connectez vous ! Vous pourrez également rejoindre le
+                        serveur en cliquant sur le lien.
+                    </p>
+                </div>
             </div>
-            <div class="d-flex text-body-secondary pt-3">
-                <svg aria-label="Placeholder: 32x32" class="bd-placeholder-img flex-shrink-0 me-2 rounded" height="32"
-                     preserveAspectRatio="xMidYMid slice" role="img" width="32" xmlns="http://www.w3.org/2000/svg">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#007bff"></rect>
-                    <text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text>
-                </svg>
-                <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
-                    <div class="d-flex justify-content-between"><strong class="text-gray-dark">Full Name</strong> <a
-                        href="#">Follow</a></div>
-                    <span class="d-block">@username</span></div>
-            </div>
-            <small class="d-block text-end mt-3"> <a href="#">All suggestions</a> </small></div>
-        #}
+        </section>
     </main>
 {% endblock %}
