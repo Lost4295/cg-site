@@ -1,7 +1,11 @@
 {% extends 'base.html.twig' %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/auth-style.css') }}">
+
+{% endblock %}
 {% block body %}
-    <main class="form-signin text-center w-100 m-auto">
-        <div class="container">
+    <main class="form-signin text-center w-100 " >
+        <div class="container" >
              {% for message in app.flashes('danger') %}
                     <div class="alert alert-danger">
                         {{ message }}
