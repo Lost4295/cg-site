@@ -11,35 +11,63 @@
             padding: 0;
             box-sizing: border-box;
         }
+            :root {
+                /* Couleurs principales */
+                --purple-primary: #6f42c1;
+                --purple-dark: #121214;
+                --purple-light: #8c68cd;
+                --blue-dark: #1a1a2e;
+                --blue-primary: #16213e;
+                --accent: #6f42c1;
+                --accent-gradient-end: #8c68cd;
+                --text-light: #f1f1f1;
+                --white: white;
 
-        :root {
-            /* Couleurs principales */
-            --purple-primary: #6f42c1;
-            --purple-dark: #121214;
-            --purple-light: #8c68cd;
-            --blue-dark: #1a1a2e;
-            --blue-primary: #16213e;
-            --accent: #6f42c1;
-            --accent-gradient-end: #8c68cd;
-            --text-light: #f1f1f1;
-            --white: white;
+                /* Couleurs avec opacité */
+                --overlay-start: rgba(26, 26, 46, 0.9);
+                --overlay-end: rgba(22, 33, 62, 0.9);
+                --radial-purple: rgba(111, 66, 193, 0.3);
+                --radial-transparent: transparent;
+                --purple-shadow: rgba(111, 66, 193, 0.6);
+                --black-shadow-light: rgba(0, 0, 0, 0.4);
+                --black-shadow-medium: rgba(0, 0, 0, 0.8);
+                --purple-border: rgba(111, 66, 193, 0.2);
+                --purple-bg-light: rgba(111, 66, 193, 0.1);
+                --purple-bg-medium: rgba(111, 66, 193, 0.2);
+                --accent-shadow: rgba(111, 66, 193, 0.3);
+                --accent-shadow-medium: rgba(111, 66, 193, 0.4);
+                --accent-shadow-strong: rgba(111, 66, 193, 0.6);
+                --purple-glow: rgba(111, 66, 193, 0.8);
+            }
 
-            /* Couleurs avec opacité */
-            --overlay-start: rgba(26, 26, 46, 0.9);
-            --overlay-end: rgba(22, 33, 62, 0.9);
-            --radial-purple: rgba(111, 66, 193, 0.3);
-            --radial-transparent: transparent;
-            --purple-shadow: rgba(111, 66, 193, 0.6);
-            --black-shadow-light: rgba(0, 0, 0, 0.4);
-            --black-shadow-medium: rgba(0, 0, 0, 0.8);
-            --purple-border: rgba(111, 66, 193, 0.2);
-            --purple-bg-light: rgba(111, 66, 193, 0.1);
-            --purple-bg-medium: rgba(111, 66, 193, 0.2);
-            --accent-shadow: rgba(111, 66, 193, 0.3);
-            --accent-shadow-medium: rgba(111, 66, 193, 0.4);
-            --accent-shadow-strong: rgba(111, 66, 193, 0.6);
-            --purple-glow: rgba(111, 66, 193, 0.8);
-        }
+
+        body.light-mode {
+                --orange-primary: #ff7f50; /* corail orangé */
+                --orange-dark: #fff8f0; /* fond clair */
+                --orange-light: #ffa870; /* léger orange */
+                --blue-dark: #f9f9f9; /* fond très clair pour le contraste */
+                --blue-primary: #f0f0f0; /* fond clair secondaire */
+                --accent: #ff7f50;
+                --accent-gradient-end: #ffa870;
+                --text-light: #333333; /* texte sombre pour fond clair */
+                --white: white;
+
+                /* Couleurs avec opacité */
+                --overlay-start: rgba(249, 249, 249, 0.9);
+                --overlay-end: rgba(240, 240, 240, 0.9);
+                --radial-orange: rgba(255, 127, 80, 0.3);
+                --radial-transparent: transparent;
+                --orange-shadow: rgba(255, 127, 80, 0.6);
+                --black-shadow-light: rgba(0, 0, 0, 0.1);
+                --black-shadow-medium: rgba(0, 0, 0, 0.2);
+                --orange-border: rgba(255, 127, 80, 0.2);
+                --orange-bg-light: rgba(255, 127, 80, 0.1);
+                --orange-bg-medium: rgba(255, 127, 80, 0.2);
+                --accent-shadow: rgba(255, 127, 80, 0.3);
+                --accent-shadow-medium: rgba(255, 127, 80, 0.4);
+                --accent-shadow-strong: rgba(255, 127, 80, 0.6);
+                --orange-glow: rgba(255, 127, 80, 0.8);
+            }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
