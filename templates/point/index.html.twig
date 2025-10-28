@@ -149,26 +149,23 @@
                     <td class="score">{{ point }}</td>
                     </tr>
                 {% endfor %}
-                <tr>
-                    <td class="rank">3</td>
-                    <td class="user">
-                        <img src="https://placehold.co/45?text=EW" alt="Avatar" class="avatar">
-                        <span class="username">Edward Wallace</span>
-                    </td>
-                    <td class="score">-20,150</td>
-                </tr>
                 </tbody>
             </table>
         </div>
         <div class="col-4">
             <div class="card">
+            <div class="card-header">
                 <div class="card-title"> Mes points</div>
                 {% if app.user %}
-                    <img src="{{ app.user.avatar }}" class="card-img-top" width="200" alt="Image"/>
+                <div class="d-flex justify-content-center">
+                    <img src="{{ app.user.avatar }}" class="card-img-top w-25" width="75" alt="Image"/>
+                </div>
+                </div>
                     <div class="card-body">
                         <h5 class="card-title">{{ getpts(app.user.id) }} points</h5>
                     </div>
                 {% else %}
+                </div>
                     <div class="card-body">
                         <h5 class="card-title">Veuillez vous connecter pour connaitre vos points.</h5>
                     </div>

@@ -54,6 +54,18 @@ class User implements UserInterface
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
     private ?string $password = null;
 
+    #[ORM\Column]
+    private ?int $groupe = null;
+
+    public function getGroupe(): ?int
+    {
+        return $this->groupe;
+    }
+
+    public function setGroupe(?int $groupe): void
+    {
+        $this->groupe = $groupe;
+    }
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?BlockedUser $blockedUser = null;
 
