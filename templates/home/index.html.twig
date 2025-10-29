@@ -2,89 +2,150 @@
 
 {% block title %}Hello HomeController!{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+    <link rel="stylesheet" href="{{ asset('assets/home-style.css') }}">
+
+{% endblock %}
+
 {% block body %}
 
-    <main class="container">
-        <div class="d-flex align-items-center p-3 my-3 text-white bg-purple rounded shadow-sm">
-            <img class="me-3" src="{{ asset("logo.png") }}" alt="" width="48" height="38"/>
-            <div class="lh-1">
-                <h1 class=" mb-0 text-white lh-1">Bienvenue sur le site de l'association Couch Gaming !</h1>
+    <main>
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-logo">
+                    <div class="hero-logo-inner">
+                        <svg viewBox="0 0 24 24" style="width: 100%; height: 100%;">
+                            <image href="/logo.png" width="24" height="24"/>
+                        </svg>
+                    </div>
+                </div>
+                <h1 class="hero-title">Couch Gaming</h1>
+                <p class="hero-subtitle">Rejoignez la communauté de gamers passionnés</p>
             </div>
-        </div>
-        {#
-        <div class="my-3 p-3 bg-body rounded shadow-sm"><h6 class="border-bottom pb-2 mb-0">Recent updates</h6>
-            <div class="d-flex text-body-secondary pt-3">
-                <svg aria-label="Placeholder: 32x32" class="bd-placeholder-img flex-shrink-0 me-2 rounded" height="32"
-                     preserveAspectRatio="xMidYMid slice" role="img" width="32" xmlns="http://www.w3.org/2000/svg">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#007bff"></rect>
-                    <text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text>
+            <div class="scroll-indicator"
+                 onclick="document.querySelector('.content-section').scrollIntoView({behavior: 'smooth'})">
+                <svg viewBox="0 0 24 24" href="public/home.png">
+                    <path d="M12 4l-8 8h5v8h6v-8h5z" transform="rotate(180 12 12)"/>
                 </svg>
-                <p class="pb-3 mb-0 small lh-sm border-bottom"><strong class="d-block text-gray-dark">@username</strong>
-                    Some representative placeholder content, with some information about this user. Imagine this being
-                    some sort of status update, perhaps?
-                </p></div>
-            <div class="d-flex text-body-secondary pt-3">
-                <svg aria-label="Placeholder: 32x32" class="bd-placeholder-img flex-shrink-0 me-2 rounded" height="32"
-                     preserveAspectRatio="xMidYMid slice" role="img" width="32" xmlns="http://www.w3.org/2000/svg">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#e83e8c"></rect>
-                    <text x="50%" y="50%" fill="#e83e8c" dy=".3em">32x32</text>
-                </svg>
-                <p class="pb-3 mb-0 small lh-sm border-bottom"><strong class="d-block text-gray-dark">@username</strong>
-                    Some more representative placeholder content, related to this other user. Another status update,
-                    perhaps.
-                </p></div>
-            <div class="d-flex text-body-secondary pt-3">
-                <svg aria-label="Placeholder: 32x32" class="bd-placeholder-img flex-shrink-0 me-2 rounded" height="32"
-                     preserveAspectRatio="xMidYMid slice" role="img" width="32" xmlns="http://www.w3.org/2000/svg">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#6f42c1"></rect>
-                    <text x="50%" y="50%" fill="#6f42c1" dy=".3em">32x32</text>
-                </svg>
-                <p class="pb-3 mb-0 small lh-sm border-bottom"><strong class="d-block text-gray-dark">@username</strong>
-                    This user also gets some representative placeholder content. Maybe they did something interesting,
-                    and you really want to highlight this in the recent updates.
-                </p></div>
-            <small class="d-block text-end mt-3"> <a href="#">All updates</a> </small></div>
-        <div class="my-3 p-3 bg-body rounded shadow-sm"><h6 class="border-bottom pb-2 mb-0">Suggestions</h6>
-            <div class="d-flex text-body-secondary pt-3">
-                <svg aria-label="Placeholder: 32x32" class="bd-placeholder-img flex-shrink-0 me-2 rounded" height="32"
-                     preserveAspectRatio="xMidYMid slice" role="img" width="32" xmlns="http://www.w3.org/2000/svg">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#007bff"></rect>
-                    <text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text>
-                </svg>
-                <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
-                    <div class="d-flex justify-content-between"><strong class="text-gray-dark">Full Name</strong> <a
-                        href="#">Follow</a></div>
-                    <span class="d-block">@username</span></div>
             </div>
-            <div class="d-flex text-body-secondary pt-3">
-                <svg aria-label="Placeholder: 32x32" class="bd-placeholder-img flex-shrink-0 me-2 rounded" height="32"
-                     preserveAspectRatio="xMidYMid slice" role="img" width="32" xmlns="http://www.w3.org/2000/svg">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#007bff"></rect>
-                    <text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text>
-                </svg>
-                <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
-                    <div class="d-flex justify-content-between"><strong class="text-gray-dark">Full Name</strong> <a
-                        href="#">Follow</a></div>
-                    <span class="d-block">@username</span></div>
+        </section>
+
+        <!-- Content Section -->
+        <section class="content-section">
+            <div class="container">
+                <!-- Qui sommes-nous -->
+                <div class="content-card">
+                    <h2 class="section-title">Qui sommes-nous ?</h2>
+                    <p class="lead">
+                        Couch Gaming est une association dynamique qui réunit les passionnés de jeux vidéo autour d'une
+                        valeur commune : le plaisir de jouer ensemble. Que vous soyez un joueur occasionnel ou un
+                        compétiteur dans l'âme, notre association vous offre un espace convivial pour partager votre
+                        passion, découvrir de nouveaux jeux et tisser des liens avec d'autres gamers.
+                    </p>
+                </div>
+
+                <!-- Notre mission -->
+                <div class="content-card">
+                    <h2 class="section-title">Notre mission</h2>
+                    <p>
+                        Nous croyons que le jeu vidéo est avant tout un vecteur de rencontres et de partage. Notre
+                        objectif est de créer une communauté active où chacun peut s'épanouir, progresser et s'amuser,
+                        que ce soit en ligne ou lors de rencontres physiques.
+                    </p>
+                </div>
+
+                <!-- Nos activités -->
+                <div class="content-card">
+                    <h2 class="section-title">Nos activités</h2>
+
+                    <div class="activity-item">
+                        <div class="activity-title">🖥️ Séances LAN</div>
+                        <p>
+                            Le cœur de notre association, ce sont nos sessions de jeu en réseau local (LAN) qui
+                            permettent à nos membres de se retrouver, de s'affronter et de coopérer dans une ambiance
+                            détendue et conviviale.
+                        </p>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-title">🎮 Événements</div>
+                        <p>
+                            Si vous le souhaitez, rejoignez nous dans l'école, ou de nombreux autres endroits dédiés à
+                            Paris pour des séances spéciales ! C'est l'occasion idéale de se retrouver autour de jeux de
+                            combat, de sessions compétitives ou simplement de passer un bon moment ensemble. La
+                            fréquence des événements s'adapte en fonction du nombre de participants intéressés.
+                        </p>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-title">🎯 Découverte de jeux</div>
+                        <p>
+                            Nous organisons régulièrement des séances thématiques dédiées à un jeu spécifique, choisi
+                            par la communauté. Ces événements sont parfaits pour découvrir de nouveaux univers,
+                            s'initier à des genres différents et partager vos coups de cœur avec les autres membres.
+                            Vous avez un jeu à faire découvrir ? Proposez le !
+                        </p>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-title">🧠 Quizzes et défis</div>
+                        <p>
+                            Testez vos connaissances en jeux vidéo grâce à notre système de quiz interactif ! Participez
+                            régulièrement pour grimper dans le classement et gagner des points. Culture gaming et
+                            réactivité seront vos meilleurs alliés.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Système de points -->
+                <div class="content-card">
+                    <h2 class="section-title">⭐ Système de points</h2>
+                    <p>
+                        Pour récompenser l'engagement de nos membres, nous avons mis en place un système de points qui
+                        valorise votre participation aux différentes activités de l'association. Cumulez des points en :
+                    </p>
+                    <div class="badges-container">
+                        <div class="badges-item"><div class="badges-title">🎮 Participant aux sessions LAN</div></div>
+                        <div class="badges-item"><div class="badges-title">❓ Répondant aux quiz</div></div>
+                        <div class="badges-item"><div class="badges-title">🤝 Contribuant à l'association</div></div>
+                    </div>
+                    <p>
+                        <strong>Plus vous êtes actif, plus vous gagnez de points et de reconnaissance au sein de la
+                            communauté !</strong>
+                    </p>
+                </div>
+
+                <!-- Rejoignez-nous -->
+                <div class="content-card text-center">
+                    <h2 class="section-title">Rejoignez-nous !</h2>
+                    <p class="lead">
+                        Que vous soyez étudiant ou simplement passionné de jeux vidéo, Couch Gaming vous accueille à
+                        bras ouverts. Rejoignez notre serveur Discord, participez à nos événements et faites partie
+                        d'une communauté qui partage votre passion.
+                    </p>
+                    <div class="cta-buttons-container">
+                        <a href="login" class="cta-button">
+                            Connectez-vous pour rejoindre l'association
+                        </a>
+                        <a href="login" class="cta-button">
+                            <img src="/discord.png" alt="Discord"/>
+                            Rejoindre le Discord
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Contact -->
+                <div class="content-card">
+                    <br>
+                    <h2 class="section-title">📬 Contact</h2>
+                    <p>
+                        Pour toute question, n'hésitez pas à nous contacter via notre serveur Discord ou lors de nos
+                        événements. Pour rejoindre l'association, connectez vous ! Vous pourrez également rejoindre le
+                        serveur en cliquant sur le lien.
+                    </p>
+                </div>
             </div>
-            <div class="d-flex text-body-secondary pt-3">
-                <svg aria-label="Placeholder: 32x32" class="bd-placeholder-img flex-shrink-0 me-2 rounded" height="32"
-                     preserveAspectRatio="xMidYMid slice" role="img" width="32" xmlns="http://www.w3.org/2000/svg">
-                    <title>Placeholder</title>
-                    <rect width="100%" height="100%" fill="#007bff"></rect>
-                    <text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text>
-                </svg>
-                <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
-                    <div class="d-flex justify-content-between"><strong class="text-gray-dark">Full Name</strong> <a
-                        href="#">Follow</a></div>
-                    <span class="d-block">@username</span></div>
-            </div>
-            <small class="d-block text-end mt-3"> <a href="#">All suggestions</a> </small></div>
-        #}
+        </section>
     </main>
 {% endblock %}

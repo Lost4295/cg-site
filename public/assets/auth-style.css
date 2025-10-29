@@ -1,0 +1,82 @@
+/* ============================================
+   FORM & AUTH LAYOUTS (form-signin)
+   ============================================ */
+
+.form-signin {
+    /* Conteneur de la forme principale (équivalent à la carte de connexion/inscription) */
+    max-width: 440px; /* Limite la largeur pour une meilleure lisibilité */
+    margin: 4rem auto !important; /* Ajoute de la marge pour centrer verticalement */
+    padding: 30px;
+
+    /* Utilisation des variables de thème pour le fond et la bordure, comme une carte */
+    background: var(--secondary-primary);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px var(--black-shadow-medium);
+    transition: all 0.3s ease;
+}
+
+.form-signin .container {
+    padding: 0; /* Assure que le padding de la card reste sur l'élément principal */
+}
+
+/* --------------------------------------------
+   ÉLÉMENTS SPÉCIFIQUES DU FORMULAIRE SYMFONY/TWIG
+   -------------------------------------------- */
+
+/* Conteneur des lignes de formulaire (form-row) */
+div.form-row,
+div.mb-3 {
+    margin-bottom: 1.25rem !important;
+}
+
+/* Labels de formulaire */
+label {
+    font-family: 'Inter', sans-serif;
+    color: var(--light);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 0.5rem;
+    text-align: left;
+}
+
+/* Surcharge des styles globaux du form-control pour l'alignement */
+.form-signin .form-control {
+    width: 100%;
+    /* Les styles de base (couleurs, bordures, focus) sont déjà définis dans le CSS global */
+}
+
+/* --------------------------------------------
+   BOUTON DE SOUMISSION
+   -------------------------------------------- */
+
+/* Le bouton utilise déjà les classes Bootstrap `btn-lg` et `btn-primary`,
+   qui sont parfaitement stylisées avec vos dégradés et ombres portées
+   dans le CSS global. */
+.form-signin .btn-primary {
+    margin-top: 1rem;
+}
+
+/* --------------------------------------------
+   ALERTS (Flash Messages)
+   -------------------------------------------- */
+
+/* Les classes d'alertes sont déjà stylisées dans votre CSS global (alert-danger, etc.) */
+.form-signin .alert {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+
+/* ============================================
+   LIGHT MODE OVERRIDES for FORM LAYOUT
+   ============================================ */
+
+[data-bs-theme="light"] .form-signin {
+    background: var(--secondary-dark); /* Fait ressortir le formulaire en mode clair */
+    box-shadow: 0 10px 30px var(--black-shadow-light);
+}
+
+[data-bs-theme="light"] label {
+    color: var(--text-light); /* Couleur de texte sombre pour les labels */
+}

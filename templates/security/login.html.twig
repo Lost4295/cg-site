@@ -37,13 +37,15 @@
             </label>
         </div>
 
-        <button class="btn btn-lg btn-primary" type="submit">
+        <button class="btn btn-lg btn-primary w-100" type="submit">
             Se connecter
         </button>
         </form>
 
-            OU
+        <div style="display: flex; justify-content: center;margin-top: 15px;">
 
+            <p>OU</p>
+        </div>
         <form action="{{ path('oauth_discord') }}" method="post" class="w-100 h-100">
             <input type="hidden" name="token" value="{{ csrf_token('discord-auth') }}"/>
             <button class="w-100 btn btn-lg btn-primary" type="submit">Connexion avec <span class="fa fa-discord"></span> Discord</button>
