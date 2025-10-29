@@ -21,4 +21,5 @@ jobs:
                     git config user.name "KaiYou"
                     git config user.email "turin-ylan@outlook.fr"
                     git remote set-url origin "https://oauth2:${token}@gitlab.bonnard.io/KaiYou/cg-site.git"
+                    git pull --merge origin master
                     git push origin master
