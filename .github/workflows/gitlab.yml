@@ -20,6 +20,7 @@ jobs:
                   echo Starting to push repo to gitlab
                   git config user.name "KaiYou"
                   git config user.email "turin-ylan@outlook.fr"
+                  git config pull.rebase false
                   git remote set-url origin "https://oauth2:${token}@gitlab.bonnard.io/KaiYou/cg-site.git"
                   git pull
                   git push origin master
