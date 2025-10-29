@@ -1,0 +1,441 @@
+/* ============================================
+COUCH GAMING - HOME PAGE SPECIFIC STYLES
+============================================
+Note: Ce fichier contient uniquement les styles
+spécifiques à la page d'accueil. Les styles
+globaux sont dans global-home-style.css
+============================================ */
+
+/* ============================================
+   HERO SECTION - FULL SCREEN
+   ============================================ */
+.hero-section {
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    background: linear-gradient(135deg, var(--overlay-start) 0%, var(--overlay-end) 100%),
+    url('/home.png') center/cover;
+    background-attachment: fixed;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, var(--radial-purple) 0%, var(--radial-transparent) 70%);
+    animation: pulse 4s ease-in-out infinite;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    padding: 2rem;
+}
+
+/* ============================================
+   HERO LOGO
+   ============================================ */
+.hero-logo {
+    width: 150px;
+    height: 150px;
+    background: var(--blue-dark);
+    border-radius: 15%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem;
+    box-shadow: 0 20px 60px var(--shadow);
+    animation: float 3s ease-in-out infinite;
+}
+
+.hero-logo-inner {
+    width: 135px;
+    height: 135px;
+    background: var(--blue-dark);
+    border-radius: 15%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 3rem;
+}
+
+.hero-logo-inner svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* ============================================
+   HERO TEXT
+   ============================================ */
+.hero-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+    text-shadow: 3px 3px 10px var(--black-shadow-medium);
+    background: linear-gradient(135deg, var(--light) 0%, var(--light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: glow 2s ease-in-out infinite;
+}
+
+.hero-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--text-light);
+    margin-bottom: 3rem;
+    letter-spacing: 0.01em;
+    text-shadow: 2px 2px 4px var(--black-shadow-medium);
+}
+
+/* ============================================
+   SCROLL INDICATOR
+   ============================================ */
+.scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: bounce 2s infinite;
+    cursor: pointer;
+    z-index: 2;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateX(-50%) translateY(0);
+    }
+    40% {
+        transform: translateX(-50%) translateY(-20px);
+    }
+    60% {
+        transform: translateX(-50%) translateY(-10px);
+    }
+}
+
+.scroll-indicator svg {
+    width: 40px;
+    height: 40px;
+    fill: var(--light);
+    filter: drop-shadow(0 0 10px var(--glow));
+}
+
+/* ============================================
+   CONTENT CARDS - HOME SPECIFIC
+   ============================================ */
+.content-card {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+.content-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.content-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.content-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.content-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.content-card:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.content-card:nth-child(6) {
+    animation-delay: 0.6s;
+}
+
+/* ============================================
+   ACTIVITY ITEMS
+   ============================================ */
+.activity-item {
+    background: var(--bg-light);
+    border-left: 4px solid var(--primary);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.activity-item:hover {
+    background: var(--bg-medium);
+    border-left-color: var(--accent);
+    transform: translateX(10px);
+}
+
+.activity-title {
+    font-family: 'Inter', sans-serif;
+    color: var(--light);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+}
+
+.activity-item p {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.7;
+}
+
+/* ============================================
+   BADGES SYSTEM
+   ============================================ */
+.badges-title {
+    font-family: 'Inter', sans-serif;
+    color: var(--white);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+}
+
+.badges-item {
+    background: var(--bg-light);
+    border-left: 4px solid var(--primary);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.badges-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+}
+
+.badges-container span,
+.badges-container .badges-item {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-gradient-end) 100%);
+    color: var(--white);
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 10px var(--accent-shadow);
+    transition: transform 0.3s ease;
+    border: none;
+}
+
+.badges-container span:hover,
+.badges-container .badges-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px var(--accent-shadow-medium);
+}
+
+/* ============================================
+   CTA (Call To Action) SECTION
+   ============================================ */
+.cta-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 1.5rem 0;
+    letter-spacing: -0.01em;
+}
+
+.cta-button {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-gradient-end) 100%);
+    color: var(--white);
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px var(--accent-shadow-medium);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    letter-spacing: -0.01em;
+}
+
+.cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px var(--accent-shadow-strong);
+    color: var(--white);
+    text-decoration: none;
+}
+
+.cta-button img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.cta-buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+/* ============================================
+   LEAD TEXT
+   ============================================ */
+.lead {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.8;
+}
+
+/* ============================================
+   RESPONSIVE - HOME PAGE SPECIFIC
+   ============================================ */
+@media (max-width: 768px) {
+    .hero-section {
+        height: 85vh;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.125rem;
+        margin-bottom: 2rem;
+    }
+
+    .hero-logo {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-logo-inner {
+        width: 100px;
+        height: 100px;
+        font-size: 2rem;
+    }
+
+    .scroll-indicator {
+        bottom: 1rem;
+    }
+
+    .scroll-indicator svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    .activity-item:hover {
+        transform: translateX(5px);
+    }
+
+    .cta-button {
+        padding: 0.875rem 1.75rem;
+        font-size: 1rem;
+        width: 100%;
+        max-width: 320px;
+    }
+
+    .cta-buttons-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .badges-container {
+        gap: 0.5rem;
+    }
+
+    .badges-container span,
+    .badges-container .badges-item {
+        padding: 0.6rem 1.25rem;
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .hero-logo {
+        width: 100px;
+        height: 100px;
+    }
+
+    .hero-logo-inner {
+        width: 85px;
+        height: 85px;
+        font-size: 1.75rem;
+    }
+
+    .activity-title {
+        font-size: 1.1rem;
+    }
+
+    .cta-text {
+        font-size: 1.25rem;
+    }
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+@media print {
+    .hero-section {
+        height: auto;
+        padding: 2rem 0;
+        background: white;
+    }
+
+    .hero-section::before,
+    .scroll-indicator {
+        display: none;
+    }
+
+    .hero-logo {
+        animation: none;
+        box-shadow: none;
+    }
+
+    .hero-title {
+        animation: none;
+        color: #6f42c1;
+        -webkit-text-fill-color: #6f42c1;
+    }
+
+    .content-card {
+        opacity: 1;
+        animation: none;
+        page-break-inside: avoid;
+    }
+
+    .cta-button {
+        display: none;
+    }
+}
