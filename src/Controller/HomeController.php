@@ -13,6 +13,9 @@ final class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {
+        $this->addFlash("danger","Test");
+        $this->addFlash("success","Test");
+        $this->addFlash("notice","Test");
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
         ]);
@@ -38,9 +41,9 @@ final class HomeController extends AbstractController
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_home');
+        }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();

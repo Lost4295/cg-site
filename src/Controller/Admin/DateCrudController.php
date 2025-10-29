@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Date;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
@@ -13,6 +14,15 @@ class DateCrudController extends AbstractCrudController
     public static function getEntityFqcn(): string
     {
         return Date::class;
+    }
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            // ...
+
+            // defines the initial sorting applied to the list of entities
+            // (user can later change this sorting by clicking on the table columns)
+            ->setDefaultSort(['date' => 'DESC']);
     }
 
     /*
