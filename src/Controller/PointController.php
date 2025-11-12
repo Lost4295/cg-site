@@ -14,9 +14,14 @@ final class PointController extends AbstractController
     public function index(EntityManagerInterface $em): Response
     {
 
-        $points = $em->getRepository(Point::class)->getPointsOfUsers();
+        $points1 = $em->getRepository(Point::class)->getPointsOfUsers(1);
+        $points2 = $em->getRepository(Point::class)->getPointsOfUsers(2);
+        $points3 = $em->getRepository(Point::class)->getPointsOfUsers(3);
+        dump($points1, $points2, $points3);
         return $this->render('point/index.html.twig', [
-            'points' => $points,
+            'points1' => $points1,
+            'points2' => $points2,
+            'points3' => $points3,
         ]);
     }
 }

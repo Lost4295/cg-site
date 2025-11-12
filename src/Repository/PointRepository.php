@@ -2,8 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Date;
 use App\Entity\Point;
+use App\Entity\Trimestre;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -41,13 +44,28 @@ class PointRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    public function getPointsOfUsers()
+    public function getPointsOfUsers(int $trimestre = 1): array
     {
+        /** @var Trimestre[] $dates */
+        $dates = $this->getEntityManager()->getRepository(Trimestre::class)->createQueryBuilder('d')
+            ->where('d.trimestre = :trimestre'
+        )->andWhere('d.niveau = \'3AL\'')->setParameter('trimestre', $trimestre)->getQuery()->getResult();
+
+
+        $start = $dates[0]->getDateDebut();
+        $end = $dates[0]->getDateFin();
+
+        if (!$start || !$end) {
+            throw new \Exception("No date");
+        }
         $points = $this->createQueryBuilder('p')
             ->innerJoin('p.user', 'u')
             ->andWhere('u.visibility = 1')
+            ->andWhere('p.date BETWEEN :start AND :end ')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
             ->getQuery()
-            ->getResult();
+             ->getResult();
         $arr = [];
 
         foreach ($points as $point) {
