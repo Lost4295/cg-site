@@ -138,6 +138,11 @@
                     </button>
                 </li>
             </ul>
+            <ul class="nav d-none">
+                <li><button class="mypoints-nav" data-bs-target="#mypoints-first" data-bs-toggle="pill"></button></li>
+                <li><button class="mypoints-nav" data-bs-target="#mypoints-second" data-bs-toggle="pill"></button></li>
+                <li><button class="mypoints-nav" data-bs-target="#mypoints-third" data-bs-toggle="pill"></button></li>
+            </ul>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="pills-first" role="tabpanel"
                      aria-labelledby="pills-first-tab" tabindex="0">
@@ -262,7 +267,25 @@
                 </div>
             </div>
             <div class="card-body">
-                <h5 class="card-title">{{ getpts(app.user.id) }} points</h5>
+                {% if app.user %}
+                    {% set my_points = getpts(app.user.id) %}
+                {% else %}
+                    {% set my_points = [0, 0, 0] %}
+                {% endif %}
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="mypoints-first" role="tabpanel"
+                         aria-labelledby="pills-first-tab" tabindex="0">
+                        <h5 class="card-title">{{ my_points[1]??0 }} points</h5>
+                    </div>
+                    <div class="tab-pane fade" id="mypoints-second" role="tabpanel" aria-labelledby="pills-second-tab"
+                         tabindex="0">
+                        <h5 class="card-title">{{ my_points[2]??0 }} points</h5>
+                    </div>
+                    <div class="tab-pane fade" id="mypoints-third" role="tabpanel" aria-labelledby="pills-third-tab"
+                         tabindex="0">
+                        <h5 class="card-title">{{ my_points[3]??0 }} points</h5>
+                    </div>
+                </div>
             </div>
             {% else %}
             <div class="card-body">
@@ -273,6 +296,21 @@
         <p> Pour apparaître dans la liste, modifiez votre visibilité avec la commande /settings visibility on,
             ou dans vos paramètres.</p>
     </div>
-    </div>
-    </div>
+    <script>
+        document.querySelectorAll('[data-bs-toggle="pill"]').forEach(btn => {
+            btn.addEventListener('shown.bs.tab', event => {
+                const target = event.target.getAttribute('data-bs-target');
+
+                const pointsTarget = target.replace('pills-', 'mypoints-');
+
+                const pointsBtn = document.querySelector(`[data-bs-target="${pointsTarget}"]`);
+
+                if (pointsBtn) {
+                    const tab = new bootstrap.Tab(pointsBtn);
+                    tab.show();
+                }
+            });
+        });
+    </script>
+
 {% endblock %}

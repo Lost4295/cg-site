@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Date;
 use App\Entity\Point;
 use App\Entity\Trimestre;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
@@ -49,7 +50,7 @@ class PointRepository extends ServiceEntityRepository
         /** @var Trimestre[] $dates */
         $dates = $this->getEntityManager()->getRepository(Trimestre::class)->createQueryBuilder('d')
             ->where('d.trimestre = :trimestre'
-        )->andWhere('d.niveau = \'3AL\'')->setParameter('trimestre', $trimestre)->getQuery()->getResult();
+            )->andWhere('d.niveau = \'3AL\'')->setParameter('trimestre', $trimestre)->getQuery()->getResult();
 
 
         $start = $dates[0]->getDateDebut();
@@ -65,7 +66,7 @@ class PointRepository extends ServiceEntityRepository
             ->setParameter('start', $start)
             ->setParameter('end', $end)
             ->getQuery()
-             ->getResult();
+            ->getResult();
         $arr = [];
 
         foreach ($points as $point) {
@@ -79,19 +80,41 @@ class PointRepository extends ServiceEntityRepository
         return $arr;
     }
 
-    public function getPointsById($id)
+    public function getPointsById($id): array
     {
-        $points = $this->createQueryBuilder('p')
-            ->innerJoin('p.user', 'u')
-            ->andWhere('u.id = :id')
+        $user = $this->getEntityManager()->getRepository(User::class)->createQueryBuilder('u')
+            ->select('u.classe')
+            ->where('u.id = :id')
             ->setParameter('id', $id)
             ->getQuery()
             ->getResult();
-        $total = 0;
 
-        foreach ($points as $point) {
-            $total += $point->getPoints();
+        /** @var Trimestre[] $dates */
+        $dates = $this->getEntityManager()->getRepository(Trimestre::class)->createQueryBuilder('d')
+            ->where('d.niveau = :niveau')->setParameter("niveau", $user[0]['classe'])->getQuery()->getResult();
+        $totaux = [];
+        foreach ($dates as $date) {
+
+            $start = $date->getDateDebut();
+            $end = $date->getDateFin();
+
+            $points = $this->createQueryBuilder('p')
+                ->innerJoin('p.user', 'u')
+                ->andWhere('p.date BETWEEN :start AND :end ')
+                ->andWhere('u.id = :id')
+                ->setParameter('id', $id)
+                ->setParameter('start', $start)
+                ->setParameter('end', $end)
+                ->getQuery()
+                ->getResult();
+
+            $total = 0;
+
+            foreach ($points as $point) {
+                $total += $point->getPoints();
+            }
+            $totaux[$date->getTrimestre()] = $total;
         }
-        return $total;
+        return $totaux;
     }
 }

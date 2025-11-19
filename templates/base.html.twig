@@ -211,16 +211,22 @@
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item">
                         <a class="nav-link {{ (app == 'app_profile') ?'active':'' }}"
-                           href="{{ path("app_profile") }}">Profile</a>
+                           href="{{ path("app_profile") }}">Profil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ (app == 'add_question') ?'active':'' }}"
+                           href="{{ path("add_question") }}">Créer une question</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
                            aria-expanded="false">Actions</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a></li>
                             {% if is_granted("ROLE_ADMIN") %}
-                            <li><a class="dropdown-item" href="{{ path('admin') }}">Administration</a></li>
+                            <li><a class="dropdown-item" href="{{ path('check_questions') }}">Vérifier les questions</a></li>
+                            <li><a class="dropdown-item" href="{{ path('check_images') }}">Vérifier les images des présences</a></li>
+                            <li><a class="dropdown-item" href="{{ path('admin') }}">Panel d'administration</a></li>
                             {% endif %}
+                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a></li>
                         </ul>
                     </li>
                 {% else %}

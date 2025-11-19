@@ -4,57 +4,62 @@
 
 {% block body %}
     <div class="row h-100">
-    <div class="col d-flex justify-content-center align-items-center my-5">
-    <div class="card col-5 m-5">
-    <div class="card-body">
-    <form method="post">
+        <div class="col d-flex justify-content-center align-items-center my-5">
+            <div class="card col-5 m-5">
+                <div class="card-body">
+                    {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
+                        <form method="post">
 
-    {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
-        {% for message in app.flashes('danger') %}
-            <div class="alert alert-danger">
-                {{ message }}
+                            {% for message in app.flashes('danger') %}
+                                <div class="alert alert-danger">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                            {% if error %}
+                                <div
+                                    class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                            {% endif %}
+
+
+                            <h1 class="h3 mb-3 font-weight-normal">Se connecter </h1>
+                            <label for="inputEmail">Email</label>
+                            <input type="email" value="{{ last_username }}" name="email" id="inputEmail"
+                                   class="form-control"
+                                   autocomplete="email" required autofocus>
+                            <label for="inputPassword">Mot de passe</label>
+                            <input type="password" name="password" id="inputPassword" class="form-control"
+                                   autocomplete="current-password"
+                                   required>
+                            <input type="hidden" name="_csrf_token" data-controller="csrf-protection"
+                                   value="{{ csrf_token('authenticate') }}">
+
+                            <a href="{{ path("app_forgot_password_request") }}">Mot de passe oublié ?</a>
+                            <div class="checkbox mb-3">
+                                <label>
+                                    <input type="checkbox" name="_remember_me"> Se souvenir de moi
+                                </label>
+                            </div>
+
+                            <button class="btn btn-lg btn-primary w-100" type="submit">
+                                Se connecter
+                            </button>
+                        </form>
+
+                        <div style="display: flex; justify-content: center;margin-top: 15px;">
+
+                            <p>OU</p>
+                        </div>
+                        <form action="{{ path('oauth_discord') }}" method="post" class="w-100 h-100">
+                            <input type="hidden" name="token" value="{{ csrf_token('discord-auth') }}"/>
+                            <button class="w-100 btn btn-lg btn-primary" type="submit">Connexion avec <span
+                                    class="fa fa-discord"></span> Discord
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
             </div>
-        {% endfor %}
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
-
-
-
-        <h1 class="h3 mb-3 font-weight-normal">Se connecter </h1>
-        <label for="inputEmail">Email</label>
-        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control"
-               autocomplete="email" required autofocus>
-        <label for="inputPassword">Mot de passe</label>
-        <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password"
-               required>
-        <input type="hidden" name="_csrf_token" data-controller="csrf-protection"
-               value="{{ csrf_token('authenticate') }}">
-
-        <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" name="_remember_me"> Se souvenir de moi
-            </label>
         </div>
+    </div>
 
-        <button class="btn btn-lg btn-primary w-100" type="submit">
-            Se connecter
-        </button>
-        </form>
-
-        <div style="display: flex; justify-content: center;margin-top: 15px;">
-
-            <p>OU</p>
-        </div>
-        <form action="{{ path('oauth_discord') }}" method="post" class="w-100 h-100">
-            <input type="hidden" name="token" value="{{ csrf_token('discord-auth') }}"/>
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Connexion avec <span class="fa fa-discord"></span> Discord</button>
-        </form>
-        </div>
-        </div>
-        </div>
-        </div>
-
-    {% endif %}
 
 {% endblock %}

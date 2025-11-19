@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vérifier les questions{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+
+<h1>Vérifier les questions</h1>
+    <div class="row">
+        <div class="col">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Question</th>
+                        <th scope="col">Réponse</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for question in questions %}
+                    <tr>
+                        <th scope="row">{{ question.id }}</th>
+                        <td>{{ question.question }}</td>
+                        <td>
+                            {% if question.answer %}
+                                Vrai
+                            {% else %}
+                                Faux
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button id="v-{{ question.id }}" class="btn btn-primary btn-sm">Valider la question</button>
+                            <button id="r-{{ question.id }}" class="btn btn-danger btn-sm">Refuser la question</button>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">Aucune question trouvée.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block additionnal_javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    const [action, id] = button.id.split('-');
+                    let url = '';
+                    if (action === 'v') {
+                        url = '/questions/validate/' + id;
+                    } else if (action === 'r') {
+                        url = '/questions/reject/' + id;
+                    }
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            alert('Une erreur est survenue.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                        alert('Une erreur est survenue.');
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock %}

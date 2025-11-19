@@ -43,7 +43,6 @@ class TwigExtension extends AbstractExtension
 
     public function getpts($id)
     {
-        $user = $this->em->getRepository(Point::class)->getPointsById($id);
-        return $user;
+        return $this->em->getRepository(Point::class)->getPointsById($id);
     }
 }

@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vérifier les images{% endblock %}
+
+{% block body %}
+    <h1>Vérifier les images</h1>
+    <div class="row">
+        <div class="col">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for image in images %}
+                    <tr>
+                        <th scope="row">{{ image.id }}</th>
+                        <td><img src="{{ image.image }}" width="200" alt="Image de {{ getuser(image.user_id) }}"/> </td>
+                        <td>
+                            <button id="v-{{ image.id }}" class="btn btn-primary btn-sm">Valider l'image</button>
+                            <button id="r-{{ image.id }}" class="btn btn-danger btn-sm">Refuser l'image</button>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">Aucune image trouvée.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block additionnal_javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const [action, id] = button.id.split('-');
+                    let url = '';
+                    if (action === 'v') {
+                        url = '/image/validate/' + id;
+                    } else if (action === 'r') {
+                        url = '/image/reject/' + id;
+                    }
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                location.reload();
+                            } else {
+                                alert('Une erreur est survenue.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erreur:', error);
+                            alert('Une erreur est survenue.');
+                        });
+                });
+            });
+        });
+    </script>
+{% endblock %}
