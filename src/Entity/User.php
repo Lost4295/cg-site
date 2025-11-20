@@ -111,12 +111,19 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(type: Types::SMALLINT, options: ['default' => 0])]
     private ?int $is_admin = 0;
 
+    /**
+     * @var Collection<int, Tag>
+     */
+    #[ORM\OneToMany(targetEntity: Tag::class, mappedBy: 'user')]
+    private Collection $tags;
+
     public function __construct()
     {
         $this->quizzPoints = new ArrayCollection();
         $this->points = new ArrayCollection();
         $this->images = new ArrayCollection();
         $this->questionsSubmitted = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
 
@@ -510,5 +517,35 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function getPassword(): ?string
     {
         return $this->password;
+    }
+
+    /**
+     * @return Collection<int, Tag>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(Tag $tag): static
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+            $tag->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): static
+    {
+        if ($this->tags->removeElement($tag)) {
+            // set the owning side to null (unless already changed)
+            if ($tag->getUser() === $this) {
+                $tag->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

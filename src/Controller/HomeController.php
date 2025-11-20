@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Tag;
 use App\Form\CompleteFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,9 +17,9 @@ final class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {
-        $this->addFlash("danger","Test");
-        $this->addFlash("success","Test");
-        $this->addFlash("notice","Test");
+        $this->addFlash("danger", "Test");
+        $this->addFlash("success", "Test");
+        $this->addFlash("notice", "Test");
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
         ]);
@@ -51,6 +52,7 @@ final class HomeController extends AbstractController
             'user' => $user,
         ]);
     }
+
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -64,5 +66,12 @@ final class HomeController extends AbstractController
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+    }
+
+
+    #[Route('/about', name: 'app_about')]
+    public function about(): Response
+    {
+        return $this->render('home/about.html.twig');
     }
 }

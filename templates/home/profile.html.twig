@@ -5,10 +5,16 @@
 {% block body %}
     <div class="row">
         <div class="col d-flex justify-content-center align-items-center my-5">
-            <div class="card" style="width: 14rem; margin: 25px">
+            <div class="card">
                 <img src="{{ user.avatar }}" class="card-img-top">
                 <div class="card-body">
                     <h5 class="card-title">{{ user.pseudo }}</h5>
+                    {{ user.prenom }} {{ user.nom }}<br>
+                    Classe : {{ user.classe }}<br>
+                    Email : {{ user.email }}<br>
+                    {% for tag in user.tags %}
+                        <span class="badge bg-secondary"> {{ tag.emoji }} {{ tag.tag }}</span>
+                    {% endfor %}
                 </div>
                 <div class="card-footer">
                     <a href="{{ path('app_logout') }}" class="btn btn-primary">Déconnexion</a>
