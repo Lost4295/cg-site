@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid my-5">
+
+        <h1>Vous n'avez pas la permission d'accéder à cette page.</h1>
+
+        <p>
+            Il manque des informations pour accéder à la page que vous recherchez.
+            Nous vous suggérons de vérifier votre URL, retourner en arrière après avoir effectué les bonnes actions,
+            ou de retourner sur <a href="{{ path('app_home') }}">la page d'accueil</a>. Il n'y a rien ici, de toute façon.
+        </p>
+    </div>
+{% endblock %}

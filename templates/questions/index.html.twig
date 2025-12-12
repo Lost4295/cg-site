@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une question{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Créer une question</h1>
+        <div class="row">
+            <div class="col-md-10">
+                {{ form_start(form) }}
+                <div class="mb-3">
+                    {{ form_row(form.question) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.answer) }}
+                    <span id="{{ form.answer.vars.id }}_response">
+                        {% if form.answer.vars.value == 1 %}
+                            Vrai
+                        {% else %}
+                            Faux
+                        {% endif %}
+                    </span>
+                    <span class="text-muted"> (Cochez pour Vrai, décochez pour Faux). L'élément à côté vous aide à savoir quelle valeur est actuellement entrée. </span>
+                </div>
+                <button class="btn btn-primary">Créer la question</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block additionnal_javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const answerField = document.getElementById('{{ form.answer.vars.id }}');
+            const response = document.getElementById('{{ form.answer.vars.id }}_response');
+            if (answerField) {
+                if (answerField.checked) {
+                    response.innerHTML = 'Vrai';
+                } else {
+                    response.innerHTML = 'Faux';
+                }
+            }
+            answerField.addEventListener('change', function() {
+                    if (answerField.checked){
+                        response.innerHTML = 'Vrai';
+                    } else {
+                        response.innerHTML = 'Faux';
+                    }
+                });
+
+        });
+    </script>
+{% endblock %}

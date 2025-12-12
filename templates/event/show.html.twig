@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ event.name }} - Événement{% endblock %}
+
+{% block additionnal_stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/event-show.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container event-show-container">
+        
+        <!-- Hero Section with Image -->
+        <div class="event-hero">
+            <img src="{{ asset('img/'~event.image) }}" 
+                 alt="Image de l'événement {{ event.name }}" 
+                 class="event-hero-image"/>
+            <div class="event-hero-overlay">
+                <h1 class="event-hero-title">🎮 {{ event.name }}</h1>
+                {% if event.date %}
+                    <span class="event-hero-date">
+                        {{ event.date|format_datetime('long', 'short', locale:'fr', timezone:'Europe/Paris') }}
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Event Info Grid -->
+        <div class="event-info-grid">
+            <div class="event-info-item">
+                <div class="event-info-icon">🆔</div>
+                <div class="event-info-content">
+                    <div class="event-info-label">Identifiant</div>
+                    <div class="event-info-value">#{{ event.id }}</div>
+                </div>
+            </div>
+            <div class="event-info-item">
+                <div class="event-info-icon">📅</div>
+                <div class="event-info-content">
+                    <div class="event-info-label">Date</div>
+                    <div class="event-info-value">
+                        {{ event.date ? event.date|format_datetime('long', 'short', locale:'fr', timezone:'Europe/Paris') : 'À déterminer' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Description Card -->
+        <div class="event-content-card">
+            <div class="event-content-header">
+                <span class="event-content-header-icon">📝</span>
+                <h2 class="event-content-header-title">Description de l'événement</h2>
+            </div>
+            <div class="event-content-body">
+                {{ event.description|raw }}
+            </div>
+        </div>
+
+        <!-- Registration Section -->
+        <div class="event-registration">
+            <h3 class="event-registration-title">Inscription à l'événement</h3>
+            {% if app.user %}
+                {{ form(form) }}
+            {% else %}
+                <form action="{{ path('oauth_discord') }}" method="post">
+                    <input type="hidden" name="token" value="{{ csrf_token('discord-auth') }}"/>
+                    <div class="event-guest-badge">
+                        <span>Pour vous inscrire à l'événement, veuillez vous</span>
+                        <button type="submit" class="btn-link btn">inscrire à l'association</button>
+                        <span>, ou vous</span>
+                        <a href="{{ path('app_login') }}">connecter</a>
+                        <span>au site.</span>
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+
+        <!-- Back Button -->
+        <div class="event-actions">
+            <a href="{{ path('event_index') }}" class="btn-back">Retour à la liste</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block additionnal_javascripts %}
+    <script>
+        const span = document.createElement('span');
+        span.id = 'loading-spinner';
+        span.className = 'spinner-border spinner-border-sm ms-2';
+        span.setAttribute('role', 'status');
+        span.setAttribute('aria-hidden', 'true');
+        span.style.display = 'none';
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const input = document.querySelector('input[name="am_i_registered[going]"]');
+            input.addEventListener('change', function (event) {
+                event.preventDefault();
+                input.parentElement.appendChild(span);
+                span.style.display = 'inline-block';
+                fetch(event.target.form.action, {
+                    method: 'GET',
+                }).then(response => {
+                    if (response.ok) {
+                        return true;
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                }).then(data => {
+                    alert("La valeur a été mise à jour avec succès.");
+                }).catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                }).finally(() => {
+                    span.style.display = 'none';
+                });
+            });
+        });
+
+    </script>
+{% endblock %}

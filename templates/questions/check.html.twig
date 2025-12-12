@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vérifier les questions{% endblock %}
+
+{% block additionnal_stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/check-questions.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container check-questions-container">
+        
+        <!-- Page Header -->
+        <div class="check-questions-header">
+            <h1>🔍 Vérifier les questions</h1>
+            <p>Validez ou refusez les questions soumises par les utilisateurs</p>
+            <div class="questions-counter">
+                📋 {{ questions|length }} question(s) en attente
+            </div>
+        </div>
+
+        <!-- Questions Table -->
+        <div class="questions-table-container">
+            <table class="questions-table">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Question</th>
+                        <th scope="col">Réponse</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for question in questions %}
+                    <tr>
+                        <td>
+                            <span class="question-id">#{{ question.id }}</span>
+                        </td>
+                        <td>
+                            <span class="question-text">{{ question.question }}</span>
+                        </td>
+                        <td>
+                            {% if question.answer %}
+                                <span class="answer-badge answer-badge-true">Vrai</span>
+                            {% else %}
+                                <span class="answer-badge answer-badge-false">Faux</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="actions-cell">
+                                <button id="v-{{ question.id }}" class="btn-validate">Valider</button>
+                                <button id="r-{{ question.id }}" class="btn-reject">Refuser</button>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🎉</div>
+                                <p class="empty-state-text">Aucune question en attente !</p>
+                                <p class="empty-state-subtext">Toutes les questions ont été traitées</p>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block additionnal_javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    const [action, id] = button.id.split('-');
+                    let url = '';
+                    if (action === 'v') {
+                        url = '/questions/validate/' + id;
+                    } else if (action === 'r') {
+                        url = '/questions/reject/' + id;
+                    }
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            alert('Une erreur est survenue.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                        alert('Une erreur est survenue.');
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock %}

@@ -2,7 +2,7 @@
 <html lang="fr" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Welcome!{% endblock %}</title>
+    <title> Couch Gaming - {% block title %}Welcome!{% endblock %}</title>
     <link rel="icon"
           href="{{ asset("logo.png") }}"   >
     {% block stylesheets %}
@@ -18,7 +18,8 @@
     <link rel="stylesheet" href="{{ asset('assets/global-style.css') }}">
     <meta name="theme-color" content="#712cf9">
     <link href="{{ asset("offcanvas-navbar.css") }}" rel="stylesheet">
-    <style>.bd-placeholder-img {
+    <style>
+        .bd-placeholder-img {
             font-size: 1.125rem;
             text-anchor: middle;
             -webkit-user-select: none;
@@ -103,6 +104,8 @@
             display: block !important
         }
     </style>
+    {% block additionnal_stylesheets  %}
+    {% endblock %}
 </head>
 <body class="bg-body-tertiary">
 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -205,22 +208,31 @@
                         dates</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link {{ (app == 'event_index') ?'active':'' }}" href="{{ path("event_index") }}">Nos événements</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link {{ (app == 'app_home') ?'active':'' }}" href="{{ path("app_points") }}">Points
                         des participants</a>
                 </li>
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item">
                         <a class="nav-link {{ (app == 'app_profile') ?'active':'' }}"
-                           href="{{ path("app_profile") }}">Profile</a>
+                           href="{{ path("app_profile") }}">Profil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ (app == 'add_question') ?'active':'' }}"
+                           href="{{ path("add_question") }}">Créer une question</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
                            aria-expanded="false">Actions</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a></li>
                             {% if is_granted("ROLE_ADMIN") %}
-                            <li><a class="dropdown-item" href="{{ path('admin') }}">Administration</a></li>
+                            <li><a class="dropdown-item" href="{{ path('check_questions') }}">Vérifier les questions</a></li>
+                            <li><a class="dropdown-item" href="{{ path('check_images') }}">Vérifier les images des présences</a></li>
+                            <li><a class="dropdown-item" href="{{ path('admin') }}">Panel d'administration</a></li>
                             {% endif %}
+                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a></li>
                         </ul>
                     </li>
                 {% else %}
