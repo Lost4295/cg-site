@@ -1,8 +1,8 @@
 #!/bin/bash
 ls /var/www/html
+composer install
 php /var/www/html/bin/console doctrine:database:create --if-not-exists
 php /var/www/html/bin/console doctrine:schema:update --force --dump-sql
-composer install
 ln -sf /etc/nginx/sites-available/website.conf /etc/nginx/sites-enabled/website.conf
 rm -f /etc/nginx/sites-enabled/default
 chown -R www-data:www-data /var/www/html /var/log/nginx
