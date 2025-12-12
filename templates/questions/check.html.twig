@@ -2,13 +2,25 @@
 
 {% block title %}Vérifier les questions{% endblock %}
 
-{% block body %}
-    <div class="container-fluid">
+{% block additionnal_stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/check-questions.css') }}">
+{% endblock %}
 
-<h1>Vérifier les questions</h1>
-    <div class="row">
-        <div class="col">
-            <table class="table table-striped">
+{% block body %}
+    <div class="container check-questions-container">
+        
+        <!-- Page Header -->
+        <div class="check-questions-header">
+            <h1>🔍 Vérifier les questions</h1>
+            <p>Validez ou refusez les questions soumises par les utilisateurs</p>
+            <div class="questions-counter">
+                📋 {{ questions|length }} question(s) en attente
+            </div>
+        </div>
+
+        <!-- Questions Table -->
+        <div class="questions-table-container">
+            <table class="questions-table">
                 <thead>
                     <tr>
                         <th scope="col">ID</th>
@@ -20,29 +32,40 @@
                 <tbody>
                 {% for question in questions %}
                     <tr>
-                        <th scope="row">{{ question.id }}</th>
-                        <td>{{ question.question }}</td>
+                        <td>
+                            <span class="question-id">#{{ question.id }}</span>
+                        </td>
+                        <td>
+                            <span class="question-text">{{ question.question }}</span>
+                        </td>
                         <td>
                             {% if question.answer %}
-                                Vrai
+                                <span class="answer-badge answer-badge-true">Vrai</span>
                             {% else %}
-                                Faux
+                                <span class="answer-badge answer-badge-false">Faux</span>
                             {% endif %}
                         </td>
                         <td>
-                            <button id="v-{{ question.id }}" class="btn btn-primary btn-sm">Valider la question</button>
-                            <button id="r-{{ question.id }}" class="btn btn-danger btn-sm">Refuser la question</button>
+                            <div class="actions-cell">
+                                <button id="v-{{ question.id }}" class="btn-validate">Valider</button>
+                                <button id="r-{{ question.id }}" class="btn-reject">Refuser</button>
+                            </div>
                         </td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="4">Aucune question trouvée.</td>
+                        <td colspan="4">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🎉</div>
+                                <p class="empty-state-text">Aucune question en attente !</p>
+                                <p class="empty-state-subtext">Toutes les questions ont été traitées</p>
+                            </div>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
         </div>
-    </div>
     </div>
 {% endblock %}
 

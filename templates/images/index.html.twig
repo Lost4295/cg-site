@@ -2,37 +2,48 @@
 
 {% block title %}Vérifier les images{% endblock %}
 
+{% block additionnal_stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assets/check-images.css') }}">
+{% endblock %}
+
 {% block body %}
-    <h1>Vérifier les images</h1>
-    <div class="row">
-        <div class="col">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Image</th>
-                    <th scope="col">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for image in images %}
-                    <tr>
-                        <th scope="row">{{ image.id }}</th>
-                        <td><img src="{{ image.image }}" width="200" alt="Image de {{ getuser(image.user_id) }}"/> </td>
-                        <td>
-                            <button id="v-{{ image.id }}" class="btn btn-primary btn-sm">Valider l'image</button>
-                            <button id="r-{{ image.id }}" class="btn btn-danger btn-sm">Refuser l'image</button>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="4">Aucune image trouvée.</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+    <div class="container check-images-container">
+        
+        <!-- Page Header -->
+        <div class="check-images-header">
+            <h1>🖼️ Vérifier les images</h1>
+            <p>Validez ou refusez les images de présence soumises par les utilisateurs</p>
+            <div class="images-counter">
+                📷 {{ images|length }} image(s) en attente
+            </div>
         </div>
-    </div>
+
+        <!-- Images Grid -->
+        <div class="images-grid">
+            {% for image in images %}
+                <div class="image-card">
+                    <div class="image-card-preview">
+                        <span class="image-card-id">#{{ image.id }}</span>
+                        <img src="{{ image.image }}" alt="Image de {{ getuser(image.user_id) }}"/>
+                    </div>
+                    <div class="image-card-body">
+                        <div class="image-card-user">
+                            {{ getuser(image.user_id) }}
+                        </div>
+                        <div class="image-card-actions">
+                            <button id="v-{{ image.id }}" class="btn-validate">Valider</button>
+                            <button id="r-{{ image.id }}" class="btn-reject">Refuser</button>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">🎉</div>
+                    <p class="empty-state-text">Aucune image en attente !</p>
+                    <p class="empty-state-subtext">Toutes les images ont été vérifiées</p>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
 
