@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Tag;
 use App\Form\CompleteFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

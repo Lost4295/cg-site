@@ -18,7 +18,8 @@
     <link rel="stylesheet" href="{{ asset('assets/global-style.css') }}">
     <meta name="theme-color" content="#712cf9">
     <link href="{{ asset("offcanvas-navbar.css") }}" rel="stylesheet">
-    <style>.bd-placeholder-img {
+    <style>
+        .bd-placeholder-img {
             font-size: 1.125rem;
             text-anchor: middle;
             -webkit-user-select: none;
@@ -103,6 +104,8 @@
             display: block !important
         }
     </style>
+    {% block additionnal_stylesheets  %}
+    {% endblock %}
 </head>
 <body class="bg-body-tertiary">
 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -203,6 +206,9 @@
                 <li class="nav-item">
                     <a class="nav-link {{ (app == 'app_dates') ?'active':'' }}" href="{{ path("app_dates") }}">Prochaines
                         dates</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ (app == 'event_index') ?'active':'' }}" href="{{ path("event_index") }}">Nos événements</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ (app == 'app_home') ?'active':'' }}" href="{{ path("app_points") }}">Points

@@ -21,9 +21,17 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
 
+    const UNDEFINED = 0;
     const NO_SET = 1;
     const MISSING_DATA = 2;
     const IS_OK = 3;
+
+    const ACCOUNT_VALID_VALUES = [
+        self::UNDEFINED=> 'Non défini',
+        self::NO_SET=> 'Jamais inscrit sur site',
+        self::MISSING_DATA => 'Données manquantes',
+        self::IS_OK => 'Compte validé',
+    ];
 
     #[ORM\Id]
     #[ORM\Column(type: 'string', length: 32, unique: true, nullable: true)]
@@ -54,7 +62,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
     private ?string $password = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type:'smallint',  nullable: true, options: ['default' => null])]
     private ?int $groupe = null;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
@@ -117,6 +125,15 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\OneToMany(targetEntity: Tag::class, mappedBy: 'user')]
     private Collection $tags;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $active = null;
+
+    /**
+     * @var Collection<int, Event>
+     */
+    #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'participants')]
+    private Collection $events;
+
     public function __construct()
     {
         $this->quizzPoints = new ArrayCollection();
@@ -124,8 +141,13 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         $this->images = new ArrayCollection();
         $this->questionsSubmitted = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->events = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return  "$this->nom $this->prenom, $this->classe$this->groupe ($this->pseudo)";
+    }
 
     public function getEmail(): ?string
     {
@@ -548,4 +570,49 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
         return $this;
     }
+
+    public function getIsAccountValid()
+    {
+        return $this::ACCOUNT_VALID_VALUES[$this->accountValid];
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(?bool $active): static
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
+    }
+
+    public function addEvent(Event $event): static
+    {
+        if (!$this->events->contains($event)) {
+            $this->events->add($event);
+            $event->addParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Event $event): static
+    {
+        if ($this->events->removeElement($event)) {
+            $event->removeParticipant($this);
+        }
+
+        return $this;
+    }
+
 }

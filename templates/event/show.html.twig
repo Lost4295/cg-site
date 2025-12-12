@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Event{% endblock %}
+
+{% block body %}
+    <div class="container-fluid my-3">
+        <h1>Événement</h1>
+
+        <table class="table">
+            <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ event.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ event.name }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ event.description |raw }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ event.date ? "Le " ~ event.date|format_datetime('long', 'short', locale:'fr', timezone:'Europe/Paris') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Image</th>
+                <td><img alt="Image de l'événement {{ event.name }}" src="{{ asset('img/'~event.image) }}" width="250"/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        {% if app.user %}
+            <div class="my-3 d-flex justify-content-center fs-4">
+                {{ form(form) }}
+            </div>
+        {% else %}
+            <div class="my-3 d-flex justify-content-center fs-4">
+                <form action="{{ path('oauth_discord') }}" method="post" class="">
+                    <input type="hidden" name="token" value="{{ csrf_token('discord-auth') }}"/>
+                    <span class="badge badge-info">Pour vous inscrire à l'événement, veuillez vous
+                        <button type="submit"
+                                class="btn-link btn">inscrire à l'association</button>, ou vous <a
+                            href="{{ path('app_login') }} ">connecter</a> au site.</span>
+                </form>
+            </div>
+        {% endif %}
+        <a href="{{ path('event_index') }}" class="btn btn-info">Retour à la liste</a>
+    </div>
+{% endblock %}
+
+{% block additionnal_javascripts %}
+    <script>
+        const span = document.createElement('span');
+        span.id = 'loading-spinner';
+        span.className = 'spinner-border spinner-border-sm ms-2';
+        span.setAttribute('role', 'status');
+        span.setAttribute('aria-hidden', 'true');
+        span.style.display = 'none';
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const input = document.querySelector('input[name="am_i_registered[going]"]');
+            input.addEventListener('change', function (event) {
+                event.preventDefault();
+                input.parentElement.appendChild(span);
+                span.style.display = 'inline-block';
+                fetch(event.target.form.action, {
+                    method: 'GET',
+                }).then(response => {
+                    if (response.ok) {
+                        return true;
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                }).then(data => {
+                    alert("La valeur a été mise à jour avec succès.");
+                }).catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                }).finally(() => {
+                    span.style.display = 'none';
+                });
+            });
+        });
+
+    </script>
+{% endblock %}
