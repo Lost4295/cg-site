@@ -27,7 +27,7 @@ class UserCrudController extends AbstractCrudController
             TextField::new('prenom'),
             TextField::new('classe'),
             TextField::new('email'),
-            NumberField::new('accountValid',"Compte valide ?"),
+            TextField::new('isAccountValid', "Compte valide ?")
         ];
     }
 

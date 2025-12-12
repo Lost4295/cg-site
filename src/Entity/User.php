@@ -5,6 +5,7 @@ namespace App\Entity;
 use DateTime;
 use DateTimeInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 use App\Repository\UserRepository;
@@ -17,12 +18,20 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-class User implements UserInterface
+class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
 
+    const UNDEFINED = 0;
     const NO_SET = 1;
     const MISSING_DATA = 2;
     const IS_OK = 3;
+
+    const ACCOUNT_VALID_VALUES = [
+        self::UNDEFINED=> 'Non défini',
+        self::NO_SET=> 'Jamais inscrit sur site',
+        self::MISSING_DATA => 'Données manquantes',
+        self::IS_OK => 'Compte validé',
+    ];
 
     #[ORM\Id]
     #[ORM\Column(type: 'string', length: 32, unique: true, nullable: true)]
@@ -34,9 +43,8 @@ class User implements UserInterface
     #[ORM\Column(type: 'string', length: 180, unique: true, nullable: true)]
     private ?string $email;
 
-    #[ORM\Column(type: 'json', nullable: true, options: ["default"=>"[]"])]
+    #[ORM\Column(type: 'json', nullable: true, options: ["default" => "[]"])]
     private array $roles = [];
-
 
 
     #[ORM\Column(type: 'string', length: 32, nullable: true)]
@@ -45,27 +53,18 @@ class User implements UserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $accessToken = null;
 
-    #[ORM\Column(nullable:true)]
+    #[ORM\Column(nullable: true)]
     private ?DateTime $expiresIn = null;
 
-    #[ORM\Column(options: ["default"=>User::NO_SET])]
+    #[ORM\Column(options: ["default" => User::NO_SET])]
     private ?int $accountValid = null;
 
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
     private ?string $password = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type:'smallint',  nullable: true, options: ['default' => null])]
     private ?int $groupe = null;
 
-    public function getGroupe(): ?int
-    {
-        return $this->groupe;
-    }
-
-    public function setGroupe(?int $groupe): void
-    {
-        $this->groupe = $groupe;
-    }
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?BlockedUser $blockedUser = null;
 
@@ -102,24 +101,38 @@ class User implements UserInterface
 
     #[ORM\Column(length: 50)]
     #[Assert\NotIdenticalTo('Prénom à définir')]
-
     private ?string $prenom = null;
 
     #[ORM\Column(length: 7)]
     #[Assert\NotIdenticalTo('Classe')]
     private ?string $classe = null;
 
-    #[ORM\Column(type: Types::SMALLINT,options: ['default'=>0])]
+    #[ORM\Column(type: Types::SMALLINT, options: ['default' => 0])]
     private ?int $warns = 0;
 
     #[ORM\Column]
     private ?\DateTime $date_inscr = null;
 
-    #[ORM\Column(options: ['default'=>false])]
+    #[ORM\Column(options: ['default' => false])]
     private ?bool $visibility = false;
 
-    #[ORM\Column(type: Types::SMALLINT,options: ['default'=>0])]
+    #[ORM\Column(type: Types::SMALLINT, options: ['default' => 0])]
     private ?int $is_admin = 0;
+
+    /**
+     * @var Collection<int, Tag>
+     */
+    #[ORM\OneToMany(targetEntity: Tag::class, mappedBy: 'user')]
+    private Collection $tags;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $active = null;
+
+    /**
+     * @var Collection<int, Event>
+     */
+    #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'participants')]
+    private Collection $events;
 
     public function __construct()
     {
@@ -127,8 +140,14 @@ class User implements UserInterface
         $this->points = new ArrayCollection();
         $this->images = new ArrayCollection();
         $this->questionsSubmitted = new ArrayCollection();
+        $this->tags = new ArrayCollection();
+        $this->events = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return  "$this->nom $this->prenom, $this->classe$this->groupe ($this->pseudo)";
+    }
 
     public function getEmail(): ?string
     {
@@ -413,12 +432,32 @@ class User implements UserInterface
 
     public function getClasse(): ?string
     {
-        return $this->classe;
+        if (!$this->classe) {
+            return null;
+        }
+
+        if (!$this->groupe) {
+            return $this->classe;
+        }
+        return $this->classe . $this->groupe;
     }
 
-    public function setClasse(string $classe): static
+    public function setClasse(?string $value): static
     {
-        $this->classe = $classe;
+        if (!$value) {
+            return $this;
+        }
+
+        $lastChar = substr($value, -1);
+
+        if (intval($lastChar) !== 0) {
+            $this->groupe = intval($lastChar);
+            $this->classe = substr($value, 0, -1);
+        } else {
+            // Pas de groupe → groupe null
+            $this->groupe = null;
+            $this->classe = $value;
+        }
 
         return $this;
     }
@@ -496,4 +535,84 @@ class User implements UserInterface
         $this->password = $hashPassword;
         return $this;
     }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    /**
+     * @return Collection<int, Tag>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(Tag $tag): static
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+            $tag->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): static
+    {
+        if ($this->tags->removeElement($tag)) {
+            // set the owning side to null (unless already changed)
+            if ($tag->getUser() === $this) {
+                $tag->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getIsAccountValid()
+    {
+        return $this::ACCOUNT_VALID_VALUES[$this->accountValid];
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(?bool $active): static
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
+    }
+
+    public function addEvent(Event $event): static
+    {
+        if (!$this->events->contains($event)) {
+            $this->events->add($event);
+            $event->addParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Event $event): static
+    {
+        if ($this->events->removeElement($event)) {
+            $event->removeParticipant($this);
+        }
+
+        return $this;
+    }
+
 }

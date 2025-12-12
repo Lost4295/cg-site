@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}À propos de nous{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+    <link rel="stylesheet" href="{{ asset('assets/home-style.css') }}">
+
+{% endblock %}
+
+{% block body %}
+
+<section class="about container" aria-labelledby="about-title">
+        <h1 id="about-title" class="about-title">À propos de Couch Gaming</h1>
+
+        <p class="lead">
+            Couch Gaming est une association de l'école ESGI Paris dédiée aux amoureux du jeu vidéo. Notre ambition : créer un espace convivial où joueurs de tous horizons se rencontrent pour jouer, collaborer ou s’affronter dans la bonne humeur.
+        </p>
+
+        <h2>Notre vision</h2>
+        <p>
+            Le jeu vidéo comme vecteur de lien social — jouer n’est pas seulement une activité ludique, mais un moyen de créer des relations, découvrir des talents et bâtir une communauté forte.
+        </p>
+
+        <h2>Récompenses</h2>
+        <p>
+            Grâce à notre système de points, chaque membre est récompensé pour son engagement : participation aux événements, organisation de rencontres pour jouer ensemble et contributions à la communauté.
+        </p>
+
+        <h2>Activités</h2>
+        <ul>
+            <li>Sessions de jeu en ligne</li>
+            <li>Événements « LAN party » (à venir) et rencontres IRL</li>
+            <li>Défis en équipe et séances thématiques</li>
+            <li>Quizzes</li>
+            <li>Défis pour promouvoir l'activité</li>
+        </ul>
+
+        <p class="mission"><strong>Notre mission :</strong> rassembler, partager, jouer — ensemble.</p>
+    </section>
+{% endblock %}

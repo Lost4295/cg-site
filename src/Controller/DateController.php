@@ -38,10 +38,10 @@ final class DateController extends AbstractController
         $array = [];
         /** @var Date $date */
         foreach ($dates as $date) {
-            $color = "#". ($date->isDistanciel()?'bada55':'c00fee');
+            $color = "#". ($date->isDistanciel()?'bada55':'c0ffee');
             $array[] = [
                         "id"=> $date->getId(),
-                        "title"=> $date->getTitle(),
+                        "title"=> $date->getTitle().(' ('.($date->isDistanciel()?'Distanciel':'Présentiel').')'),
                         "start"=> $date->getDate()->format("Y-m-d H:i:s"),
                         "end"=> $date->getDate()->modify('+6 hours')->format("c"),
                         "rendering"=> 'background',

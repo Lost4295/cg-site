@@ -1,16 +1,53 @@
-
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Profil{% endblock %}
 
 {% block body %}
-
-<div class="card" style="width: 14rem; margin: 25px">
-    <img src="{{ app.user.avatar }}" class="card-img-top">
-    <div class="card-body">
-        <h5 class="card-title">{{ app.user.pseudo }}</h5>
-        <a href="{{ path('app_logout') }}" class="btn btn-primary">Déconnexion</a>
+    <div class="row">
+        <div class="col d-flex justify-content-center align-items-center my-5">
+            <div class="card">
+                <img src="{{ user.avatar }}" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title">{{ user.pseudo }}</h5>
+                    {{ user.prenom }} {{ user.nom }}<br>
+                    Classe : {{ user.classe }}<br>
+                    Email : {{ user.email }}<br>
+                    {% for tag in user.tags %}
+                        <span class="badge bg-secondary"> {{ tag.emoji }} {{ tag.tag }}</span>
+                    {% endfor %}
+                </div>
+                <div class="card-footer">
+                    <a href="{{ path('app_logout') }}" class="btn btn-primary">Déconnexion</a>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+    <div class="row">
+        <div class="col d-flex justify-content-center align-items-center mb-5">
+            <div class="card col-5 m-5">
+                <div class="card-body">
+                    <h3>Modifier mes informations</h3>
+                    {{ form_start(form) }}
+                    <div class="mb-3">
+                        {{ form_row(form.nom) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_row(form.prenom) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_row(form.classe) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_row(form.visibility) }}
+                    </div>
+                    <div class="text-muted mb-3">
+                        Pour modifier votre adresse email ou pseudo, veuillez contacter un administrateur.
+                    </div>
+                    <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

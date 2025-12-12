@@ -118,39 +118,144 @@
 {% block body %}
     <div class="row">
         <div class="col-8">
+            <ul class="nav nav-pills nav-fill py-5">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-target="#pills-first" data-bs-toggle="pill"
+                            id="pills-first-tab" aria-current="page" type="button" role="tab"
+                            aria-controls="pills-first" aria-selected="true">Premier trimestre
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-target="#pills-second" data-bs-toggle="pill" id="pills-second-tab"
+                            type="button" role="tab" aria-controls="pills-second " aria-selected="false">Deuxième
+                        trimestre
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-target="#pills-third" data-bs-toggle="pill" id="pills-third-tab"
+                            type="button" role="tab" aria-controls="pills-third" aria-selected="false">Troisième
+                        trimestre
+                    </button>
+                </li>
+            </ul>
+            <ul class="nav d-none">
+                <li><button class="mypoints-nav" data-bs-target="#mypoints-first" data-bs-toggle="pill"></button></li>
+                <li><button class="mypoints-nav" data-bs-target="#mypoints-second" data-bs-toggle="pill"></button></li>
+                <li><button class="mypoints-nav" data-bs-target="#mypoints-third" data-bs-toggle="pill"></button></li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="pills-first" role="tabpanel"
+                     aria-labelledby="pills-first-tab" tabindex="0">
 
-            <table class="leaderboard-table">
-                <thead>
-                <tr>
-                    <th scope="col">Place</th>
-                    <th scope="col">User</th>
-                    <th scope="col" class="th-score">Score</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for index, point in points %}
-                    {% if loop.index== 1 %}
-                        <tr class="rank-1">
-                        <td class="rank">1</td>
-                    {% elseif loop.index== 2 %}
-                        <tr class="rank-2">
-                        <td class="rank">2</td>
-                    {% elseif loop.index== 3 %}
-                        <tr class="rank-3">
-                        <td class="rank">3</td>
-                    {% else %}
+                    <table class="leaderboard-table">
+                        <thead>
                         <tr>
-                        <td class="rank">{{ loop.index }}</td>
-                    {% endif %}
-                    <td class="user">
-                        <img src="https://placehold.co/45?text={{ getuserini(index) }}" alt="Avatar" class="avatar">
-                        <span class="username">{{ getuser(index) }}</span>
-                    </td>
-                    <td class="score">{{ point }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                            <th scope="col">Place</th>
+                            <th scope="col">User</th>
+                            <th scope="col" class="th-score">Score</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for index, point in points1 %}
+                            {% if loop.index== 1 %}
+                                <tr class="rank-1">
+                                <td class="rank">1</td>
+                            {% elseif loop.index== 2 %}
+                                <tr class="rank-2">
+                                <td class="rank">2</td>
+                            {% elseif loop.index== 3 %}
+                                <tr class="rank-3">
+                                <td class="rank">3</td>
+                            {% else %}
+                                <tr>
+                                <td class="rank">{{ loop.index }}</td>
+                            {% endif %}
+                            <td class="user">
+                                <img src="https://placehold.co/45?text={{ getuserini(index) }}" alt="Avatar"
+                                     class="avatar">
+                                <span class="username">{{ getuser(index) }}</span>
+                            </td>
+                            <td class="score">{{ point }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="pills-second" role="tabpanel" aria-labelledby="pills-second-tab"
+                     tabindex="0">
+
+                    <table class="leaderboard-table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Place</th>
+                            <th scope="col">User</th>
+                            <th scope="col" class="th-score">Score</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for index, point in points2 %}
+                            {% if loop.index== 1 %}
+                                <tr class="rank-1">
+                                <td class="rank">1</td>
+                            {% elseif loop.index== 2 %}
+                                <tr class="rank-2">
+                                <td class="rank">2</td>
+                            {% elseif loop.index== 3 %}
+                                <tr class="rank-3">
+                                <td class="rank">3</td>
+                            {% else %}
+                                <tr>
+                                <td class="rank">{{ loop.index }}</td>
+                            {% endif %}
+                            <td class="user">
+                                <img src="https://placehold.co/45?text={{ getuserini(index) }}" alt="Avatar"
+                                     class="avatar">
+                                <span class="username">{{ getuser(index) }}</span>
+                            </td>
+                            <td class="score">{{ point }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="pills-third" role="tabpanel" aria-labelledby="pills-third-tab"
+                     tabindex="0">
+
+                    <table class="leaderboard-table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Place</th>
+                            <th scope="col">User</th>
+                            <th scope="col" class="th-score">Score</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for index, point in points3 %}
+                            {% if loop.index== 1 %}
+                                <tr class="rank-1">
+                                <td class="rank">1</td>
+                            {% elseif loop.index== 2 %}
+                                <tr class="rank-2">
+                                <td class="rank">2</td>
+                            {% elseif loop.index== 3 %}
+                                <tr class="rank-3">
+                                <td class="rank">3</td>
+                            {% else %}
+                                <tr>
+                                <td class="rank">{{ loop.index }}</td>
+                            {% endif %}
+                            <td class="user">
+                                <img src="https://placehold.co/45?text={{ getuserini(index) }}" alt="Avatar"
+                                     class="avatar">
+                                <span class="username">{{ getuser(index) }}</span>
+                            </td>
+                            <td class="score">{{ point }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <div class="col-4" style="margin-top: 25px;">
@@ -160,20 +265,54 @@
                 <div class="d-flex justify-content-center">
                     <img src="{{ app.user.avatar }}" class="card-img-top w-25" width="75" alt="Image"/>
                 </div>
-                </div>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ getpts(app.user.id) }} points</h5>
-                    </div>
+            </div>
+            <div class="card-body">
+                {% if app.user %}
+                    {% set my_points = getpts(app.user.id) %}
                 {% else %}
-                </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Veuillez vous connecter pour connaitre vos points.</h5>
-                    </div>
+                    {% set my_points = [0, 0, 0] %}
                 {% endif %}
-
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="mypoints-first" role="tabpanel"
+                         aria-labelledby="pills-first-tab" tabindex="0">
+                        <h5 class="card-title">{{ my_points[1]??0 }} points</h5>
+                    </div>
+                    <div class="tab-pane fade" id="mypoints-second" role="tabpanel" aria-labelledby="pills-second-tab"
+                         tabindex="0">
+                        <h5 class="card-title">{{ my_points[2]??0 }} points</h5>
+                    </div>
+                    <div class="tab-pane fade" id="mypoints-third" role="tabpanel" aria-labelledby="pills-third-tab"
+                         tabindex="0">
+                        <h5 class="card-title">{{ my_points[3]??0 }} points</h5>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="card-body">
+                <h5 class="card-title">Veuillez vous connecter pour connaitre vos points.</h5>
             </div>
         </div>
+        {% endif %}
+        <p> Pour apparaître dans la liste, modifiez votre visibilité avec la commande /settings visibility on,
+            ou dans vos paramètres.</p>
     </div>
+    <script>
+        document.querySelectorAll('[data-bs-toggle="pill"]').forEach(btn => {
+            btn.addEventListener('shown.bs.tab', event => {
+                const target = event.target.getAttribute('data-bs-target');
+
+                const pointsTarget = target.replace('pills-', 'mypoints-');
+
+                const pointsBtn = document.querySelector(`[data-bs-target="${pointsTarget}"]`);
+
+                if (pointsBtn) {
+                    const tab = new bootstrap.Tab(pointsBtn);
+                    tab.show();
+                }
+            });
+        });
+    </script>
+
 
 
 {% endblock %}
