@@ -73,4 +73,13 @@ final class HomeController extends AbstractController
     {
         return $this->render('home/about.html.twig');
     }
+    #[Route('/flood', name: 'app_flood')]
+    public function flood(): Response
+    {
+        return $this->render('home/flood.html.twig');
+    }    #[Route('/tetris', name: 'app_tetris')]
+    public function tetris(): Response
+    {
+        return $this->render('home/tetris.html.twig');
+    }
 }

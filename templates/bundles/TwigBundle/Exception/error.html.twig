@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid my-5">
+
+    <h1>Une erreur est survenue !</h1>
+
+    <p>
+        Une erreur {{ status_code }} inconnue s'est produite pendant que le serveur traitait votre demande.
+       Nous vous suggérons de retourner à <a href="{{ path('app_home') }}">la page d'accueil</a>. Il n'y a rien ici, de toute façon.
+    </p>
+    </div>
+{% endblock %}
