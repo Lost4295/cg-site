@@ -27,7 +27,7 @@ class DashboardController extends AbstractDashboardController
     {
         return Dashboard::new()
             ->setTitle('Cg Site')
-            ->setFaviconPath('assets/favicon.png')
+            ->setFaviconPath('logo.png')
             ;
     }
     public function configureUserMenu(UserInterface $user): UserMenu
