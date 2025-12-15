@@ -11,7 +11,6 @@ body {
     .offcanvas-collapse {
         position: fixed;
         top: 56px; /* Height of navbar */
-        bottom: 0;
         left: 100%;
         width: 100%;
         padding-right: 1rem;
