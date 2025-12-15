@@ -22,6 +22,7 @@ body {
     }
     .offcanvas-collapse.open {
         visibility: visible;
+        padding: 15px;
         transform: translateX(-100%);
     }
 }
