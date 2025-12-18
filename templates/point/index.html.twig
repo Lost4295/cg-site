@@ -120,6 +120,43 @@
             opacity: 0.9;
         }
 
+        /* --- Custom Nav Pills Styling --- */
+        .nav-pills .nav-link {
+            background-color: var(--secondary-primary);
+            color: var(--text-light) !important;
+            border: 1px solid var(--border);
+            margin: 0 5px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-pills .nav-link:hover {
+            transform: translateY(-2px);
+            background-color: var(--bg-light);
+            color: var(--light) !important;
+        }
+
+        .nav-pills .nav-link:focus {
+            outline: none;
+            box-shadow: none; /* Remove blue focus ring */
+            background-color: var(--bg-light);
+        }
+
+        .nav-pills .nav-link.active {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-gradient-end) 100%);
+            color: var(--white) !important;
+            border-color: transparent;
+            box-shadow: 0 4px 15px var(--accent-shadow);
+        }
+
+        .nav-pills .nav-link.active:focus {
+            box-shadow: 0 4px 15px var(--accent-shadow); /* Maintain custom shadow on focus */
+        }
+
+        .nav-pills .nav-link.active::after {
+            display: none !important; /* Remove the global underline style */
+        }
+
     </style>
 
 {% endblock %}
@@ -148,9 +185,15 @@
                 </li>
             </ul>
             <ul class="nav d-none">
-                <li><button class="mypoints-nav" data-bs-target="#mypoints-first" data-bs-toggle="pill"></button></li>
-                <li><button class="mypoints-nav" data-bs-target="#mypoints-second" data-bs-toggle="pill"></button></li>
-                <li><button class="mypoints-nav" data-bs-target="#mypoints-third" data-bs-toggle="pill"></button></li>
+                <li>
+                    <button data-bs-target="#mypoints-first" data-bs-toggle="pill"></button>
+                </li>
+                <li>
+                    <button data-bs-target="#mypoints-second" data-bs-toggle="pill"></button>
+                </li>
+                <li>
+                    <button data-bs-target="#mypoints-third" data-bs-toggle="pill"></button>
+                </li>
             </ul>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="pills-first" role="tabpanel"
