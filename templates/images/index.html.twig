@@ -8,7 +8,7 @@
 
 {% block body %}
     <div class="container check-images-container">
-        
+
         <!-- Page Header -->
         <div class="check-images-header">
             <h1>🖼️ Vérifier les images</h1>
@@ -24,11 +24,11 @@
                 <div class="image-card">
                     <div class="image-card-preview">
                         <span class="image-card-id">#{{ image.id }}</span>
-                        <img src="{{ image.image }}" alt="Image de {{ getuser(image.user_id) }}"/>
+                        <img src="{{ image.image }}" alt="Image de {{ image.user.fullName }}"/>
                     </div>
                     <div class="image-card-body">
                         <div class="image-card-user">
-                            {{ getuser(image.user_id) }}
+                            {{ image.user.fullName }}
                         </div>
                         <div class="image-card-actions">
                             <button id="v-{{ image.id }}" class="btn-validate">Valider</button>

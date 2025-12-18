@@ -22,8 +22,8 @@ class Point
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $reason = null;
 
-    #[ORM\Column]
-    private ?\DateTime $date = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
+    private ?\DateTime $date;
 
     #[ORM\Column]
     private ?float $points = null;
@@ -31,6 +31,11 @@ class Point
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function __construct()
+    {
+        $this->date = new \DateTime();
     }
 
     public function getUser(): ?User
