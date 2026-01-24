@@ -47,7 +47,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private array $roles = [];
 
 
-    #[ORM\Column(type: 'string', length: 32, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $avatar;
 
     #[ORM\Column(length: 255, nullable: true)]

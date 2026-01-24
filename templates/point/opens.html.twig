@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+{% block title %} Voir les points OPEN d'un élève {% endblock %}
+
+
+
+{% block body %}
+    <link
+        href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css"
+        rel="stylesheet"
+    />
+    <div class="container-fluid my-5">
+        <h2>
+            Liste des points OPEN des élèves
+        </h2>
+
+        <div id="wrapper"></div>
+
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+{% endblock %}
+
+{% block additionnal_javascripts %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const grid = new gridjs.Grid({
+                pagination: true,
+                sort: true,
+                search: {
+                    server: {
+                        url: (prev, keyword) => `${prev}?search=${keyword}`
+                    }
+                },
+                columns: ['Élève', 'Semestre 1', 'Semestre 2', 'Semestre 3'],
+                server: {
+                    url: `${window.location.origin}/NJXWQYLONZQWM2LMNFXWY`,
+                    then: data => data.map(eleve => [eleve.name, eleve.s1, eleve.s2, eleve.s3])
+                }
+            }).render(document.getElementById("wrapper"));
+            console.log(grid);
+            console.log("rendered grid");
+        })
+    </script>
+{% endblock %}
