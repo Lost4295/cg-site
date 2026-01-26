@@ -12,6 +12,7 @@
         <h2>
             Liste des points OPEN des élèves
         </h2>
+        <p class="text-muted"> Pour avoir le détail des points pour le semestre d'un élève, cliquez sur son nom.</p>
 
         <div id="wrapper"></div>
 
@@ -36,8 +37,8 @@
                 },
                 columns: ['Élève', 'Semestre 1', 'Semestre 2', 'Semestre 3'],
                 server: {
-                    url: `${window.location.origin}/NJXWQYLONZQWM2LMNFXWY`,
-                    then: data => data.map(eleve => [eleve.name, eleve.s1, eleve.s2, eleve.s3])
+                    url: `${window.location.origin}/get/NJXWQYLONZQWM2LMNFXWY`,
+                    then: data => data.map(eleve => [gridjs.html(`<a href="${window.location.origin}/NJXWQYLONZQWM2LMNFXWY/${eleve.id}">${eleve.name} (${eleve.classe})</a>`), eleve.s1, eleve.s2, eleve.s3])
                 }
             }).render(document.getElementById("wrapper"));
             console.log(grid);

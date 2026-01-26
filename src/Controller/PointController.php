@@ -28,24 +28,38 @@ final class PointController extends AbstractController
     }
 
 
-    #[Route('/points-open', name: 'responsible_points')]
-    #[IsGranted('ROLE_RESPONSIBLE')]
+    #[Route('/points-open/NJXWQYLONZQWM2LMNFXWY', name: 'responsible_points')]
     public function responsiblePoints(): Response
     {
         return $this->render('point/opens.html.twig');
     }
 
-    #[Route('/NJXWQYLONZQWM2LMNFXWY', name: 'api_points')]
+    #[Route('/get/NJXWQYLONZQWM2LMNFXWY', name: 'api_points')]
     public function getOPENS(Request $request, EntityManagerInterface $em): JsonResponse
     {
         $keyword = $request->query->get('search', '');
         $points = $em->getRepository(Point::class)->getOpenPointsData($keyword);
         foreach ($points as &$point) {
-            $point["name"] = strtoupper($point["nom"]). " ".ucfirst(strtolower($point["prenom"]));
+            $point["name"] = strtoupper($point["nom"]) . " " . ucwords(strtolower($point["prenom"]));
             unset($point["nom"]);
             unset($point["prenom"]);
+            $point["classe"] = $point["classe"]. $point["groupe"];
+            unset($point["groupe"]);
         }
 
         return new JsonResponse($points);
     }
+
+    #[Route('/NJXWQYLONZQWM2LMNFXWY/{id}', name: 'points_responsible_precise', requirements: ['id' => '\d+'])]
+    public function getOPENSforUser(int $id, Request $request, EntityManagerInterface $em): Response
+    {
+        $point = $em->getRepository(Point::class)->getOpenPointsDataPrecise($id)[0];
+        if (!$point) {
+            return new Response("Point not found", 404);
+        }
+        return $this->render('point/point_detail.html.twig', [
+            'point' => $point,
+        ]);
+    }
+
 }
