@@ -18,18 +18,18 @@ class Image
     #[ORM\Column(type: Types::TEXT)]
     private ?string $image = null;
 
-    #[ORM\Column]
-    private ?bool $verified = null;
+    #[ORM\Column(options: ['default' => false])]
+    private ?bool $verified = false;
 
-    #[ORM\Column]
-    private ?bool $ok = null;
+    #[ORM\Column(options: ['default' => false])]
+    private ?bool $ok = false;
 
     #[ORM\ManyToOne(inversedBy: 'images')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\Column]
-    private ?bool $visibility = null;
+    #[ORM\Column(options: ['default' => true])]
+    private ?bool $visibility = true;
 
     public function getId(): ?int
     {

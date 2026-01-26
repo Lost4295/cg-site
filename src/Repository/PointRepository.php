@@ -76,6 +76,9 @@ class PointRepository extends ServiceEntityRepository
                 $arr[$point->getUser()->getId()] += $point->getPoints();
             }
         }
+        foreach ($arr as $userId => $points) {
+            $arr[$userId] = round($points,2);
+        }
         arsort($arr);
         return $arr;
     }
@@ -113,7 +116,7 @@ class PointRepository extends ServiceEntityRepository
             foreach ($points as $point) {
                 $total += $point->getPoints();
             }
-            $totaux[$date->getTrimestre()] = $total;
+            $totaux[$date->getTrimestre()] = round($total, 2);
         }
         return $totaux;
     }

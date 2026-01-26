@@ -22,3 +22,7 @@ services:
         arguments:
             $clientId: '%env(CLIENT_ID)%'
             $redirectUri: '%env(REDIRECT_URI)%'
+
+    App\Controller\ImagesController:
+        arguments:
+            $discordWebhook: '%env(DISCORD_WEBHOOK)%'

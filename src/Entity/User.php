@@ -149,6 +149,10 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return  "$this->nom $this->prenom, $this->classe$this->groupe ($this->pseudo)";
     }
 
+    public function getFullName(): string
+    {
+        return "{$this->prenom} {$this->nom}";
+    }
     public function getEmail(): ?string
     {
         return $this->email;
