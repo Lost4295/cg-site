@@ -6,11 +6,6 @@ deploy:
     tags:
         - runner-1
     script:
-        - ssh -i ~/.ssh/id_rsa buser@192.168.1.2 " docker rm -f cg-site && cd /home/buser/cg-site/ &&  rm -rf app && git clone --branch master --depth 1 git@192.168.1.1:KaiYou/cg-site.git app && cd app && docker build -t cg-site . && docker run -d -p 80:80 -p 443:443 --network=my-net --env-file ~/cg-site/config/.env.prod.local --name cg-site cg-site "
+        - ssh -i ~/.ssh/id_rsa buser@192.168.1.2 " docker rm -f cg-site && cd /home/buser/cg-site/app  && git pull  && docker build -t cg-site . && docker run -d -p 80:80 -p 443:443 -v public:/var/www/html/public/  --network=my-net --env-file ~/cg-site/config/.env.prod.local --name cg-site cg-site "
     only:
         - master
-
-
-
-
-
