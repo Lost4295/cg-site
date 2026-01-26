@@ -226,7 +226,7 @@ class PointRepository extends ServiceEntityRepository
                 Trimestre::class,
                 't',
                 'WITH',
-                'p.date BETWEEN t.date_debut AND t.date_fin'
+                '(p.date BETWEEN t.date_debut AND t.date_fin) AND (u.classe = t.niveau)'
             )
             ->andWhere('u.id=:id')
             ->setParameter('id',  $id)
