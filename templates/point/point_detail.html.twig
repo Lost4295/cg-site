@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+{% block title %} Voir les points OPEN d'un élève {% endblock %}
+
+{% block body %}
+    <div class="container-fluid my-5">
+        <h2>
+            Liste des points OPEN de l'élève {{ point.nom }} {{ point.prenom }}
+        </h2>
+        {% if point.is_admin %}
+            <div class="row">
+                <h1 class="text-danger-emphasis">⚠️ Les points de cet élève ne sont potentiellement pas à jour (ils sont
+                    gérés autrement, en fonction de l'investissement de l'administrateur dans l'association). Veuillez
+                    demander au président ses points afin de vous en assurer.</h1>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-header">Semestre 1</div>
+                    <div class="card-body bg-light">
+                        <h5 class="card-title">Points OPEN gagnés sur les présences : {{ point.s1p }}</h5>
+                        <p class="card-text">Points OPEN gagnés grâce à l'activité : {{ point.s1o }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-header">Semestre 2</div>
+                    <div class="card-body bg-light">
+                        <h5 class="card-title">Points OPEN gagnés sur les présences : {{ point.s2p }}</h5>
+                        <p class="card-text">Points OPEN gagnés grâce à l'activité : {{ point.s2o }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-header">Semestre 3</div>
+                    <div class="card-body bg-light">
+                        <h5 class="card-title">Points OPEN gagnés sur les présences : {{ point.s3p }}</h5>
+                        <p class="card-text">Points OPEN gagnés grâce à l'activité : {{ point.s3o }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <a href="{{ path('responsible_points') }}" class="btn btn-secondary">Retour à la liste des points OPEN</a>
+        </div>
+    </div>
+{% endblock %}
+
+
