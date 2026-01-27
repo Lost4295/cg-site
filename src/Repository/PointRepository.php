@@ -189,7 +189,6 @@ class PointRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getResult();
 
-
             $pointsArray[$date->getTrimestre()] = $points;
         }
         return $pointsArray;
