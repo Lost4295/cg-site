@@ -27,8 +27,8 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     const IS_OK = 3;
 
     const ACCOUNT_VALID_VALUES = [
-        self::UNDEFINED=> 'Non défini',
-        self::NO_SET=> 'Jamais inscrit sur site',
+        self::UNDEFINED => 'Non défini',
+        self::NO_SET => 'Jamais inscrit sur site',
         self::MISSING_DATA => 'Données manquantes',
         self::IS_OK => 'Compte validé',
     ];
@@ -62,7 +62,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
     private ?string $password = null;
 
-    #[ORM\Column(type:'smallint',  nullable: true, options: ['default' => null])]
+    #[ORM\Column(type: 'smallint', nullable: true, options: ['default' => null])]
     private ?int $groupe = null;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
@@ -146,13 +146,14 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function __toString(): string
     {
-        return  "$this->nom $this->prenom, $this->classe$this->groupe ($this->pseudo)";
+        return "$this->nom $this->prenom, $this->classe$this->groupe ($this->pseudo)";
     }
 
     public function getFullName(): string
     {
         return "{$this->prenom} {$this->nom}";
     }
+
     public function getEmail(): ?string
     {
         return $this->email;
@@ -444,6 +445,14 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
             return $this->classe;
         }
         return $this->classe . $this->groupe;
+    }
+
+    public function getOnlyClasse(): ?string
+    {
+        if (!$this->classe) {
+            return null;
+        }
+        return $this->classe;
     }
 
     public function setClasse(?string $value): static

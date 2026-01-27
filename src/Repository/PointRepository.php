@@ -121,121 +121,77 @@ class PointRepository extends ServiceEntityRepository
         return $totaux;
     }
 
+    public function findByIds(array $ids): array
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.user', 'u')
+            ->andWhere('u.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult();
+
+    }
     public function getOpenPointsData(string $keyword): array
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
-
-        $qb
-            ->select('
-        u.id as id,
-        u.nom as nom,
-        u.prenom as prenom,
-        u.classe as classe,
-        u.groupe as groupe,
-
- CASE
-        WHEN u.is_admin = 0 AND SUM(CASE WHEN t.trimestre = 1 THEN p.points ELSE 0 END) > 4 THEN 4
-        WHEN u.is_admin = 1 AND SUM(CASE WHEN t.trimestre = 1 THEN p.points ELSE 0 END) > 6 THEN 6
-        WHEN u.is_admin = 2 AND SUM(CASE WHEN t.trimestre = 1 THEN p.points ELSE 0 END) > 8 THEN 8
-        ELSE SUM(CASE WHEN t.trimestre = 1 THEN p.points ELSE 0 END)
-    END AS s1,
-
-    CASE
-        WHEN u.is_admin = 0 AND SUM(CASE WHEN t.trimestre = 2 THEN p.points ELSE 0 END) > 4 THEN 4
-        WHEN u.is_admin = 1 AND SUM(CASE WHEN t.trimestre = 2 THEN p.points ELSE 0 END) > 6 THEN 6
-        WHEN u.is_admin = 2 AND SUM(CASE WHEN t.trimestre = 2 THEN p.points ELSE 0 END) > 8 THEN 8
-        ELSE SUM(CASE WHEN t.trimestre = 2 THEN p.points ELSE 0 END)
-    END AS s2,
-
-    CASE
-        WHEN u.is_admin = 0 AND SUM(CASE WHEN t.trimestre = 3 THEN p.points ELSE 0 END) > 4 THEN 4
-        WHEN u.is_admin = 1 AND SUM(CASE WHEN t.trimestre = 3 THEN p.points ELSE 0 END) > 6 THEN 6
-        WHEN u.is_admin = 2 AND SUM(CASE WHEN t.trimestre = 3 THEN p.points ELSE 0 END) > 8 THEN 8
-        ELSE SUM(CASE WHEN t.trimestre = 3 THEN p.points ELSE 0 END)
-    END AS s3
-    ')
-            ->from(Point::class, 'p')
-            ->join('p.user', 'u')
-            ->join(
-                Trimestre::class,
-                't',
-                'WITH',
-                'p.date BETWEEN t.date_debut AND t.date_fin'
-            )
+        /** @var User[] $users */
+        $users = $this->getEntityManager()->getRepository(User::class)->createQueryBuilder('u')
+            ->select('u.classe, u.id')
             ->andWhere('(u.nom LIKE :keyword OR u.prenom LIKE :keyword)')
             ->setParameter('keyword', '%' . $keyword . '%')
-            ->groupBy('u.id')
-            ->orderBy('u.nom', 'ASC');
-
-        return $qb->getQuery()->getResult();
+            ->getQuery()
+            ->getResult();
+        $open = [];
+        foreach ($users as $user) {
+            $dates = $this->getEntityManager()->getRepository(Trimestre::class)->createQueryBuilder('d')
+                ->where('d.niveau = :niveau')->setParameter('niveau', $user['classe'])->getQuery()->getResult();
+            foreach ($dates as $date) {
+                $points = $this->getEntityManager()->getRepository(Point::class)->createQueryBuilder('p')
+                    ->innerJoin('p.user', 'u')
+                    ->andWhere('p.date BETWEEN :start AND :end ')
+                    ->andWhere('u.id = :id')
+                    ->setParameter('id', $user['id'])
+                    ->setParameter('start', $date->getDateDebut())
+                    ->setParameter('end', $date->getDateFin())
+                    ->getQuery()->getResult();
+                $open[$user['id']][$date->getTrimestre()] = $points;
+            }
+        }
+        return $open;
 
     }
 
-
-    public function getOpenPointsDataPrecise(string $id): array
+    public function getPointsByIdPrecise($id): array
     {
-        $qb = $this->getEntityManager()->createQueryBuilder();
+        $user = $this->getEntityManager()->getRepository(User::class)->createQueryBuilder('u')
+            ->select('u.classe')
+            ->where('u.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
 
-        $qb
-            ->select("
-        u.nom as nom,
-        u.prenom as prenom,
-        u.is_admin as is_admin,
- CASE
-        WHEN u.is_admin = 0 AND SUM(CASE WHEN (t.trimestre = 1 AND p.reason=:reason) THEN p.points ELSE 0 END) > 4 THEN 4
-        WHEN u.is_admin = 1 AND SUM(CASE WHEN (t.trimestre = 1 AND p.reason=:reason) THEN p.points ELSE 0 END) > 6 THEN 6
-        WHEN u.is_admin = 2 AND SUM(CASE WHEN (t.trimestre = 1 AND p.reason=:reason) THEN p.points ELSE 0 END) > 8 THEN 8
-        ELSE SUM(CASE WHEN (t.trimestre = 1 AND p.reason=:reason) THEN p.points ELSE 0 END)
-    END AS s1p,
-    CASE
-        WHEN u.is_admin = 0 AND SUM(CASE WHEN (t.trimestre = 2 AND p.reason=:reason) THEN p.points ELSE 0 END) > 4 THEN 4
-        WHEN u.is_admin = 1 AND SUM(CASE WHEN (t.trimestre = 2 AND p.reason=:reason) THEN p.points ELSE 0 END) > 6 THEN 6
-        WHEN u.is_admin = 2 AND SUM(CASE WHEN (t.trimestre = 2 AND p.reason=:reason) THEN p.points ELSE 0 END) > 8 THEN 8
-        ELSE SUM(CASE WHEN (t.trimestre = 2 AND p.reason=:reason) THEN p.points ELSE 0 END)
-    END AS s2p,
+        /** @var Trimestre[] $dates */
+        $dates = $this->getEntityManager()->getRepository(Trimestre::class)->createQueryBuilder('d')
+            ->where('d.niveau = :niveau')->setParameter("niveau", $user[0]['classe'])->getQuery()->getResult();
+        $pointsArray = [];
+        foreach ($dates as $date) {
 
-    CASE
-        WHEN u.is_admin = 0 AND SUM(CASE WHEN (t.trimestre = 3 AND p.reason=:reason) THEN p.points ELSE 0 END) > 4 THEN 4
-        WHEN u.is_admin = 1 AND SUM(CASE WHEN (t.trimestre = 3 AND p.reason=:reason) THEN p.points ELSE 0 END) > 6 THEN 6
-        WHEN u.is_admin = 2 AND SUM(CASE WHEN (t.trimestre = 3 AND p.reason=:reason) THEN p.points ELSE 0 END) > 8 THEN 8
-        ELSE SUM(CASE WHEN (t.trimestre = 3 AND p.reason=:reason) THEN p.points ELSE 0 END)
-    END AS s3p,
-         CASE
-        WHEN u.is_admin = 0 AND SUM(CASE WHEN (t.trimestre = 1 AND p.reason!=:reason) THEN p.points ELSE 0 END) > 4 THEN 4
-        WHEN u.is_admin = 1 AND SUM(CASE WHEN (t.trimestre = 1 AND p.reason!=:reason) THEN p.points ELSE 0 END) > 6 THEN 6
-        WHEN u.is_admin = 2 AND SUM(CASE WHEN (t.trimestre = 1 AND p.reason!=:reason) THEN p.points ELSE 0 END) > 8 THEN 8
-        ELSE SUM(CASE WHEN (t.trimestre = 1 AND p.reason!=:reason) THEN p.points ELSE 0 END)
-    END AS s1o,
-        CASE
-        WHEN u.is_admin = 0 AND SUM(CASE WHEN (t.trimestre = 2 AND p.reason!=:reason) THEN p.points ELSE 0 END) > 4 THEN 4
-        WHEN u.is_admin = 1 AND SUM(CASE WHEN (t.trimestre = 2 AND p.reason!=:reason) THEN p.points ELSE 0 END) > 6 THEN 6
-        WHEN u.is_admin = 2 AND SUM(CASE WHEN (t.trimestre = 2 AND p.reason!=:reason) THEN p.points ELSE 0 END) > 8 THEN 8
-        ELSE SUM(CASE WHEN (t.trimestre = 2 AND p.reason!=:reason) THEN p.points ELSE 0 END)
-    END AS s2o,
+            $start = $date->getDateDebut();
+            $end = $date->getDateFin();
 
-    CASE
-        WHEN u.is_admin = 0 AND SUM(CASE WHEN (t.trimestre = 3 AND p.reason!=:reason) THEN p.points ELSE 0 END) > 4 THEN 4
-        WHEN u.is_admin = 1 AND SUM(CASE WHEN (t.trimestre = 3 AND p.reason!=:reason) THEN p.points ELSE 0 END) > 6 THEN 6
-        WHEN u.is_admin = 2 AND SUM(CASE WHEN (t.trimestre = 3 AND p.reason!=:reason) THEN p.points ELSE 0 END) > 8 THEN 8
-        ELSE SUM(CASE WHEN (t.trimestre = 3 AND p.reason!=:reason) THEN p.points ELSE 0 END)
-    END AS s3o
-    ")
-            ->from(Point::class, 'p')
-            ->join('p.user', 'u')
-            ->join(
-                Trimestre::class,
-                't',
-                'WITH',
-                '(p.date BETWEEN t.date_debut AND t.date_fin) AND (u.classe = t.niveau)'
-            )
-            ->andWhere('u.id=:id')
-            ->setParameter('id',  $id)
-            ->setParameter('reason',  'Présence à l\'association en présentiel')
-            ->groupBy('u.id')
-            ->orderBy('u.nom', 'ASC');
+            $points = $this->createQueryBuilder('p')
+                ->innerJoin('p.user', 'u')
+                ->andWhere('p.date BETWEEN :start AND :end ')
+                ->andWhere('u.id = :id')
+                ->setParameter('id', $id)
+                ->setParameter('start', $start)
+                ->setParameter('end', $end)
+                ->getQuery()
+                ->getResult();
 
-        return $qb->getQuery()->getResult();
 
+            $pointsArray[$date->getTrimestre()] = $points;
+        }
+        return $pointsArray;
     }
-
 }
