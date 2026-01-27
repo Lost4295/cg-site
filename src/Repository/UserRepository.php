@@ -80,4 +80,12 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function getUsersByName(string $keyword): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('(u.nom LIKE :keyword OR u.prenom LIKE :keyword)')
+            ->setParameter('keyword', '%' . $keyword . '%')
+            ->getQuery()
+            ->getResult();
+    }
 }
