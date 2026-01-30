@@ -39,7 +39,7 @@
                 columns: ['Élève', 'Rendu 1', 'Rendu 2'],
                 server: {
                     url: `${window.location.origin}/get/NJXWQYLONZQWM2LMNFXWY`,
-                    then: data => data.map(eleve => [gridjs.html(`<a href="${window.location.origin}/NJXWQYLONZQWM2LMNFXWY/${eleve.id}">${eleve.name} (${eleve.classe}) ${eleve.warning}</a>`), Math.round(eleve.r1*100)/100, Math.round(eleve.r2*100)/100 ])
+                    then: data => data.map(eleve => [gridjs.html(`<a href="${window.location.origin}/NJXWQYLONZQWM2LMNFXWY/${eleve.id}">${eleve.name} (${eleve.classe}) ${eleve.warning}</a>`), Math.round(eleve[2].total*100)/100, Math.round(eleve[3].total*100)/100 ])
                 }
             }).render(document.getElementById("wrapper"));
             console.log(grid);

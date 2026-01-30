@@ -3,8 +3,11 @@
 namespace App\Twig;
 
 use App\Entity\Point;
+use App\Entity\Trimestre;
 use App\Entity\User;
+use App\Service\PointCalculatorService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -28,8 +31,6 @@ class TwigExtension extends AbstractExtension
     }
 
 
-
-
     public function getuser($path)
     {
         $user = $this->em->getRepository(User::class)->find($path);
@@ -43,6 +44,15 @@ class TwigExtension extends AbstractExtension
 
     public function getpts($id)
     {
-        return $this->em->getRepository(Point::class)->getPointsById($id);
+        $allPoints = $this->em->getRepository(Point::class)->findAll();
+        $allTrimestres = $this->em->getRepository(Trimestre::class)->findAll();
+        $calculator = new PointCalculatorService();
+        $user = $this->em->getRepository(User::class)->find($id);
+        $userPoints = $calculator->compute($user, $allPoints, $allTrimestres);
+        return [
+            1=>$userPoints[1]['total'],
+            2=>$userPoints[2]['total'],
+            3=>$userPoints[3]['total'],
+        ];
     }
 }
