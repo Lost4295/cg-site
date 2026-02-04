@@ -7,7 +7,10 @@ body {
     padding-top: 56px;
 }
 
-[data-bs-theme=light] .offcanvas-collapse {
+[data-bs-theme=light] .offcanvas-collapse .offcanvas-collapse:not(.open){
+    background-color: var(--accent);
+}
+[data-bs-theme=light] .offcanvas-collapse.open {
     background-color: var(--accent);
 }
 
