@@ -737,7 +737,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
             "5MCSIJ",
         ];
         if (in_array($this->getClasse(), $octobre)) {
-            return "octobre";
+            return "septembre";
         } else if (in_array($this->getClasse(), $janvier)) {
             return "janvier";
         } else {
