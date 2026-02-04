@@ -13,12 +13,19 @@
                     demander au président ses points afin de vous en assurer.</h1>
             </div>
         {% endif %}
+        <h3> Rentrée : {{ point.rentree }}</h3>
+
         <div class="row">
             <div class="col-md-6">
                 <div class="card text-white bg-primary mb-3">
                     <div class="card-header">Rendu 1 - {{ point.2.total }} points OPEN</div>
                     <div class="card-body bg-light">
                         <h5 class="card-title">Points OPEN gagnés sur les présences : {{ point.2.p }}</h5>
+                        <ul>
+                            {% for date in dates.2 %}
+                                <li>{{ date }} : 0.5 pt</li>
+                            {% endfor %}
+                        </ul>
                         <p class="card-text">Points OPEN gagnés grâce à l'activité : {{ point.2.o }}</p>
                     </div>
                 </div>
@@ -28,6 +35,11 @@
                     <div class="card-header">Rendu 2 - {{ point.3.total }} points OPEN</div>
                     <div class="card-body bg-light">
                         <h5 class="card-title">Points OPEN gagnés sur les présences : {{ point.3.p }}</h5>
+                        <ul>
+                            {% for date in dates.3 %}
+                                <li>{{ date }} : 0.5 pt </li>
+                            {% endfor %}
+                        </ul>
                         <p class="card-text">Points OPEN gagnés grâce à l'activité : {{ point.3.o }}</p>
                     </div>
                 </div>

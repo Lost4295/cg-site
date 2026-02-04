@@ -87,7 +87,7 @@ final class PointController extends AbstractController
             return new Response('User not found', Response::HTTP_NOT_FOUND);
         }
         $userPoints = $calculator->compute($user, $allPoints, $allTrimestres);
-
+        $userPoints['rentree'] = $user->getRentree();
         $userPoints[1]['p'] = 0;
         $userPoints[2]['p'] = 0;
         $userPoints[3]['p'] = 0;
@@ -95,10 +95,12 @@ final class PointController extends AbstractController
         $userPoints[2]['o'] = 0;
         $userPoints[3]['o'] = 0;
 
+        $dates = [];
         for ($i = 1; $i <= 3; $i++) {
             foreach ($userPoints[$i]['points'] as $point) {
                 if ($point->getReason() == "Présence à l'association en présentiel") {
                     $userPoints[$i]['p']++;
+                    $dates[$i][] = $point->getDate()->format('d/m/Y');
                 } else {
                     $userPoints[$i]['o']++;
                 }
@@ -113,6 +115,7 @@ final class PointController extends AbstractController
 
         return $this->render('point/point_detail.html.twig', [
             'point' => $userPoints,
+            'dates' => $dates
         ]);
     }
 
