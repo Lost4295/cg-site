@@ -7,6 +7,13 @@ body {
     padding-top: 56px;
 }
 
+[data-bs-theme=light] .offcanvas-collapse .offcanvas-collapse:not(.open){
+    background-color: var(--accent);
+}
+[data-bs-theme=light] .offcanvas-collapse.open {
+    background-color: var(--accent);
+}
+
 @media (max-width: 991.98px) {
     .offcanvas-collapse {
         position: fixed;

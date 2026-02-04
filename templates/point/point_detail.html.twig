@@ -4,31 +4,43 @@
 {% block body %}
     <div class="container-fluid my-5">
         <h2>
-            Liste des points OPEN de l'élève {{ point.nom }} {{ point.prenom }}
+            Liste des points OPEN de l'élève {{ point.name }}
         </h2>
-        {% if point.is_admin %}
+        {% if point.warning %}
             <div class="row">
                 <h1 class="text-danger-emphasis">⚠️ Les points de cet élève ne sont potentiellement pas à jour (ils sont
                     gérés autrement, en fonction de l'investissement de l'administrateur dans l'association). Veuillez
                     demander au président ses points afin de vous en assurer.</h1>
             </div>
         {% endif %}
+        <h3> Rentrée : {{ point.rentree }}</h3>
+
         <div class="row">
             <div class="col-md-6">
                 <div class="card text-white bg-primary mb-3">
-                    <div class="card-header">Rendu 1</div>
+                    <div class="card-header">Rendu 1 - {{ point.2.total }} points OPEN</div>
                     <div class="card-body bg-light">
-                        <h5 class="card-title">Points OPEN gagnés sur les présences : {{ point.s1p }}</h5>
-                        <p class="card-text">Points OPEN gagnés grâce à l'activité : {{ point.s1o }}</p>
+                        <h5 class="card-title">Points OPEN gagnés sur les présences : {{ point.2.p }}</h5>
+                        <ul>
+                            {% for date in dates.2 %}
+                                <li>{{ date }} : 0.5 pt</li>
+                            {% endfor %}
+                        </ul>
+                        <p class="card-text">Points OPEN gagnés grâce à l'activité : {{ point.2.o }}</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="card text-white bg-primary mb-3">
-                    <div class="card-header">Rendu 2</div>
+                    <div class="card-header">Rendu 2 - {{ point.3.total }} points OPEN</div>
                     <div class="card-body bg-light">
-                        <h5 class="card-title">Points OPEN gagnés sur les présences : {{ point.s2p }}</h5>
-                        <p class="card-text">Points OPEN gagnés grâce à l'activité : {{ point.s2o }}</p>
+                        <h5 class="card-title">Points OPEN gagnés sur les présences : {{ point.3.p }}</h5>
+                        <ul>
+                            {% for date in dates.3 %}
+                                <li>{{ date }} : 0.5 pt </li>
+                            {% endfor %}
+                        </ul>
+                        <p class="card-text">Points OPEN gagnés grâce à l'activité : {{ point.3.o }}</p>
                     </div>
                 </div>
             </div>
