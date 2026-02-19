@@ -134,6 +134,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'participants')]
     private Collection $events;
 
+    #[ORM\Column]
+    private ?bool $hasGambled = false;
+
     public function __construct()
     {
         $this->quizzPoints = new ArrayCollection();
@@ -233,9 +236,11 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return "https://cdn.discordapp.com/avatars/{$this->id}/{$this->avatar}.webp";
     }
 
-    public function setAvatar(string $avatar): self
+    public function setAvatar(?string $avatar): self
     {
-        $this->avatar = $avatar;
+        if ($avatar) {
+            $this->avatar = $avatar;
+        }
 
         return $this;
     }
@@ -743,6 +748,18 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         } else {
             return "inconnu";
         }
+    }
+
+    public function hasGambled(): ?bool
+    {
+        return $this->hasGambled;
+    }
+
+    public function setHasGambled(bool $hasGambled): static
+    {
+        $this->hasGambled = $hasGambled;
+
+        return $this;
     }
 }
 
