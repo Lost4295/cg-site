@@ -8,7 +8,7 @@ class DiscordUser
 
     public string $username;
 
-    public string $avatar;
+    public ?string $avatar;
 
     public ?string $email;
 }
