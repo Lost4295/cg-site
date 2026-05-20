@@ -137,6 +137,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column]
     private ?bool $hasGambled = false;
 
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private ?bool $is_janvier = false;
+
     public function __construct()
     {
         $this->quizzPoints = new ArrayCollection();
@@ -758,6 +761,18 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function setHasGambled(bool $hasGambled): static
     {
         $this->hasGambled = $hasGambled;
+
+        return $this;
+    }
+
+    public function isJanvier(): ?bool
+    {
+        return $this->is_janvier;
+    }
+
+    public function setIsJanvier(bool $is_janvier): static
+    {
+        $this->is_janvier = $is_janvier;
 
         return $this;
     }
