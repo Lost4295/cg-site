@@ -79,8 +79,7 @@
                     then: data => data.map(eleve => [gridjs.html(`<a href="${window.location.origin}/NJXWQYLONZQWM2LMNFXWY/${eleve.id}">${eleve.name} (${eleve.classe}) ${eleve.warning}</a>`), eleve.classe, eleve.is_janvier ? "Janvier" : "Octobre", Math.round(eleve[3].total * 100) / 100])
                 }
             }).render(document.getElementById("wrapper2"));
-            console.log(grid2);
-            console.log("rendered grid2");
+
         })
     </script>
 {% endblock %}

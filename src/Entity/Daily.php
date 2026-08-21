@@ -58,8 +58,4 @@ class Daily
         return $this;
     }
 
-    public function setUser(UserInterface $user)
-    {
-        $this->user_id = $user->getUserIdentifier();
-    }
 }

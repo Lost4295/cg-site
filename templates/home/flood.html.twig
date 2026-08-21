@@ -100,8 +100,8 @@
 
             btn.addEventListener("click", function () {
                 const lines = parseInt(linesInput.value);
-                if (isNaN(lines) || lines <= 0) {
-                    alert("Veuillez entrer un nombre de lignes valide.");
+                if (isNaN(lines) || lines <= 0 || lines > 40) {
+                    alert("Veuillez entrer un nombre de lignes valide. (entre 1 et 40)");
                     return;
                 }
                 squareValues = []
@@ -142,9 +142,6 @@
                 });
                 flood = [squareValues[0][0]];
 
-                // Logique pour réinitialiser le jeu avec le nouveau nombre de lignes
-                // Vous pouvez ajouter ici la logique pour générer une nouvelle grille en fonction du nombre de lignes
-                console.log(`Réinitialisation du jeu avec ${lines} lignes.`);
             });
 
         });

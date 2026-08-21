@@ -6,7 +6,7 @@ use App\Entity\CouchPoint;
 use App\Entity\Daily;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use App\Entity\User;
 
 class DailyService
 {
@@ -16,17 +16,17 @@ class DailyService
     {
     }
 
-    public function giveDailyPoints(UserInterface $user)
+    public function giveDailyPoints(User $user): int
     {
         $today = new DateTime();
-        $dailies = $this->em->getRepository(Daily::class)->findBy(['user_id' => $user->getId(), 'location' => "site"], ['date' => 'DESC']);
-        foreach ($dailies as $daily) {
-            $dailyDate = new DateTime($daily->getDate());
-            if ($dailyDate->format('Y-m-d') === $today->format('Y-m-d')) {
-                return 0;
-            }
+        $dailies = $this->em->getRepository(Daily::class)->findBy(['user_id' => $user->getId(), 'location' => "site"], ['date' => 'DESC'], 1);
+
+        $dailyDate = new DateTime($dailies[0]->getDate());
+        if ($dailyDate->format('Y-m-d') === $today->format('Y-m-d')) {
+            return 0;
         }
-        $value =rand(1, 50);
+
+        $value = rand(1, 50);
         $couchPoint = new CouchPoint();
         $couchPoint->setUser($user);
         $couchPoint->setPoints($value);
