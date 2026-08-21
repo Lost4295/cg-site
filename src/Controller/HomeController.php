@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\CompleteFormType;
+use App\Service\DailyService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -13,9 +14,22 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 final class HomeController extends AbstractController
 {
+    public function __construct(
+        private DailyService $dailyService
+    )
+    {
+    }
+
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {
+        $user = $this->getUser();
+        if ($user) {
+            $points = $this->dailyService->giveDailyPoints($user);
+            if ($points > 0) {
+                $this->addFlash('success', 'Vous avez reçu vos points quotidiens ! Voilà ' . $points . ' points !');
+            }
+        }
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
         ]);
@@ -70,11 +84,14 @@ final class HomeController extends AbstractController
     {
         return $this->render('home/about.html.twig');
     }
+
     #[Route('/flood', name: 'app_flood')]
     public function flood(): Response
     {
         return $this->render('home/flood.html.twig');
-    }    #[Route('/tetris', name: 'app_tetris')]
+    }
+
+    #[Route('/tetris', name: 'app_tetris')]
     public function tetris(): Response
     {
         return $this->render('home/tetris.html.twig');

@@ -6,15 +6,15 @@ use App\Repository\QuizzPointRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: QuizzPointRepository::class)]
-#[ORM\Table(name: 'quizzpoints')]
-class QuizzPoint
+#[ORM\Table(name: 'couchpoints')]
+class CouchPoint
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'quizzPoints')]
+    #[ORM\ManyToOne(inversedBy: 'couchPoints')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
