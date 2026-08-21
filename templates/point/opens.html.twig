@@ -13,10 +13,31 @@
             Liste des points OPEN des élèves
         </h2>
         <p class="text-muted"> Pour avoir le détail des points pour le semestre d'un élève, cliquez sur son nom.</p>
-        <p class="text-muted"> <span class="text-danger fw-bold">Attention !</span> Les points des élèves avec l'émoji ⚠️ ne sont potentiellement pas à jour (ils sont gérés autrement, en fonction de l'investissement de l'administrateur dans l'association). Veuillez demander au président ses points afin de vous en assurer.</p>
-
-        <div id="wrapper"></div>
-
+        <p class="text-muted"><span class="text-danger fw-bold">Attention !</span> Les points des élèves avec l'émoji ⚠️
+            ne sont potentiellement pas à jour (ils sont gérés autrement, en fonction de l'investissement de
+            l'administrateur dans l'association). Veuillez demander au président ses points afin de vous en assurer.</p>
+        <br>
+        <p class="text-muted"> Si vous ne voyez pas de tableau, cliquez sur l'un des boutons.</p>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="old-tab" data-bs-toggle="tab" data-bs-target="#old" type="button"
+                        role="tab" aria-controls="old" aria-selected="false">Ancien rendu
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="new-tab" data-bs-toggle="tab" data-bs-target="#new" type="button"
+                        role="tab" aria-controls="new" aria-selected="false">Nouveau rendu
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content" id="TabContent">
+            <div class="tab-pane fade" id="old" role="tabpanel" aria-labelledby="old-tab">
+                <div id="wrapper"></div>
+            </div>
+            <div class="tab-pane fade" id="new" role="tabpanel" aria-labelledby="new-tab">
+                <div id="wrapper2"></div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
@@ -39,11 +60,26 @@
                 columns: ['Élève', 'Rendu 1', 'Rendu 2'],
                 server: {
                     url: `${window.location.origin}/get/NJXWQYLONZQWM2LMNFXWY`,
-                    then: data => data.map(eleve => [gridjs.html(`<a href="${window.location.origin}/NJXWQYLONZQWM2LMNFXWY/${eleve.id}">${eleve.name} (${eleve.classe}) ${eleve.warning}</a>`), Math.round(eleve[2].total*100)/100, Math.round(eleve[3].total*100)/100 ])
+                    then: data => data.map(eleve => [gridjs.html(`<a href="${window.location.origin}/NJXWQYLONZQWM2LMNFXWY/${eleve.id}">${eleve.name} (${eleve.classe}) ${eleve.warning}</a>`), Math.round(eleve[2].total * 100) / 100, Math.round(eleve[3].total * 100) / 100])
                 }
             }).render(document.getElementById("wrapper"));
             console.log(grid);
             console.log("rendered grid");
+            const grid2 = new gridjs.Grid({
+                pagination: true,
+                sort: true,
+                search: {
+                    server: {
+                        url: (prev, keyword) => `${prev}?search=${keyword}`
+                    }
+                },
+                columns: ['Nom et prénom','Classe', 'Rentrée', 'Points'],
+                server: {
+                    url: `${window.location.origin}/get/NJXWQYLONZQWM2LMNFXWY`,
+                    then: data => data.map(eleve => [gridjs.html(`<a href="${window.location.origin}/NJXWQYLONZQWM2LMNFXWY/${eleve.id}">${eleve.name} (${eleve.classe}) ${eleve.warning}</a>`), eleve.classe, eleve.is_janvier ? "Janvier" : "Octobre", Math.round(eleve[3].total * 100) / 100])
+                }
+            }).render(document.getElementById("wrapper2"));
+
         })
     </script>
 {% endblock %}

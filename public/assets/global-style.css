@@ -325,6 +325,7 @@ body {
     background: var(--secondary-primary);
     border: 1px solid var(--border);
     border-radius: 15px;
+    overflow: hidden;
     box-shadow: 0 8px 20px var(--black-shadow-light);
     backdrop-filter: blur(10px);
 }

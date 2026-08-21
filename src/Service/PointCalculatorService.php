@@ -39,6 +39,7 @@ class PointCalculatorService
         $result['name'] = $user->getNom() . " " . $user->getPrenom();
         $result['classe'] = $user->getClasse();
         $result['warning'] = $user->getIsAdmin() ? "⚠️" : "";
+        $result['is_janvier'] =$user->isJanvier();
 
         return $result;
     }

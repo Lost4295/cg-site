@@ -69,10 +69,10 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private ?BlockedUser $blockedUser = null;
 
     /**
-     * @var Collection<int, QuizzPoint>
+     * @var Collection<int, CouchPoint>
      */
-    #[ORM\OneToMany(targetEntity: QuizzPoint::class, mappedBy: 'user', orphanRemoval: true)]
-    private Collection $quizzPoints;
+    #[ORM\OneToMany(targetEntity: CouchPoint::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $couchPoints;
 
     /**
      * @var Collection<int, Point>
@@ -137,9 +137,12 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column]
     private ?bool $hasGambled = false;
 
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private ?bool $is_janvier = false;
+
     public function __construct()
     {
-        $this->quizzPoints = new ArrayCollection();
+        $this->couchPoints = new ArrayCollection();
         $this->points = new ArrayCollection();
         $this->images = new ArrayCollection();
         $this->questionsSubmitted = new ArrayCollection();
@@ -280,26 +283,26 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     }
 
     /**
-     * @return Collection<int, QuizzPoint>
+     * @return Collection<int, CouchPoint>
      */
-    public function getQuizzPoints(): Collection
+    public function getcouchPoints(): Collection
     {
-        return $this->quizzPoints;
+        return $this->couchPoints;
     }
 
-    public function addQuizzPoint(QuizzPoint $quizzPoint): static
+    public function addCouchPoint(CouchPoint $quizzPoint): static
     {
-        if (!$this->quizzPoints->contains($quizzPoint)) {
-            $this->quizzPoints->add($quizzPoint);
+        if (!$this->couchPoints->contains($quizzPoint)) {
+            $this->couchPoints->add($quizzPoint);
             $quizzPoint->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeQuizzPoint(QuizzPoint $quizzPoint): static
+    public function removeCouchPoint(CouchPoint $quizzPoint): static
     {
-        if ($this->quizzPoints->removeElement($quizzPoint)) {
+        if ($this->couchPoints->removeElement($quizzPoint)) {
             // set the owning side to null (unless already changed)
             if ($quizzPoint->getUser() === $this) {
                 $quizzPoint->setUser(null);
@@ -758,6 +761,18 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function setHasGambled(bool $hasGambled): static
     {
         $this->hasGambled = $hasGambled;
+
+        return $this;
+    }
+
+    public function isJanvier(): ?bool
+    {
+        return $this->is_janvier;
+    }
+
+    public function setIsJanvier(bool $is_janvier): static
+    {
+        $this->is_janvier = $is_janvier;
 
         return $this;
     }
