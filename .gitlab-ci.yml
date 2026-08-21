@@ -10,7 +10,7 @@ deploy:
         - apk add sshpass
         - apk add openssh-client
         - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-        - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        - echo "$SSH_KNOWN_HOSTS_B64" | base64 -d > ~/.ssh/known_hosts
     script:
         - |
             export SSHPASS="$SSH_PASSWORD"
