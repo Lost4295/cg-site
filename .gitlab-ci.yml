@@ -7,24 +7,24 @@ deploy:
         - runner-docker-2
     image: alpine:latest
     before_script:
-        - apk add sshpass
-        - apk add openssh-client
-        - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-        - echo "$SSH_KNOWN_HOSTS_B64" | base64 -d > ~/.ssh/known_hosts
+        - apk add --no-cache sshpass openssh-client
     script:
         - |
-            export SSHPASS="$SSH_PASSWORD"
-            sshpass -e ssh buser@"$DEPLOY_HOST" '
-            set -e
-            cd /home/buser/cg-site/app
-            git pull
-            docker build -t cg-site .
-            docker rm -f cg-site || true
-            docker run -d -p 80:80 -p 443:443 \
-            -v public:/var/www/html/public/ \
-            --network=my-net \
-            --env-file ~/cg-site/config/.env.prod.local \
-            --name cg-site cg-site
-            '
+            sshpass -p "$SSH_PASSWORD" ssh \
+              -o StrictHostKeyChecking=no \
+              -o UserKnownHostsFile=/dev/null \
+              -o LogLevel=ERROR \
+              buser@"$DEPLOY_HOST" '
+              set -e
+              cd /home/buser/cg-site/app
+              git pull
+              docker build -t cg-site .
+              docker rm -f cg-site || true
+              docker run -d -p 80:80 -p 443:443 \
+                -v public:/var/www/html/public/ \
+                --network=my-net \
+                --env-file ~/cg-site/config/.env.prod.local \
+                --name cg-site cg-site
+              '
     only:
         - master
