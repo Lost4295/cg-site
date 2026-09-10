@@ -21,9 +21,11 @@ class DailyService
         $today = new DateTime();
         $dailies = $this->em->getRepository(Daily::class)->findBy(['user_id' => $user->getId(), 'location' => "site"], ['date' => 'DESC'], 1);
 
-        $dailyDate = new DateTime($dailies[0]->getDate());
-        if ($dailyDate->format('Y-m-d') === $today->format('Y-m-d')) {
-            return 0;
+        if (!empty($dailies)) {
+            $dailyDate = new DateTime($dailies[0]->getDate());
+            if ($dailyDate->format('Y-m-d') === $today->format('Y-m-d')) {
+                return 0;
+            }
         }
 
         $value = rand(1, 50);
