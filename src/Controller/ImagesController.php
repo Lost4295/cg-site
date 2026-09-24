@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Image;
+use App\Entity\Point;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpClient\HttpClient;
@@ -45,6 +46,13 @@ final class ImagesController extends AbstractController
         $em->persist($image);
         $em->flush();
         $id =$image->getUser()->getId();
+
+        $points = new Point();
+        $points->setUser($image->getUser());
+        $points->setPoints(0.25);
+        $points->setReason("Image validée");
+        $em->persist($points);
+        $em->flush();
 
         $this->client->request("POST",$this->discordWebhook,[
             'json'=> ["content"=>"<@$id>, votre image a été validée. Vous avez gagné 0.25 points !"]
