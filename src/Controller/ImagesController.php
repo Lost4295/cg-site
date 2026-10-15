@@ -44,8 +44,6 @@ final class ImagesController extends AbstractController
         $image->setVerified(true);
         $image->setOk(true);
         $em->persist($image);
-        $em->flush();
-        $id =$image->getUser()->getId();
 
         $points = new Point();
         $points->setUser($image->getUser());
@@ -53,6 +51,8 @@ final class ImagesController extends AbstractController
         $points->setReason("Image validée");
         $em->persist($points);
         $em->flush();
+
+        $id = $image->getUser()->getId();
 
         $this->client->request("POST",$this->discordWebhook,[
             'json'=> ["content"=>"<@$id>, votre image a été validée. Vous avez gagné 0.25 points !"]

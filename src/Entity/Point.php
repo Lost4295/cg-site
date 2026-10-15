@@ -28,6 +28,20 @@ class Point
     #[ORM\Column]
     private ?float $points = null;
 
+    #[ORM\Column]
+    private string $guild_id;
+
+    public function getGuildId(): string
+    {
+        return $this->guild_id;
+    }
+
+    public function setGuildId(string $guild_id): Point
+    {
+        $this->guild_id = $guild_id;
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -36,6 +50,7 @@ class Point
     public function __construct()
     {
         $this->date = new \DateTime();
+        $this->guild_id = '510739348069679115';
     }
 
     public function getUser(): ?User
