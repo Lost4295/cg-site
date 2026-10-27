@@ -5,7 +5,7 @@
 
 {% block body %}
     <link
-        href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/gridjs/6.2.0/theme/mermaid.min.css"
         rel="stylesheet"
     />
     <div class="container-fluid my-5">
@@ -43,7 +43,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gridjs/6.2.0/gridjs.production.min.js"></script>
 {% endblock %}
 
 {% block additionnal_javascripts %}
@@ -63,11 +63,8 @@
                     then: data => data.map(eleve => [
                         gridjs.h('a', {
                             href: `${window.location.origin}/points-open/${encodeURIComponent(eleve.id)}`
-                        }, [
-                            document.createTextNode(
-                                `${eleve.name} (${eleve.classe}) ${eleve.warning}`
-                            )
-                        ]),
+                        }, `${eleve.name} (${eleve.classe}) ${eleve.warning}`
+                        ),
                         Math.round(eleve[2].total * 100) / 100,
                         Math.round(eleve[3].total * 100) / 100
                     ])
@@ -83,7 +80,7 @@
                         url: (prev, keyword) => `${prev}?search=${keyword}`
                     }
                 },
-                columns: ['Nom et prénom','Classe', 'Rentrée', 'Points'],
+                columns: ['Nom et prénom', 'Classe', 'Rentrée', 'Points'],
                 server: {
                     url: `${window.location.origin}/points-open/get/`,
                     then: data => data.map(eleve => [
