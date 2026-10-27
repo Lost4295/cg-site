@@ -114,6 +114,12 @@
     </style>
     {% block additionnal_stylesheets %}
     {% endblock %}
+    {% set frankenphp_hot_reload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
+    {% if frankenphp_hot_reload %}
+        <meta name="frankenphp-hot-reload:url" content="{{ frankenphp_hot_reload }}">
+        <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
+        <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
+    {% endif %}
 </head>
 <body class="bg-body-tertiary">
 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -270,4 +276,6 @@
 {% block additionnal_javascripts %}{% endblock %}
 <script src="{{ asset("bootstrap.bundle.min.js") }}"></script>
 <script src="{{ asset("offcanvas-navbar.js") }}"></script>
+
+
 </html>
