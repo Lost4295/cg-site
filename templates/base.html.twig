@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title> Couch Gaming - {% block title %}Welcome!{% endblock %}</title>
     <link rel="icon"
-          href="{{ asset("logo.png") }}"   >
+          href="{{ asset("logo.png") }}">
     {% block stylesheets %}
     {% endblock %}
 
@@ -103,6 +103,7 @@
         .bd-mode-toggle .dropdown-menu .active .bi {
             display: block !important
         }
+
         .toast.text-bg-success .toast-header {
             color: #fff;
         }
@@ -111,7 +112,7 @@
             color: #fff;
         }
     </style>
-    {% block additionnal_stylesheets  %}
+    {% block additionnal_stylesheets %}
     {% endblock %}
 </head>
 <body class="bg-body-tertiary">
@@ -215,7 +216,8 @@
                         dates</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ (app == 'event_index') ?'active':'' }}" href="{{ path("event_index") }}">Nos événements</a>
+                    <a class="nav-link {{ (app == 'event_index') ?'active':'' }}" href="{{ path("event_index") }}">Nos
+                        événements</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ (app == 'app_home') ?'active':'' }}" href="{{ path("app_points") }}">Points
@@ -235,12 +237,21 @@
                            aria-expanded="false">Actions</a>
                         <ul class="dropdown-menu">
                             {% if is_granted("ROLE_ADMIN") %}
-                            <li><a class="dropdown-item" href="{{ path('check_questions') }}">Vérifier les questions</a></li>
-                            <li><a class="dropdown-item" href="{{ path('check_images') }}">Vérifier les images des présences</a></li>
-                            <li><a class="dropdown-item" href="{{ path('responsible_points') }}">Points OPEN des élèves</a></li>
-                            <li><a class="dropdown-item" href="{{ path('admin') }}">Panel d'administration</a></li>
+                                <li><a class="dropdown-item" href="{{ path('check_questions') }}">Vérifier les
+                                        questions</a></li>
+                                <li><a class="dropdown-item" href="{{ path('check_images') }}">Vérifier les images des
+                                        présences</a></li>
+                                <li><a class="dropdown-item" href="{{ path('responsible_points') }}">Points OPEN des
+                                        élèves</a></li>
+                                <li><a class="dropdown-item" href="{{ path('admin') }}">Panel d'administration</a></li>
                             {% endif %}
-                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a></li>
+                            <li>
+                                <form method="post" action="{{ path('app_logout') }}">
+                                    <button class="dropdown-item">Se déconnecter</button>
+                                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                                </form>
+                            </li>
+
                         </ul>
                     </li>
                 {% else %}
