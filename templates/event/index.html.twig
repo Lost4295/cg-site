@@ -57,9 +57,12 @@
                                     👁️ Voir
                                 </a>
                                 {% if app.user %}
-                                    <a href="{{ path('event_toogle', {'id': event.id}) }}" class="btn-event-toggle">
+                                    <form method="post" action="{{ path('event_toogle', {'id': event.id}) }}">
+                                    <button class="btn-event-toggle">
                                         🔄 Inscription
-                                    </a>
+                                    </button>
+                                        <input type="hidden" name="_token" value="{{ csrf_token('toggle_event') }}">
+                                    </form>
                                 {% endif %}
                             </div>
                         </td>

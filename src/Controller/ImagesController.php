@@ -10,6 +10,7 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -38,7 +39,8 @@ final class ImagesController extends AbstractController
      * @throws TransportExceptionInterface
      */
     #[IsGranted('ROLE_ADMIN')]
-    #[Route('/user_images/validate/{id:image}', name: 'validate_images')]
+    #[Route('/user_images/validate/{id:image}', name: 'validate_images', methods: ['POST'])]
+    #[IsCsrfTokenValid("image")]
     public function validateImage(Image $image,EntityManagerInterface $em): JsonResponse
     {
         $image->setVerified(true);
@@ -65,7 +67,8 @@ final class ImagesController extends AbstractController
      * @throws TransportExceptionInterface
      */
     #[IsGranted('ROLE_ADMIN')]
-    #[Route('/user_images/reject/{id:image}', name: 'refuse_images')]
+    #[Route('/user_images/reject/{id:image}', name: 'refuse_images', methods: 'POST')]
+    #[IsCsrfTokenValid("image")]
     public function refuseImage(Image $image, EntityManagerInterface $em): Response
     {
         $image->setVerified(true);

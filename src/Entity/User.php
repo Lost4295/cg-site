@@ -50,8 +50,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $avatar;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $accessToken = null;
 
     #[ORM\Column(nullable: true)]
     private ?DateTime $expiresIn = null;
@@ -64,9 +62,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[ORM\Column(type: 'smallint', nullable: true, options: ['default' => null])]
     private ?int $groupe = null;
-
-    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
-    private ?BlockedUser $blockedUser = null;
 
     /**
      * @var Collection<int, CouchPoint>
@@ -107,9 +102,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\NotIdenticalTo('Classe')]
     private ?string $classe = null;
 
-    #[ORM\Column(type: Types::SMALLINT, options: ['default' => 0])]
-    private ?int $warns = 0;
-
     #[ORM\Column]
     private ?\DateTime $date_inscr = null;
 
@@ -133,10 +125,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
      */
     #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'participants')]
     private Collection $events;
-
-    #[ORM\Column]
-    private ?bool $hasGambled = false;
-
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private ?bool $is_janvier = false;
 
@@ -248,39 +236,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this;
     }
 
-    public function getAccessToken(): ?string
-    {
-        return $this->accessToken;
-    }
-
-    public function setAccessToken(string $accessToken): self
-    {
-        $this->accessToken = $accessToken;
-
-        return $this;
-    }
-
-    public function getBlockedUser(): ?BlockedUser
-    {
-        return $this->blockedUser;
-    }
-
-    public function isBlocked(): bool
-    {
-        return isset($this->blockedUser);
-    }
-
-    public function setBlockedUser(BlockedUser $blockedUser): static
-    {
-        // set the owning side of the relation if necessary
-        if ($blockedUser->getUser() !== $this) {
-            $blockedUser->setUser($this);
-        }
-
-        $this->blockedUser = $blockedUser;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, CouchPoint>
@@ -483,17 +438,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this;
     }
 
-    public function getWarns(): ?int
-    {
-        return $this->warns;
-    }
-
-    public function setWarns(int $warns): static
-    {
-        $this->warns = $warns;
-
-        return $this;
-    }
 
     public function getDateInscr(): ?\DateTime
     {
@@ -744,25 +688,14 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
             "5IWJ",
             "5MCSIJ",
         ];
-        if (in_array($this->getClasse(), $octobre)) {
+        if (in_array($this->getClasse(), $octobre, true)) {
             return "septembre";
-        } else if (in_array($this->getClasse(), $janvier)) {
-            return "janvier";
-        } else {
-            return "inconnu";
         }
-    }
 
-    public function hasGambled(): ?bool
-    {
-        return $this->hasGambled;
-    }
-
-    public function setHasGambled(bool $hasGambled): static
-    {
-        $this->hasGambled = $hasGambled;
-
-        return $this;
+        if (in_array($this->getClasse(), $janvier, true)) {
+            return "janvier";
+        }
+            return "inconnu";
     }
 
     public function isJanvier(): ?bool

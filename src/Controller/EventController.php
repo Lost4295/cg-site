@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/event')]
@@ -32,19 +33,19 @@ final class EventController extends AbstractController
     public function show(Event $event, Request $request, EntityManagerInterface $em): Response
     {
         $form = null;
-        if ($this->getUser()) {
-            $user = $em->getRepository(User::class)->find($this->getUser()->getId());
+        $user = $this->getUser();
+        if ($user) {
             $form = $this->createForm(AmIRegisteredType::class, $event, [
                 'action' => $this->generateUrl('event_toogle', ['id' => $event->getId()]),
-                'method' => 'GET',
+                'method' => 'POST',
             ]);
-            if ($event->getParticipants()->contains($this->getUser())) {
+            if ($event->getParticipants()->contains($user)) {
                 $form->get('going')->setData(true);
             }
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 $going = $form->get('going')->getData();
-                $user = $em->getRepository(User::class)->find($this->getUser()->getId());
+                $user = $em->getRepository(User::class)->find($user->getId());
                 if ($going) {
                     $event->addParticipant($user);
                 } else {
@@ -60,10 +61,16 @@ final class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/tog', name: 'event_toogle', methods: ['GET'])]
+    #[Route('/{id}/tog', name: 'event_toogle', methods: ['POST'])]
     #[IsGranted("ROLE_USER")]
-    public function toggle(Event $event, EntityManagerInterface $entityManager): Response
+    public function toggle(Event $event, EntityManagerInterface $entityManager, Request $request): Response
     {
+        if (!$this->isCsrfTokenValid(
+            'toggle_event',
+            $request->request->get('_token')
+        )) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
         $user = $entityManager->getRepository(User::class)->find($this->getUser()->getId());
         if ($event->getParticipants()->contains($user)) {
             $event->removeParticipant($user);
