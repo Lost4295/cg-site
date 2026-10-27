@@ -8,7 +8,7 @@
 
 {% block body %}
     <div class="container check-questions-container">
-        
+
         <!-- Page Header -->
         <div class="check-questions-header">
             <h1>🔍 Vérifier les questions</h1>
@@ -65,6 +65,7 @@
                 {% endfor %}
                 </tbody>
             </table>
+            <input type="hidden" value="{{ csrf_token('question') }}" id="_token" name="_token"/>
         </div>
     </div>
 {% endblock %}
@@ -82,12 +83,16 @@
                     } else if (action === 'r') {
                         url = '/questions/reject/' + id;
                     }
+                    const token = document.querySelector('input[name="_token"]');
                     fetch(url, {
                         method: 'POST',
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest',
-                            'Content-Type': 'application/json'
-                        }
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: new URLSearchParams({
+                            _token: token.value
+                        })
                     })
                     .then(response => {
                         if (response.ok) {

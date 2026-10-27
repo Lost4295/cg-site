@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\EventRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -23,7 +24,7 @@ class Event
     private ?string $description = null;
 
     #[ORM\Column]
-    private ?\DateTime $date = null;
+    private ?DateTime $date = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
@@ -70,12 +71,12 @@ class Event
 
 
 
-    public function getDate(): ?\DateTime
+    public function getDate(): ?DateTime
     {
         return $this->date;
     }
 
-    public function setDate(\DateTime $date): static
+    public function setDate(DateTime $date): static
     {
         $this->date = $date;
 

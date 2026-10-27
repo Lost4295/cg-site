@@ -7,6 +7,8 @@ use App\Form\CompleteFormType;
 use App\Repository\UserRepository;
 use App\Service\DiscordApiService;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+use Random\RandomException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +20,7 @@ use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Throwable;
 
 final class DiscordController extends AbstractController
 {
@@ -28,20 +31,43 @@ final class DiscordController extends AbstractController
     {
     }
 
+    /**
+     * @throws RandomException
+     */
     #[Route('/discord/connect', name: 'oauth_discord', methods: ['POST'])]
-    public function connect(Request $request): Response
+    public function connect(Request $request, LoggerInterface $logger): Response
     {
-        $token = $request->request->get('token');
-
-        if ($this->isCsrfTokenValid('discord-auth', $token)) {
-            $request->getSession()->set('discord-auth', true);
-            $scope = ['identify', 'email'];
-            return $this->redirect($this->discordApiService->getAuthorizationUrl($scope));
+        if (!$this->isCsrfTokenValid('discord-auth', $request->request->get('token'))) {
+            throw $this->createAccessDeniedException();
         }
+        $state = bin2hex(random_bytes(32));
+        $request->getSession()->set('discord_oauth_state', $state);
 
-        return $this->redirectToRoute('app_home');
+        $logger->info('Discord OAuth connect', [
+            'session_id' => $request->getSession()->getId(),
+            'state_saved' => $request->getSession()->has('discord_oauth_state'),
+        ]);
+        $scope = ['identify', 'email'];
+        return $this->redirect($this->discordApiService->getAuthorizationUrl($scope, $state));
     }
 
+    #[Route('/discord/finish', name: 'finish_login', methods: ['GET', 'POST'])]
+    public function finish(Request $request, EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+        $form = $this->createForm(CompleteFormType::class, $user );
+        $form->handleRequest($request);
+        if ($request->isMethod('POST') && $form->isSubmitted() && $form->isValid()) {
+            $user->setAccountValid(User::IS_OK);
+            $em->persist($user);
+            $em->flush();
+
+            return $this->redirectToRoute('app_home');
+        }
+        return $this->render('discord/auth.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
     /**
      * @throws TransportExceptionInterface
      * @throws ServerExceptionInterface
@@ -49,85 +75,106 @@ final class DiscordController extends AbstractController
      * @throws RedirectionExceptionInterface
      * @throws ClientExceptionInterface
      */
-    #[Route('/discord/auth', name: 'oauth_discord_auth')]
-    public function auth(EntityManagerInterface $em, Request $request, UserRepository $userRepo): Response
-    {
-        if (!$request->get('accessToken')) {
-            return new Response("Bad Request", 400);
-        }
-        $accessToken = $request->get('accessToken');
-        // TODO check si tout profile est ok sinon form pour
-        $discordUser = $this->discordApiService->fetchUser($accessToken);
-
-        $user = $userRepo->find($discordUser->id);
-        if ($user->getAccountValid() === User::IS_OK) {
-            return $this->redirectToRoute('app_home');
-        }
-        $form = $this->createForm(CompleteFormType::class, $this->getUser());
-        $form->handleRequest($request);
-        if ($request->isMethod('POST')) {
-            if ($form->isSubmitted() && $form->isValid()) {
-
-                $user->setAccountValid(User::IS_OK);
-                $em->persist($user);
-                $em->flush();
-
-                return $this->redirectToRoute('app_home');
-            }
-        }
-        $user = $userRepo->findOneBy(['accessToken' => $request->get('accessToken')]);
-        if (!$user) {
-            return new Response("Bad Request", 400);
-        }
-
-        return $this->render('discord/auth.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
+//    #[Route('/discord/auth', name: 'oauth_discord_auth')]
+//    public function auth(EntityManagerInterface $em, Request $request, UserRepository $userRepo): Response
+//    {
+//        if (!$request->get('accessToken')) {
+//            return new Response("Bad Request", 400);
+//        }
+//        $accessToken = $request->get('accessToken');
+//        // TODO check si tout profile est ok sinon form pour
+//        $discordUser = $this->discordApiService->fetchUser($accessToken);
+//
+//        $user = $userRepo->find($discordUser->id);
+//        if ($user->getAccountValid() === User::IS_OK) {
+//            return $this->redirectToRoute('app_home');
+//        }
+//        $form = $this->createForm(CompleteFormType::class, $this->getUser());
+//        $form->handleRequest($request);
+//        if ($request->isMethod('POST')) {
+//            if ($form->isSubmitted() && $form->isValid()) {
+//
+//                $user->setAccountValid(User::IS_OK);
+//                $em->persist($user);
+//                $em->flush();
+//
+//                return $this->redirectToRoute('app_home');
+//            }
+//        }
+//        $user = $userRepo->findOneBy(['accessToken' => $request->get('accessToken')]);
+//        if (!$user) {
+//            return new Response("Bad Request", 400);
+//        }
+//
+//        return $this->render('discord/auth.html.twig', [
+//            'form' => $form->createView(),
+//        ]);
+//    }
 
     #[Route('/discord/check', name: 'oauth_discord_check')]
-    public function check(EntityManagerInterface $em, Request $request, UserRepository $userRepo): Response
+    public function check(EntityManagerInterface $em, Request $request, UserRepository $userRepo, LoggerInterface $logger): Response
     {
-        $accessToken = $request->get('access_token');
+        $session = $request->getSession();
+        $expectedState = $session->get('discord_oauth_state');
+        $logger->info('Discord OAuth callback', [
+            'session_id' => $request->getSession()->getId(),
+            'state_exists' => $request->getSession()->has('discord_oauth_state'),
+        ]);
+        $receivedState = $request->query->get('state');
+        $code = $request->query->get('code');
 
-        if (!$accessToken) {
-            return $this->render('discord/check.html.twig');
+        // Un état valide ne peut servir qu'une seule fois.
+        $session->remove('discord_oauth_state');
+
+
+        if (
+            !is_string($expectedState)
+            || !is_string($receivedState)
+            || !is_string($code)
+            || $code === ''
+        ) {
+            throw $this->createAccessDeniedException(
+                'Retour OAuth Discord invalide.'
+            );
         }
-
-        $discordUser = $this->discordApiService->fetchUser($accessToken);
-
+        if (!hash_equals($expectedState, $receivedState)) {
+            throw $this->createAccessDeniedException(
+                'Le state OAuth Discord ne correspond pas.'
+            );
+        }
+        try {
+            $accessToken = $this->discordApiService->fetchToken($code);
+            $discordUser = $this->discordApiService->fetchUser($accessToken);
+        } catch (Throwable $e) {
+            throw $this->createAccessDeniedException(
+                'La connexion Discord a échoué.'
+            );
+        }
         $user = $userRepo->find($discordUser->id);
-
-        if ($user) {
-            $user->setId($discordUser->id);
-            $user->setAccessToken($accessToken);
-            $user->setPseudo($discordUser->username);
-            $user->setEmail($discordUser->email);
-            $user->setAvatar($discordUser->avatar);
-            $user->setExpiresIn((new DateTime())->modify('+5 days'));
-        } else {
+        if (!$user) {
             $user = new User();
             $user->setId($discordUser->id);
-            $user->setAccessToken($accessToken);
-            $user->setPseudo($discordUser->username);
-            $user->setEmail($discordUser->email);
-            $user->setAvatar($discordUser->avatar);
             $user->setAccountValid(User::MISSING_DATA);
-            $user->setExpiresIn(new DateTime("+10 hours"));
             $user->setNom("Nom à définir");
             $user->setPrenom("Prénom à définir");
             $user->setClasse("Classe");
-            $user->setWarns(0);
             $user->setDateInscr(new DateTime());
             $user->setVisibility(false);
             $user->setIsAdmin(false);
         }
+
+        $user->setPseudo($discordUser->username);
+        $user->setEmail($discordUser->email);
+        $user->setAvatar($discordUser->avatar);
+
         $em->persist($user);
         $em->flush();
 
-        return $this->redirectToRoute('oauth_discord_auth', [
-            'accessToken' => $accessToken
-        ]);
+        $this->security->login($user);
+        if ($user->getAccountValid() !== User::IS_OK) {
+            return $this->redirectToRoute('finish_login');
+        }
+        return $this->redirectToRoute('app_home');
     }
 
 }

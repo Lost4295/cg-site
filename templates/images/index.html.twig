@@ -43,6 +43,7 @@
                     <p class="empty-state-subtext">Toutes les images ont été vérifiées</p>
                 </div>
             {% endfor %}
+            <input type="hidden" value="{{ csrf_token('image') }}" id="_token" name="_token"/>
         </div>
     </div>
 {% endblock %}
@@ -60,12 +61,16 @@
                     } else if (action === 'r') {
                         url = '/user_images/reject/' + id;
                     }
+                    const token = document.querySelector('input[name="_token"]');
                     fetch(url, {
                         method: 'POST',
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest',
-                            'Content-Type': 'application/json'
-                        }
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: new URLSearchParams({
+                            _token: token.value
+                        })
                     })
                         .then(async response => {
                             const txt= await response.json()

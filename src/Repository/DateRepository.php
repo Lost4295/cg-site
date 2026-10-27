@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Date;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -45,14 +46,14 @@ class DateRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('d')
             ->andWhere('d.date > :val')
-            ->setParameter('val', new \DateTime())
+            ->setParameter('val', new DateTime())
             ->orderBy('d.id', 'ASC')
             ->getQuery()
             ->getResult();
     }
     public function getCurrentDate(): ?Date
     {
-        $date = new \DateTime('today 14:00:00');
+        $date = new DateTime('today 14:00:00');
         return $this->createQueryBuilder('d')
             ->andWhere('d.date = :val')
             ->setParameter('val', $date)

@@ -17,10 +17,9 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 
 class DiscordAuthenticator extends AbstractAuthenticator
 {
-    const DISCORD_AUTH_KEY = 'discord-auth';
+    public const DISCORD_AUTH_KEY = 'discord-auth';
 
     public function __construct(
-        private readonly UserRepository  $userRepo,
         private readonly RouterInterface $router
     )
     {
@@ -28,34 +27,18 @@ class DiscordAuthenticator extends AbstractAuthenticator
 
     public function supports(Request $request): ?bool
     {
-        return $request->attributes->get('_route') === 'oauth_discord_auth' && $this->isValidRequest($request);
+        // Cet authenticator ne traite pas le callback OAuth.
+        // Le contrôleur gère l'échange du code et la vérification du state.
+        return false;
     }
 
     public function authenticate(Request $request): Passport
     {
-        $accessToken = $request->query->get('accessToken');
-
-        if (!$this->isValidRequest($request)) {
-            throw new AuthenticationException('Invalid request');
-        }
-
-        if (null === $accessToken) {
-            throw new AuthenticationException('No access token provided');
-        }
-
-        $user = $this->userRepo->findOneBy(['accessToken' => $accessToken]);
-        if (!$user) {
-            throw new AuthenticationException('Wrong access token');
-        }
-
-        $userBadge = new UserBadge($user->getUserIdentifier(), function () use ($user) {
-            return $user;
-        });
-
-        $request->getSession()->remove(self::DISCORD_AUTH_KEY);
-
-        return new SelfValidatingPassport($userBadge);
+        throw new AuthenticationException(
+            'Cet authenticator ne gère pas directement les requêtes.'
+        );
     }
+
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
@@ -71,10 +54,5 @@ class DiscordAuthenticator extends AbstractAuthenticator
         $session->getFlashBag()->add('danger', $exception->getMessage());
 
         return new RedirectResponse($this->router->generate('app_home'));
-    }
-
-    private function isValidRequest(Request $request): bool
-    {
-        return true === $request->getSession()->get(self::DISCORD_AUTH_KEY);
     }
 }

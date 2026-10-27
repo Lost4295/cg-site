@@ -33,6 +33,7 @@ class PointCalculatorService
                     break;
                 }
             }
+            unset($quarter);
         }
         $result['id'] = $user->getId();
         $result['visible'] = $user->isVisibility();

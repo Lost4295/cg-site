@@ -21,7 +21,7 @@ class TwigExtension extends AbstractExtension
         $this->em = $em;
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return array(
             new TwigFunction('getuser', [$this, 'getuser']),
@@ -31,18 +31,18 @@ class TwigExtension extends AbstractExtension
     }
 
 
-    public function getuser($path)
+    public function getuser($path): string
     {
         $user = $this->em->getRepository(User::class)->find($path);
         return ucfirst($user->getPrenom()) . ' ' . ucfirst($user->getNom());
     }
-    public function getuserini($path)
+    public function getuserini($path): string
     {
         $user = $this->em->getRepository(User::class)->find($path);
         return ucfirst(substr($user->getPrenom(),0,1)) . ucfirst(substr($user->getNom(),0,1));
     }
 
-    public function getpts($id)
+    public function getpts($id): array
     {
         $allPoints = $this->em->getRepository(Point::class)->findAll();
         $allTrimestres = $this->em->getRepository(Trimestre::class)->findAll();

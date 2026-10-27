@@ -35,7 +35,7 @@ final class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/logout', name: 'app_logout')]
+    #[Route('/logout', name: 'app_logout', methods: ['POST'])]
     public function logout(Security $security): Response
     {
         $response = $security->logout();

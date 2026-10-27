@@ -22,4 +22,19 @@ class AmIRegisteredType extends AbstractType
             ])
         ;
     }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            // enable/disable CSRF protection for this form
+            'csrf_protection' => true,
+            // the name of the hidden HTML field that stores the token
+            'csrf_field_name' => 'token',
+            // an arbitrary string used to generate the value of the token
+            // using a different string for each form improves its security
+            // when using stateful tokens (which is the default)
+            'csrf_token_id'   => 'toggle_event',
+            ]);
+
+    }
 }

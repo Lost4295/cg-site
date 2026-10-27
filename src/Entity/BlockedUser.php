@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\BlockedUserRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BlockedUserRepository::class)]
@@ -14,7 +15,7 @@ class BlockedUser
     #[ORM\Column]
     private ?int $id = null;
     #[ORM\Column]
-    private ?\DateTime $date = null;
+    private ?DateTime $date = null;
 
     #[ORM\OneToOne(inversedBy: 'blockedUser', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
@@ -26,12 +27,12 @@ class BlockedUser
     }
 
 
-    public function getDate(): ?\DateTime
+    public function getDate(): ?DateTime
     {
         return $this->date;
     }
 
-    public function setDate(\DateTime $date): static
+    public function setDate(DateTime $date): static
     {
         $this->date = $date;
 

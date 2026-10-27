@@ -8,11 +8,11 @@
 
 {% block body %}
     <div class="container event-show-container">
-        
+
         <!-- Hero Section with Image -->
         <div class="event-hero">
-            <img src="{{ asset('img/'~event.image) }}" 
-                 alt="Image de l'événement {{ event.name }}" 
+            <img src="{{ asset('img/'~event.image) }}"
+                 alt="Image de l'événement {{ event.name }}"
                  class="event-hero-image"/>
             <div class="event-hero-overlay">
                 <h1 class="event-hero-title">🎮 {{ event.name }}</h1>
@@ -95,9 +95,17 @@
             input.addEventListener('change', function (event) {
                 event.preventDefault();
                 input.parentElement.appendChild(span);
+                const token = document.querySelector('input[name="am_i_registered[token]"]');
                 span.style.display = 'inline-block';
                 fetch(event.target.form.action, {
-                    method: 'GET',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Accept': 'application/json',
+                    },
+                    body: new URLSearchParams({
+                        _token: token.value
+                    })
                 }).then(response => {
                     if (response.ok) {
                         return true;
@@ -105,7 +113,7 @@
                         throw new Error('Network response was not ok');
                     }
                 }).then(data => {
-                    alert("La valeur a été mise à jour avec succès.");
+                    // alert("La valeur a été mise à jour avec succès.");
                 }).catch(error => {
                     console.error('There was a problem with the fetch operation:', error);
                 }).finally(() => {

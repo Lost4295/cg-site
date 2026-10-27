@@ -21,12 +21,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
 
-    const UNDEFINED = 0;
-    const NO_SET = 1;
-    const MISSING_DATA = 2;
-    const IS_OK = 3;
+    public const UNDEFINED = 0;
+    public const NO_SET = 1;
+    public const MISSING_DATA = 2;
+    public const IS_OK = 3;
 
-    const ACCOUNT_VALID_VALUES = [
+    public const ACCOUNT_VALID_VALUES = [
         self::UNDEFINED => 'Non défini',
         self::NO_SET => 'Jamais inscrit sur site',
         self::MISSING_DATA => 'Données manquantes',
@@ -50,8 +50,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $avatar;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $accessToken = null;
 
     #[ORM\Column(nullable: true)]
     private ?DateTime $expiresIn = null;
@@ -64,9 +62,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[ORM\Column(type: 'smallint', nullable: true, options: ['default' => null])]
     private ?int $groupe = null;
-
-    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
-    private ?BlockedUser $blockedUser = null;
 
     /**
      * @var Collection<int, CouchPoint>
@@ -107,11 +102,8 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[Assert\NotIdenticalTo('Classe')]
     private ?string $classe = null;
 
-    #[ORM\Column(type: Types::SMALLINT, options: ['default' => 0])]
-    private ?int $warns = 0;
-
     #[ORM\Column]
-    private ?\DateTime $date_inscr = null;
+    private ?DateTime $date_inscr = null;
 
     #[ORM\Column(options: ['default' => false])]
     private ?bool $visibility = false;
@@ -133,10 +125,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
      */
     #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'participants')]
     private Collection $events;
-
-    #[ORM\Column]
-    private ?bool $hasGambled = false;
-
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private ?bool $is_janvier = false;
 
@@ -157,7 +145,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function getFullName(): string
     {
-        return "{$this->prenom} {$this->nom}";
+        return "$this->prenom $this->nom";
     }
 
     public function getEmail(): ?string
@@ -179,7 +167,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
      */
     public function getUserIdentifier(): string
     {
-        return "{$this->pseudo}-{$this->email}";
+        return $this->email;
     }
 
     /**
@@ -236,7 +224,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function getAvatar(): ?string
     {
-        return "https://cdn.discordapp.com/avatars/{$this->id}/{$this->avatar}.webp";
+        return "https://cdn.discordapp.com/avatars/$this->id/$this->avatar.webp";
     }
 
     public function setAvatar(?string $avatar): self
@@ -248,39 +236,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this;
     }
 
-    public function getAccessToken(): ?string
-    {
-        return $this->accessToken;
-    }
-
-    public function setAccessToken(string $accessToken): self
-    {
-        $this->accessToken = $accessToken;
-
-        return $this;
-    }
-
-    public function getBlockedUser(): ?BlockedUser
-    {
-        return $this->blockedUser;
-    }
-
-    public function isBlocked(): bool
-    {
-        return isset($this->blockedUser);
-    }
-
-    public function setBlockedUser(BlockedUser $blockedUser): static
-    {
-        // set the owning side of the relation if necessary
-        if ($blockedUser->getUser() !== $this) {
-            $blockedUser->setUser($this);
-        }
-
-        $this->blockedUser = $blockedUser;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, CouchPoint>
@@ -302,11 +257,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function removeCouchPoint(CouchPoint $quizzPoint): static
     {
-        if ($this->couchPoints->removeElement($quizzPoint)) {
+        if ($this->couchPoints->removeElement($quizzPoint) && $quizzPoint->getUser() === $this) {
             // set the owning side to null (unless already changed)
-            if ($quizzPoint->getUser() === $this) {
-                $quizzPoint->setUser(null);
-            }
+            $quizzPoint->setUser(null);
         }
 
         return $this;
@@ -332,11 +285,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function removePoint(Point $point): static
     {
-        if ($this->points->removeElement($point)) {
+        if ($this->points->removeElement($point) && $point->getUser() === $this) {
             // set the owning side to null (unless already changed)
-            if ($point->getUser() === $this) {
-                $point->setUser(null);
-            }
+            $point->setUser(null);
         }
 
         return $this;
@@ -362,11 +313,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function removeImage(Image $image): static
     {
-        if ($this->images->removeElement($image)) {
+        if ($this->images->removeElement($image) && $image->getUser() === $this) {
             // set the owning side to null (unless already changed)
-            if ($image->getUser() === $this) {
-                $image->setUser(null);
-            }
+            $image->setUser(null);
         }
 
         return $this;
@@ -409,11 +358,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function removeQuestionsSubmitted(Question $questionsSubmitted): static
     {
-        if ($this->questionsSubmitted->removeElement($questionsSubmitted)) {
+        if ($this->questionsSubmitted->removeElement($questionsSubmitted) && $questionsSubmitted->getUser() === $this) {
             // set the owning side to null (unless already changed)
-            if ($questionsSubmitted->getUser() === $this) {
-                $questionsSubmitted->setUser(null);
-            }
+            $questionsSubmitted->setUser(null);
         }
 
         return $this;
@@ -471,8 +418,8 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
         $lastChar = substr($value, -1);
 
-        if (intval($lastChar) !== 0) {
-            $this->groupe = intval($lastChar);
+        if ((int)$lastChar !== 0) {
+            $this->groupe = (int)$lastChar;
             $this->classe = substr($value, 0, -1);
         } else {
             // Pas de groupe → groupe null
@@ -483,24 +430,13 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this;
     }
 
-    public function getWarns(): ?int
-    {
-        return $this->warns;
-    }
 
-    public function setWarns(int $warns): static
-    {
-        $this->warns = $warns;
-
-        return $this;
-    }
-
-    public function getDateInscr(): ?\DateTime
+    public function getDateInscr(): ?DateTime
     {
         return $this->date_inscr;
     }
 
-    public function setDateInscr(\DateTime $date_inscr): static
+    public function setDateInscr(DateTime $date_inscr): static
     {
         $this->date_inscr = $date_inscr;
 
@@ -551,7 +487,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         $this->expiresIn = $expiresIn;
     }
 
-    public function setPassword(string $hashPassword)
+    public function setPassword(string $hashPassword): User
     {
         $this->password = $hashPassword;
         return $this;
@@ -582,17 +518,15 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function removeTag(Tag $tag): static
     {
-        if ($this->tags->removeElement($tag)) {
+        if ($this->tags->removeElement($tag) && $tag->getUser() === $this) {
             // set the owning side to null (unless already changed)
-            if ($tag->getUser() === $this) {
-                $tag->setUser(null);
-            }
+            $tag->setUser(null);
         }
 
         return $this;
     }
 
-    public function getIsAccountValid()
+    public function getIsAccountValid(): string
     {
         return $this::ACCOUNT_VALID_VALUES[$this->accountValid];
     }
@@ -744,25 +678,14 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
             "5IWJ",
             "5MCSIJ",
         ];
-        if (in_array($this->getClasse(), $octobre)) {
+        if (in_array($this->getClasse(), $octobre, true)) {
             return "septembre";
-        } else if (in_array($this->getClasse(), $janvier)) {
-            return "janvier";
-        } else {
-            return "inconnu";
         }
-    }
 
-    public function hasGambled(): ?bool
-    {
-        return $this->hasGambled;
-    }
-
-    public function setHasGambled(bool $hasGambled): static
-    {
-        $this->hasGambled = $hasGambled;
-
-        return $this;
+        if (in_array($this->getClasse(), $janvier, true)) {
+            return "janvier";
+        }
+            return "inconnu";
     }
 
     public function isJanvier(): ?bool

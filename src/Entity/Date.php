@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\DateRepository;
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,7 +23,7 @@ class Date
     private ?string $description = null;
 
     #[ORM\Column]
-    private ?\DateTime $date = null;
+    private ?DateTime $date = null;
 
     #[ORM\Column]
     private ?bool $distanciel = null;
@@ -59,12 +60,12 @@ class Date
         return $this;
     }
 
-    public function getDate(): ?\DateTime
+    public function getDate(): ?DateTime
     {
         return $this->date;
     }
 
-    public function setDate(\DateTime $date): static
+    public function setDate(DateTime $date): static
     {
         $this->date = $date;
 
