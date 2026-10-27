@@ -9,12 +9,12 @@ RUN apt-get update -o Acquire::Retries=3 \
     libicu-dev \
  && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
  && docker-php-ext-install -j"$(nproc)" pdo pdo_mysql opcache gd zip intl \
- && pecl install xdebug \
- && docker-php-ext-enable xdebug \
- && curl -sS https://getcomposer.org/installer | php \
- && mv composer.phar /usr/local/bin/composer \
  && mkdir -p /var/log/nginx/80 /var/log/nginx/443 \
- && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+ && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* \
+
+
+# Composer installé depuis l'image officielle.
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
 COPY ./conf/website.conf /etc/nginx/sites-available/website.conf
 

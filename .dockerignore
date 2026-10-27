@@ -1,0 +1,16 @@
+.idea
+.git
+.gitignore
+
+.env.local
+.env.*.local
+.auth.json
+
+**/.DS_Store
+
+*.iml
+var/cache/
+var/log/
+
+.idea/
+.vscode/
