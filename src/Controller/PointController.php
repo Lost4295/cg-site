@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 final class PointController extends AbstractController
 {
@@ -51,13 +53,15 @@ final class PointController extends AbstractController
     }
 
 
-    #[Route('/points-open/NJXWQYLONZQWM2LMNFXWY', name: 'responsible_points')]
+    #[IsGranted("ROLE_RESPONSIBLE_OPEN")]
+    #[Route('/points-open/', name: 'responsible_points')]
     public function responsiblePoints(): Response
     {
         return $this->render('point/opens.html.twig');
     }
 
-    #[Route('/get/NJXWQYLONZQWM2LMNFXWY', name: 'api_points')]
+    #[IsGranted("ROLE_RESPONSIBLE_OPEN")]
+    #[Route('/points-open/get/', name: 'api_points')]
     public function getOPENS(Request $request, EntityManagerInterface $em): JsonResponse
     {
         $keyword = $request->query->get('search', '');
@@ -76,7 +80,7 @@ final class PointController extends AbstractController
         return new JsonResponse(array_values($userPoints));
     }
 
-    #[Route('/NJXWQYLONZQWM2LMNFXWY/{id}', name: 'points_responsible_precise', requirements: ['id' => '\d+'])]
+    #[Route('/points-open/{id}', name: 'points_responsible_precise', requirements: ['id' => '\d+'])]
     public function getOPENSforUser(int $id, Request $request, EntityManagerInterface $em): Response
     {
         $allPoints = $em->getRepository(Point::class)->findAll();
