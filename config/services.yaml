@@ -21,6 +21,7 @@ services:
     App\Service\DiscordApiService:
         arguments:
             $clientId: '%env(CLIENT_ID)%'
+            $clientSecret: '%env(CLIENT_SECRET)%'
             $redirectUri: '%env(REDIRECT_URI)%'
 
     App\Controller\ImagesController:
