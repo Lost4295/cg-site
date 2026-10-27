@@ -35,7 +35,7 @@ class Trimestre
         return $this->niveau;
     }
 
-    public function setNiveau(string $niveau): Trimestre
+    public function setNiveau(string $niveau): self
     {
         $this->niveau = $niveau;
         return $this;
@@ -46,7 +46,7 @@ class Trimestre
         return $this->trimestre;
     }
 
-    public function setTrimestre(int $trimestre): Trimestre
+    public function setTrimestre(int $trimestre): self
     {
         $this->trimestre = $trimestre;
         return $this;
@@ -57,7 +57,7 @@ class Trimestre
         return $this->date_debut;
     }
 
-    public function setDateDebut(DateTime $date_debut): Trimestre
+    public function setDateDebut(DateTime $date_debut): self
     {
         $this->date_debut = $date_debut;
         return $this;
@@ -68,7 +68,7 @@ class Trimestre
         return $this->date_fin;
     }
 
-    public function setDateFin(DateTime $date_fin): Trimestre
+    public function setDateFin(DateTime $date_fin): self
     {
         $this->date_fin = $date_fin;
         return $this;

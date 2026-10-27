@@ -16,8 +16,7 @@ final class DateController extends AbstractController
     #[Route('/dates', name: 'app_dates')]
     public function index(): Response
     {
-        return $this->render('date/index.html.twig', [
-        ]);
+        return $this->render('date/index.html.twig');
     }
 
 

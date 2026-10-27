@@ -57,15 +57,12 @@ final class DiscordController extends AbstractController
         $user = $this->getUser();
         $form = $this->createForm(CompleteFormType::class, $user );
         $form->handleRequest($request);
-        if ($request->isMethod('POST')) {
-            if ($form->isSubmitted() && $form->isValid()) {
+        if ($request->isMethod('POST') && $form->isSubmitted() && $form->isValid()) {
+            $user->setAccountValid(User::IS_OK);
+            $em->persist($user);
+            $em->flush();
 
-                $user->setAccountValid(User::IS_OK);
-                $em->persist($user);
-                $em->flush();
-
-                return $this->redirectToRoute('app_home');
-            }
+            return $this->redirectToRoute('app_home');
         }
         return $this->render('discord/auth.html.twig', [
             'form' => $form->createView(),
@@ -161,7 +158,6 @@ final class DiscordController extends AbstractController
             $user->setNom("Nom à définir");
             $user->setPrenom("Prénom à définir");
             $user->setClasse("Classe");
-            $user->setWarns(0);
             $user->setDateInscr(new DateTime());
             $user->setVisibility(false);
             $user->setIsAdmin(false);

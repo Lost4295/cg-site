@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PointRepository;
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -23,7 +24,7 @@ class Point
     private ?string $reason = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private ?\DateTime $date;
+    private ?DateTime $date;
 
     #[ORM\Column]
     private ?float $points = null;
@@ -36,7 +37,7 @@ class Point
         return $this->guild_id;
     }
 
-    public function setGuildId(string $guild_id): Point
+    public function setGuildId(string $guild_id): self
     {
         $this->guild_id = $guild_id;
         return $this;
@@ -49,7 +50,7 @@ class Point
 
     public function __construct()
     {
-        $this->date = new \DateTime();
+        $this->date = new DateTime();
         $this->guild_id = '510739348069679115';
     }
 
@@ -77,12 +78,12 @@ class Point
         return $this;
     }
 
-    public function getDate(): ?\DateTime
+    public function getDate(): ?DateTime
     {
         return $this->date;
     }
 
-    public function setDate(\DateTime $date): static
+    public function setDate(DateTime $date): static
     {
         $this->date = $date;
 

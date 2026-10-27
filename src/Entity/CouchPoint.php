@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\QuizzPointRepository;
+use App\Repository\CouchPointRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: QuizzPointRepository::class)]
+#[ORM\Entity(repositoryClass: CouchPointRepository::class)]
 #[ORM\Table(name: 'couchpoints')]
 class CouchPoint
 {
@@ -22,7 +23,7 @@ class CouchPoint
     private ?int $points = null;
 
     #[ORM\Column]
-    private ?\DateTime $date = null;
+    private ?DateTime $date = null;
 
     public function getId(): ?int
     {
@@ -53,12 +54,12 @@ class CouchPoint
         return $this;
     }
 
-    public function getDate(): ?\DateTime
+    public function getDate(): ?DateTime
     {
         return $this->date;
     }
 
-    public function setDate(\DateTime $date): static
+    public function setDate(DateTime $date): static
     {
         $this->date = $date;
 

@@ -17,8 +17,8 @@ final class EventControllerTest extends WebTestCase
 
     protected function setUp(): void
     {
-        $this->client = static::createClient();
-        $this->manager = static::getContainer()->get('doctrine')->getManager();
+        $this->client = self::createClient();
+        $this->manager = self::getContainer()->get('doctrine')->getManager();
         $this->eventRepository = $this->manager->getRepository(Event::class);
 
         foreach ($this->eventRepository->findAll() as $object) {
@@ -56,7 +56,7 @@ final class EventControllerTest extends WebTestCase
 
         self::assertResponseRedirects($this->path);
 
-        self::assertSame(1, $this->eventRepository->count([]));
+        self::assertSame(1, $this->eventRepository->count());
     }
 
     public function testShow(): void
@@ -126,6 +126,6 @@ final class EventControllerTest extends WebTestCase
         $this->client->submitForm('Delete');
 
         self::assertResponseRedirects('/event/');
-        self::assertSame(0, $this->eventRepository->count([]));
+        self::assertSame(0, $this->eventRepository->count());
     }
 }

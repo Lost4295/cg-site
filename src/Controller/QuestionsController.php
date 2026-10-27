@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class QuestionsController extends AbstractController
@@ -57,6 +58,9 @@ final class QuestionsController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     */
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/questions/validate/{id:question}', name: 'validate_questions')]
     #[IsCsrfTokenValid("question")]
@@ -81,6 +85,9 @@ final class QuestionsController extends AbstractController
         return new JsonResponse(['status' => 'Question validée']);
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     */
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/questions/reject/{id:question}', name: 'refuse_questions')]
     #[IsCsrfTokenValid("question")]

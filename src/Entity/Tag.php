@@ -22,7 +22,7 @@ class Tag
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    public function getId()
+    public function getId(): string
     {
         return $this->tag . '|' . $this->emoji . '|' . $this->user->getId();
     }

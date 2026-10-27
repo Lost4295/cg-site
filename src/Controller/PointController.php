@@ -71,9 +71,10 @@ final class PointController extends AbstractController
         $userPoints = [];
         $calculator = new PointCalculatorService();
         foreach ($users as $user) {
-            $userPoints[$user->getId()] = $calculator->compute($user, $allPoints, $allTrimestres);
+            $id= $user->getId();
+            $userPoints[$id] = $calculator->compute($user, $allPoints, $allTrimestres);
             for ($i = 1; $i <= 3; $i++) {
-                $userPoints[$user->getId()][$i]['total'] = min($userPoints[$user->getId()][$i]['total'] ?? 0, $user->getIsAdmin() == 0 ? 4 : ($user->getIsAdmin() == 1 ? 6 : 8));
+                $userPoints[$id][$i]['total'] = min($userPoints[$id][$i]['total'] ?? 0, $user->getIsAdmin() == 0 ? 4 : ($user->getIsAdmin() == 1 ? 6 : 8));
             }
         }
 

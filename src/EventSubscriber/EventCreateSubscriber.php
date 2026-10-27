@@ -25,7 +25,7 @@ class EventCreateSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function createEventDate(BeforeEntityPersistedEvent $event)
+    public function createEventDate(BeforeEntityPersistedEvent $event): void
     {
         $entity = $event->getEntityInstance();
 
@@ -41,7 +41,8 @@ class EventCreateSubscriber implements EventSubscriberInterface
         $this->em->flush();
     }
 
-    public function updateEventDate(BeforeEntityUpdatedEvent $event){
+    public function updateEventDate(BeforeEntityUpdatedEvent $event): void
+    {
         $entity = $event->getEntityInstance();
 
         if (!($entity instanceof Event)) {
@@ -57,7 +58,8 @@ class EventCreateSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function deleteEventDate(BeforeEntityUpdatedEvent $event){
+    public function deleteEventDate(BeforeEntityUpdatedEvent $event): void
+    {
         $entity = $event->getEntityInstance();
 
         if (!($entity instanceof Event)) {

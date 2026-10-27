@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Model\DiscordUser;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -88,7 +89,7 @@ class DiscordApiService
         $data = $response->toArray();
 
         if (!isset($data['access_token']) || !is_string($data['access_token'])) {
-            throw new \RuntimeException('Échec de l’authentification Discord.');
+            throw new RuntimeException('Échec de l’authentification Discord.');
         }
 
         return $data['access_token'];

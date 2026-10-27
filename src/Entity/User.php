@@ -21,12 +21,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
 
-    const UNDEFINED = 0;
-    const NO_SET = 1;
-    const MISSING_DATA = 2;
-    const IS_OK = 3;
+    public const UNDEFINED = 0;
+    public const NO_SET = 1;
+    public const MISSING_DATA = 2;
+    public const IS_OK = 3;
 
-    const ACCOUNT_VALID_VALUES = [
+    public const ACCOUNT_VALID_VALUES = [
         self::UNDEFINED => 'Non défini',
         self::NO_SET => 'Jamais inscrit sur site',
         self::MISSING_DATA => 'Données manquantes',
@@ -103,7 +103,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private ?string $classe = null;
 
     #[ORM\Column]
-    private ?\DateTime $date_inscr = null;
+    private ?DateTime $date_inscr = null;
 
     #[ORM\Column(options: ['default' => false])]
     private ?bool $visibility = false;
@@ -145,7 +145,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function getFullName(): string
     {
-        return "{$this->prenom} {$this->nom}";
+        return "$this->prenom $this->nom";
     }
 
     public function getEmail(): ?string
@@ -167,7 +167,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
      */
     public function getUserIdentifier(): string
     {
-        return "{$this->pseudo}-{$this->email}";
+        return $this->email;
     }
 
     /**
@@ -224,7 +224,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function getAvatar(): ?string
     {
-        return "https://cdn.discordapp.com/avatars/{$this->id}/{$this->avatar}.webp";
+        return "https://cdn.discordapp.com/avatars/$this->id/$this->avatar.webp";
     }
 
     public function setAvatar(?string $avatar): self
@@ -257,11 +257,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function removeCouchPoint(CouchPoint $quizzPoint): static
     {
-        if ($this->couchPoints->removeElement($quizzPoint)) {
+        if ($this->couchPoints->removeElement($quizzPoint) && $quizzPoint->getUser() === $this) {
             // set the owning side to null (unless already changed)
-            if ($quizzPoint->getUser() === $this) {
-                $quizzPoint->setUser(null);
-            }
+            $quizzPoint->setUser(null);
         }
 
         return $this;
@@ -287,11 +285,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function removePoint(Point $point): static
     {
-        if ($this->points->removeElement($point)) {
+        if ($this->points->removeElement($point) && $point->getUser() === $this) {
             // set the owning side to null (unless already changed)
-            if ($point->getUser() === $this) {
-                $point->setUser(null);
-            }
+            $point->setUser(null);
         }
 
         return $this;
@@ -317,11 +313,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function removeImage(Image $image): static
     {
-        if ($this->images->removeElement($image)) {
+        if ($this->images->removeElement($image) && $image->getUser() === $this) {
             // set the owning side to null (unless already changed)
-            if ($image->getUser() === $this) {
-                $image->setUser(null);
-            }
+            $image->setUser(null);
         }
 
         return $this;
@@ -364,11 +358,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function removeQuestionsSubmitted(Question $questionsSubmitted): static
     {
-        if ($this->questionsSubmitted->removeElement($questionsSubmitted)) {
+        if ($this->questionsSubmitted->removeElement($questionsSubmitted) && $questionsSubmitted->getUser() === $this) {
             // set the owning side to null (unless already changed)
-            if ($questionsSubmitted->getUser() === $this) {
-                $questionsSubmitted->setUser(null);
-            }
+            $questionsSubmitted->setUser(null);
         }
 
         return $this;
@@ -426,8 +418,8 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
         $lastChar = substr($value, -1);
 
-        if (intval($lastChar) !== 0) {
-            $this->groupe = intval($lastChar);
+        if ((int)$lastChar !== 0) {
+            $this->groupe = (int)$lastChar;
             $this->classe = substr($value, 0, -1);
         } else {
             // Pas de groupe → groupe null
@@ -439,12 +431,12 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     }
 
 
-    public function getDateInscr(): ?\DateTime
+    public function getDateInscr(): ?DateTime
     {
         return $this->date_inscr;
     }
 
-    public function setDateInscr(\DateTime $date_inscr): static
+    public function setDateInscr(DateTime $date_inscr): static
     {
         $this->date_inscr = $date_inscr;
 
@@ -495,7 +487,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         $this->expiresIn = $expiresIn;
     }
 
-    public function setPassword(string $hashPassword)
+    public function setPassword(string $hashPassword): User
     {
         $this->password = $hashPassword;
         return $this;
@@ -526,17 +518,15 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function removeTag(Tag $tag): static
     {
-        if ($this->tags->removeElement($tag)) {
+        if ($this->tags->removeElement($tag) && $tag->getUser() === $this) {
             // set the owning side to null (unless already changed)
-            if ($tag->getUser() === $this) {
-                $tag->setUser(null);
-            }
+            $tag->setUser(null);
         }
 
         return $this;
     }
 
-    public function getIsAccountValid()
+    public function getIsAccountValid(): string
     {
         return $this::ACCOUNT_VALID_VALUES[$this->accountValid];
     }

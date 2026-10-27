@@ -17,7 +17,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 
 class DiscordAuthenticator extends AbstractAuthenticator
 {
-    const DISCORD_AUTH_KEY = 'discord-auth';
+    public const DISCORD_AUTH_KEY = 'discord-auth';
 
     public function __construct(
         private readonly RouterInterface $router
