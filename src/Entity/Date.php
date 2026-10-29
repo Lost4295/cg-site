@@ -31,6 +31,18 @@ class Date
     #[ORM\OneToOne(mappedBy: 'date', cascade: ['persist', 'remove'])]
     private ?Participation $participations = null;
 
+    private string $guild_id;
+
+
+    public function getGuildId(): string
+    {
+        return $this->guild_id;
+    }
+
+    public function setGuildId(string $guild_id): void
+    {
+        $this->guild_id = $guild_id;
+    }
     public function getId(): ?int
     {
         return $this->id;

@@ -16,3 +16,7 @@
 .idea
 cg-site.iml
 public/img
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
