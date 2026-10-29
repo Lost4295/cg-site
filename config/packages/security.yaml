@@ -10,13 +10,29 @@ security:
                 property: email
 
     role_hierarchy:
-        ROLE_ADMIN: ROLE_USER
+        ROLE_ADMIN: [ ROLE_USER, ROLE_GUILD_HANDLER ]
         ROLE_RESPONSIBLE_OPEN: ROLE_USER
         ROLE_SUPER_ADMIN: [ ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH, ROLE_RESPONSIBLE_OPEN ]
     firewalls:
         dev:
             pattern: ^/(_profiler(/|$)|(_wdt|assets|build)|css|images|js)/
             security: false
+        api:
+            pattern: ^/api/
+            stateless: true
+            provider: app_user_provider
+            jwt: ~
+        login_api:
+            pattern: ^/auth$
+            stateless: true
+            provider: app_user_provider
+            json_login:
+                check_path: /auth # The name in routes.yaml is enough for mapping
+                username_path: email
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
         main:
             custom_authenticator:
                 - App\Security\DiscordAuthenticator
@@ -37,6 +53,12 @@ security:
         - { path: ^/discord/connect$, roles: PUBLIC_ACCESS }
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/docs, roles: PUBLIC_ACCESS } # Allows accessing API documentations and Swagger UI docs
+        - { path: ^/api/classes, roles: PUBLIC_ACCESS }
+        - { path: ^/auth, roles: PUBLIC_ACCESS }
+        - { path: ^/api, roles: ROLE_GUILD_HANDLER }
+
 
 when@test:
     security:
