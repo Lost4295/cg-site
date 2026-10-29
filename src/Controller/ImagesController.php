@@ -48,9 +48,10 @@ final class ImagesController extends AbstractController
         $em->persist($image);
 
         $points = new Point();
-        $points->setUser($image->getUser());
-        $points->setPoints(0.25);
-        $points->setReason("Image validée");
+        $points->setUser($image->getUser())
+        ->setPoints(0.25)
+        ->setGuildId('510739348069679115')
+        ->setReason("Image validée");
         $em->persist($points);
         $em->flush();
 

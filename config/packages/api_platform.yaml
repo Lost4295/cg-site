@@ -1,7 +1,44 @@
 api_platform:
-    title: Hello API Platform
+    title: Documentation pour l'API de centralisation des points OPEN
     version: 1.0.0
+    description: "
+        Cette API est utilisée pour centraliser les points OPEN des différents serveurs Discord.
+        Elle permet de récupérer les informations sur les guildes, les utilisateurs et leurs points.
+        Elle est sécurisée par un système d'authentification JWT.
+        Pour utiliser cette API, vous devez disposer d'un token JWT valide.
+        Pour obtenir un token JWT, vous devez vous connecter à l'API avec vos identifiants myskolae.
+        Si vous êtes un membre d'association et qu'un mot de passe vous a été fourni, vous pourrez l'utiliser pour vous connecter à l'API."
     defaults:
         stateless: true
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
+    swagger:
+        api_keys:
+            JWT:
+                name: Authorization
+                type: header
+    openapi:
+        # The contact information for the exposed API.
+        contact:
+            # The identifying name of the contact person/organization.
+            name: Ylan Turin--Kondi (kai_you)
+            # The URL pointing to the contact information. MUST be in the format of a URL.
+            url: https://discord.com/users/349983254373466114
+            # The email address of the contact person/organization. MUST be in the format of an email address.
+            email: y.turinkondi@myskolae.fr
+
+    exception_to_status:
+        # Setting this map replaces API Platform's defaults, so they are repeated here.
+        Symfony\Component\Serializer\Exception\ExceptionInterface: 400
+        ApiPlatform\Metadata\Exception\InvalidArgumentException: 400
+        Doctrine\ORM\OptimisticLockException: 409
+        Symfony\Component\Security\Core\Exception\AccessDeniedException: 403
+        Symfony\Component\Security\Core\Exception\AuthenticationException: 401
+        Doctrine\ORM\NoResultException: 404
+        Doctrine\ORM\NonUniqueResultException: 400
+        # Matching is done with is_a() and the first match wins: keep specific classes before the generic ones.
+        Doctrine\DBAL\Exception\ConstraintViolationException: 400
+        Doctrine\DBAL\Exception\InvalidArgumentException: 400
+        Doctrine\DBAL\Exception\SyntaxErrorException: 400
+        Doctrine\DBAL\Exception: 500
+        Doctrine\ORM\Exception\ORMException: 500
