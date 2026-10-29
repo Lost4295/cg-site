@@ -83,9 +83,7 @@ class DiscordApiService
             'redirect_uri' => $this->redirectUri,
             'code' => $code
         ]]);
-        $statusCode = $response->getStatusCode();
-        $body = $response->getContent(false);
-        dump($statusCode, $body);
+
         $data = $response->toArray();
 
         if (!isset($data['access_token']) || !is_string($data['access_token'])) {
