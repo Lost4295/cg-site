@@ -31,6 +31,9 @@ class Image
     #[ORM\Column(options: ['default' => true])]
     private ?bool $visibility = true;
 
+    #[ORM\Column(length: 50)]
+    private ?string $guildId = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -93,6 +96,17 @@ class Image
     {
         $this->visibility = $visibility;
 
+        return $this;
+    }
+
+    public function getGuildId(): ?string
+    {
+        return $this->guildId;
+    }
+
+    public function setGuildId(?string $guildId): self
+    {
+        $this->guildId = $guildId;
         return $this;
     }
 }
