@@ -8,7 +8,7 @@ use App\Entity\User;
 
 class PointCalculatorService
 {
-    public function compute(User $user, array $points, array $trimestres): array
+    public function compute(User $user, array $points, array $trimestres, string $guildId = '510739348069679115'): array
     {
         $result = [];
 
@@ -18,6 +18,7 @@ class PointCalculatorService
             $result[$t->getTrimestre()] = [
                 'points' => [],
                 'total' => 0,
+                'total_guild' => 0.0,
                 'start' => $t->getDateDebut(),
                 'end' => $t->getDateFin(),
             ];
@@ -27,9 +28,12 @@ class PointCalculatorService
             if ($point->getUser()->getId() !== $user->getId()) {continue;}
             $date = $point->getDate();
             foreach ($result as $k => &$quarter) {
-                if ($date >= $quarter['start'] && $date < $quarter['end']) {
+                if ($date >= $quarter['start'] && $date <= $quarter['end']) {
                     $quarter['points'][] = $point;
                     $quarter['total'] += $point->getPoints();
+                    if ($point->getGuildId() === $guildId) {
+                        $quarter['total_guild'] += (float) $point->getPoints();
+                    }
                     break;
                 }
             }
