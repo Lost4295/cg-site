@@ -183,7 +183,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
      * @var Collection<int, Participation>
      */
     #[Groups(['user:read'])]
-    #[ORM\OneToMany(targetEntity:Participation::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     #[ApiProperty(description: 'Participations de l\'utilisateur à un évènement.')]
     private Collection $participations;
 
@@ -272,7 +272,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ApiProperty(description: 'Nom complet (prénom et nom) de l\'utilisateur, calculé automatiquement.', example: 'Jean Dupont')]
     public function getFullName(): string
     {
-        return "$this->prenom $this->nom";
+        return ucfirst(strtolower($this->prenom)) . " " . ucfirst(strtolower($this->nom));
     }
 
     public function getEmail(): ?string
@@ -322,6 +322,12 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this;
     }
 
+    public function addRole(string $role): self
+    {
+        $this->roles[] = $role;
+        return $this;
+    }
+
     /**
      * @see UserInterface
      */
@@ -330,6 +336,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 // If you store any temporary, sensitive data on the user, clear it here
 // $this->plainPassword = null;
     }
+
     /** @return string[] */
     public function getGuildIds(): array
     {
@@ -343,6 +350,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
         return $this;
     }
+
     public function hasRole(string $role): bool
     {
         return in_array($role, $this->getRoles(), true);
@@ -352,6 +360,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     {
         return in_array($guildId, $this->guildIds, true) && $this->hasRole('ROLE_GUILD_HANDLER');
     }
+
     public function getPseudo(): ?string
     {
         return $this->pseudo;
@@ -506,6 +515,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this;
 
     }
+
     public function removeParticipation(Participation $participation): static
     {
         if ($this->participations->removeElement($participation) && $participation->getUser() === $this) {
@@ -610,7 +620,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     }
 
     #[Ignore]
-
     public function getDateInscr(): ?DateTime
     {
         return $this->date_inscr;
