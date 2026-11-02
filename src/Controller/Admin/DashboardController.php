@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
@@ -46,14 +47,17 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
-        yield MenuItem::linkTo(DateCrudController::class, 'Dates des sessions', 'fas fa-calendar');
-        yield MenuItem::linkTo(PointCrudController::class, 'Points des utilisateurs', 'fas fa-list');
-        yield MenuItem::linkTo(UserCrudController::class, 'Utilisateurs', 'fas fa-users');
-        yield MenuItem::linkToRoute('Ajouter un utilisateur comme administrateur', 'fas fa-user-plus', 'add_admin_user');
-        yield MenuItem::linkTo(EventCrudController::class, 'Événements', 'fas fa-bars');
+        yield MenuItem::linkTo(DateCrudController::class, 'Dates des sessions', 'fas fa-calendar')->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkTo(PointCrudController::class, 'Points des utilisateurs', 'fas fa-list')->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkTo(PointCrudV2Controller::class, 'Points des utilisateurs (V2)', 'fas fa-list')
+            ->setPermission('ROLE_GUILD_HANDLER');
+        yield MenuItem::linkTo(UserCrudController::class, 'Utilisateurs', 'fas fa-users')->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToRoute('Ajouter un utilisateur comme administrateur', 'fas fa-user-plus', 'add_admin_user')->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkTo(EventCrudController::class, 'Événements', 'fas fa-bars')->setPermission('ROLE_ADMIN');
     }
 
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/add/admin', name: 'add_admin_user')]
     public function dashboardUsers(Request $request, EntityManagerInterface $em): Response
     {
