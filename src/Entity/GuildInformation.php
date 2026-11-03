@@ -36,7 +36,7 @@ use Symfony\Component\Serializer\Attribute\Ignore;
     ),
 )]
 #[GetCollection(
-    uriTemplate: '/guild_informations/',
+    uriTemplate: '/guild_informations',
     openapi: new Operation(
         responses: [
             '200' => new Response(description: 'La liste des guildes.'),
