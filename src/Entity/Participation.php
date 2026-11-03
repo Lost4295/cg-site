@@ -79,7 +79,7 @@ Elle est optionnelle, et présente si vous avez besoin de noter les présences d
     securityPostDenormalize: "is_granted('ROLE_SUPER_ADMIN') or user.hasGuild(object.getGuildId())",
 )]
 #[Post(
-    uriTemplate: '/participations/',
+    uriTemplate: '/participations',
     openapi: new Operation(
         responses: [
             '201' => new Response(description: 'La participation a été créée.'),
