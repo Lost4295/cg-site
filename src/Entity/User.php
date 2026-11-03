@@ -132,7 +132,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     /** @var string[] */
     #[ORM\Column(type: Types::JSON, options: ['default' => '[]'])]
     #[Groups(['user:read'])]
-    #[ApiProperty(description: 'Identifiants des guildes (associations) gérées par l\'utilisateur.', example: ['1411453838774370397'])]
+    #[ApiProperty(description: 'Identifiants des guildes (associations) gérées par l\'utilisateur.', example: ['1411453838774370397'], writable: false)]
     private array $guildIds = [];
 
     #[Ignore]
