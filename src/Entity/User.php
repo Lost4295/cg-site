@@ -30,7 +30,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
 #[ApiResource(
-    shortName: 'Utilisateurs',
+    shortName: 'User',
     description: "Cette ressource est utilisée pour rassembler les informations utiles sur les élèves qui sont inscrits et usent du système centralisé pour les points OPEN.",
     normalizationContext: ['groups' => ['user:read']]
 )]
