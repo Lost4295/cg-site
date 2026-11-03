@@ -261,6 +261,8 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         $this->tags = new ArrayCollection();
         $this->events = new ArrayCollection();
         $this->participations = new ArrayCollection();
+        $this->date_inscr = new DateTime();
+        $this->accountValid = self::NO_SET;
     }
 
     public function __toString(): string
