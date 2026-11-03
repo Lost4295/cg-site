@@ -186,7 +186,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         summary: 'Crée une date.',
     ),
     description: 'Crée une nouvelle date. Cette opération est réservée aux associations que vous gérez.',
-    securityPostDenormalize: "is_granted('ROLE_SUPER_ADMIN') or user.hasGuild(object.getGuildId())",
+    securityPostValidation: "is_granted('ROLE_SUPER_ADMIN') or user.hasGuild(object.getGuildId())",
 )]
 #[Put(
     openapi: new Operation(
