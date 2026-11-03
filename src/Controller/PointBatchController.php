@@ -159,7 +159,12 @@ final class PointBatchController extends AbstractController
             }
         }
         $usersByEmail = [];
-        foreach ($this->users->findBy(['email' => array_values(array_unique($emails))]) as $found) {
+        $matchingUsers = $this->users->createQueryBuilder('u')
+            ->where('LOWER(u.email) IN (:emails)')
+            ->setParameter('emails', array_values(array_unique($emails)))
+            ->getQuery()
+            ->getResult();
+        foreach ($matchingUsers as $found) {
             $usersByEmail[strtolower((string) $found->getEmail())] = $found;
         }
 
