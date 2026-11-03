@@ -210,7 +210,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[ORM\Column(length: 7)]
     #[Assert\NotIdenticalTo('Classe')]
-    #[Assert\Regex(pattern: '/^(?:1(?:A|I|AJ)|2(?:A|I|MCSI|AJ)|[3-5](?:AL|IABD|MOC|IBC|IW|MCSI|RVJV|SI|SRC)J?)$/')]
+    #[Assert\Regex(pattern: '/^(?:1(?:A|I|AJ|IJ)|2(?:A|I|MCSI|AJ)|[3-5](?:AL|IABD|MOC|IBC|IW|MCSI|RVJV|SI|SRC)J?)$/')]
     #[Assert\NotBlank(message: 'Class cannot be blank.')]
     #[ApiProperty(description: 'Classe de l\'utilisateur (7 caractères maximum). Ne doit pas contenir le groupe !', example: '3SI')]
     private ?string $classe = null;
