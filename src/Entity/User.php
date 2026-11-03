@@ -497,10 +497,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
                 $participation->setUser($this);
             }
         }
-        $col = new ArrayCollection();
-
-        $col->add($participations);
-        $this->participations = $col;
+        $this->participations = new ArrayCollection($participations);
 
         return $this;
     }
