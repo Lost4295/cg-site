@@ -143,9 +143,8 @@ class PointCrudV2Controller extends AbstractCrudController
                 return $value ? $value->format('d/m/Y H:i') : '';
             }),
             NumberField::new('points', 'Points'),
-            count($guildIds) === 1
-                ? TextField::new('guild_id', 'Identifiant d\'association')->onlyOnIndex()
-                : ChoiceField::new('guild_id', 'Guilde')->setChoices(array_combine($guildNames, $guildIds) ?: [])->onlyOnForms(),
+            TextField::new('guild_id', 'Identifiant d\'association')->onlyOnIndex(),
+            ChoiceField::new('guild_id', 'Guilde')->setChoices(array_combine($guildNames, $guildIds) ?: [])->onlyOnForms(),
         ];
     }
     public function getNames(array $guildIds): array
