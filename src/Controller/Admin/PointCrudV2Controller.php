@@ -128,8 +128,13 @@ class PointCrudV2Controller extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $guildIds = $this->allowedGuildIds();
-        $guildNames =$this->getNames($guildIds);
+        $guildIds = $this->isGranted('ROLE_SUPER_ADMIN')
+            ? array_map(
+                static fn (GuildInformation $guild): string => $guild->getGuildId(),
+                $this->entityManager->getRepository(GuildInformation::class)->findAll(),
+            )
+            : $this->allowedGuildIds();
+        $guildNames = $this->getNames($guildIds);
         return [
             IdField::new('id')->hideOnForm(),
             AssociationField::new('user', 'Utilisateur'),
