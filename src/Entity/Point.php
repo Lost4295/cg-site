@@ -298,7 +298,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ),
 )]
 #[Post(
-    securityPostDenormalize: "is_granted('ROLE_SUPER_ADMIN') or user.hasGuild(object.getGuildId())",
+    securityPostValidation: "is_granted('ROLE_SUPER_ADMIN') or user.hasGuild(object.getGuildId())",
     openapi: new OpenApiOperation(
         summary: 'Crée un point.',
         responses: [
