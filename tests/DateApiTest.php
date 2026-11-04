@@ -134,6 +134,49 @@ final class DateApiTest extends ApiTestCase
         $this->assertStatus(404);
     }
 
+    public function testForeignGuildDateIsHiddenFromReads(): void
+    {
+        $this->authenticate($this->createUser('own@test.fr'));
+        $own = $this->createDate(self::GUILD_A);
+        $foreign = $this->createDate(self::GUILD_B);
+
+        $this->request('GET', '/api/dates/'.$foreign->getId());
+        $this->assertStatus(404);
+
+        $this->request('GET', '/api/dates');
+        $this->assertStatus(200);
+        $data = json_decode($this->client->getResponse()->getContent(), true);
+        $members = $data['member'] ?? $data['hydra:member'] ?? [];
+        $this->assertSame([$own->getId()], array_column($members, 'id'));
+    }
+
+    public function testCannotModifyOrMoveForeignGuildDate(): void
+    {
+        $this->authenticate($this->createUser('own@test.fr'));
+        $foreign = $this->createDate(self::GUILD_B);
+
+        $this->request('PATCH', '/api/dates/'.$foreign->getId(), ['guildId' => self::GUILD_A]);
+        $this->assertStatus(404);
+
+        $this->request('PUT', '/api/dates/'.$foreign->getId(), $this->payload(['guildId' => self::GUILD_A]));
+        $this->assertStatus(404);
+
+        $this->em->clear();
+        $this->assertSame(self::GUILD_B, $this->em->find(Date::class, $foreign->getId())->getGuildId());
+    }
+
+    public function testCannotMoveOwnDateToForeignGuild(): void
+    {
+        $this->authenticate($this->createUser('own@test.fr'));
+        $date = $this->createDate(self::GUILD_A);
+
+        $this->request('PATCH', '/api/dates/'.$date->getId(), ['guildId' => self::GUILD_B]);
+        $this->assertStatus(403);
+
+        $this->request('PUT', '/api/dates/'.$date->getId(), $this->payload(['guildId' => self::GUILD_B]));
+        $this->assertStatus(403);
+    }
+
     public function testSuperAdminCanDelete(): void
     {
         $this->authenticate($this->createUser('root@test.fr', ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN']));

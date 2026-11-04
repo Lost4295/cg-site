@@ -517,10 +517,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function removeParticipation(Participation $participation): static
     {
-        if ($this->participations->removeElement($participation) && $participation->getUser() === $this) {
-            // set the owning side to null (unless already changed)
-            $participation->setUser(null);
-        }
+        $this->participations->removeElement($participation);
 
         return $this;
     }
