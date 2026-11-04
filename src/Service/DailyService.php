@@ -32,7 +32,7 @@ class DailyService
                 }
             }
 
-            $value = random_int(1, 50);
+            $value = random_int(1, 10000);
             $couchPoint = new CouchPoint();
             $couchPoint->setUser($user);
             $couchPoint->setPoints($value);
