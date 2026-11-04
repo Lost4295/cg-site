@@ -22,7 +22,6 @@ use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
-use Symfony\Component\Serializer\Attribute\Ignore;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -34,7 +33,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     Elle permet de créer, modifier et supprimer des dates.
     Elle peut s'utiliser en conjonction avec la ressource Participation pour gérer les participations/présences des utilisateurs aux dates créées.
     ",
-    normalizationContext: ['groups' => ['user:read']]
+    normalizationContext: ['groups' => ['user:read']],
+    denormalizationContext: ['groups' => ['user:read', 'user:write']],
 )]
 #[Get(
     openapi: new Operation(
@@ -340,7 +340,7 @@ class Date
 
         return $this;
     }
-    #[Ignore]
+    #[Groups(['user:write'])]
     public function getGuildId(): string
     {
         return $this->guild_id;

@@ -47,6 +47,8 @@ final class DateApiTest extends ApiTestCase
 
         $this->assertStatus(201);
         $this->assertSame('New date', $data['title']);
+        $this->assertSame(self::GUILD_A, $data['guild_id']);
+        $this->assertArrayNotHasKey('guildId', $data);
         $this->assertSame(1, $this->em->getRepository(Date::class)->count([]));
     }
 
