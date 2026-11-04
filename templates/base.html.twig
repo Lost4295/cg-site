@@ -250,6 +250,8 @@
                                 <li><a class="dropdown-item" href="{{ path('responsible_points') }}">Points OPEN des
                                         élèves</a></li>
                                 <li><a class="dropdown-item" href="{{ path('admin') }}">Panel d'administration</a></li>
+                            {% elseif is_granted("ROLE_GUILD_HANDLER") %}
+                                <li><a class="dropdown-item" href="{{ path('admin') }}">Panel d'administration</a></li>
                             {% endif %}
                             <li>
                                 <form method="post" action="{{ path('app_logout') }}">

@@ -2,6 +2,7 @@
 
 namespace App\EventSubscriber;
 use App\Entity\Date;
+use App\Controller\Admin\PointCrudController;
 use App\Entity\Event;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
@@ -37,6 +38,7 @@ class EventCreateSubscriber implements EventSubscriberInterface
         $date->setDescription($entity->getDescription());
         $date->setDate($entity->getDate());
         $date->setDistanciel(false);
+        $date->setGuildId(PointCrudController::GUILD_ID);
         $this->em->persist($date);
         $this->em->flush();
     }

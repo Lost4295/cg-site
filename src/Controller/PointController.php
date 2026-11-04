@@ -74,7 +74,8 @@ final class PointController extends AbstractController
             $id= $user->getId();
             $userPoints[$id] = $calculator->compute($user, $allPoints, $allTrimestres);
             for ($i = 1; $i <= 3; $i++) {
-                $userPoints[$id][$i]['total'] = min($userPoints[$id][$i]['total'] ?? 0, $user->getIsAdmin() == 0 ? 4 : ($user->getIsAdmin() == 1 ? 6 : 8));
+                $userPoints[$id][$i]['total'] = min($userPoints[$id][$i]['total'] ?? 0, 9);
+                $userPoints[$id][$i]['total_guild'] = min($userPoints[$id][$i]['total_guild'] ?? 0, 9);
             }
         }
 
@@ -111,9 +112,13 @@ final class PointController extends AbstractController
                 }
             }
         }
-        $userPoints[1]['realTotal'] = min($userPoints[1]['total'], $user->getIsAdmin() == 0 ? 4 : ($user->getIsAdmin() == 1 ? 6 : 8));
-        $userPoints[2]['realTotal'] = min($userPoints[2]['total'], $user->getIsAdmin() == 0 ? 4 : ($user->getIsAdmin() == 1 ? 6 : 8));
-        $userPoints[3]['realTotal'] = min($userPoints[3]['total'], $user->getIsAdmin() == 0 ? 4 : ($user->getIsAdmin() == 1 ? 6 : 8));
+        $userPoints[1]['realTotal'] = round(min($userPoints[1]['total'], 9),2);
+        $userPoints[2]['realTotal'] = round(min($userPoints[2]['total'], 9),2);
+        $userPoints[3]['realTotal'] = round(min($userPoints[3]['total'], 9),2);
+        $userPoints[1]['realTotalGuild'] = round(min($userPoints[1]['total_guild'], 9),2);
+        $userPoints[2]['realTotalGuild'] = round(min($userPoints[2]['total_guild'], 9),2);
+        $userPoints[3]['realTotalGuild'] = round(min($userPoints[3]['total_guild'], 9),2);
+
         return $this->render('point/point_detail.html.twig', [
             'point' => $userPoints,
             'dates' => $dates

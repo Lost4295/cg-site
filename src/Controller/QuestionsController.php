@@ -67,9 +67,10 @@ final class QuestionsController extends AbstractController
     public function validateQuestion(Question $question, EntityManagerInterface $em): JsonResponse
     {
         $points = new Point();
-        $points->setUser($question->getUser());
-        $points->setPoints(0.25);
-        $points->setReason("Image validée");
+        $points->setUser($question->getUser())
+            ->setPoints(0.25)
+            ->setReason("Image validée")
+            ->setGuildId('510739348069679115');
         $em->persist($points);
         $em->flush();
 

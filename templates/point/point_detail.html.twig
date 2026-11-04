@@ -13,12 +13,17 @@
                     demander au président ses points afin de vous en assurer.</h1>
             </div>
         {% endif %}
+        {% if point.classe[:1] === "5" %}
+            <div class="row">
+                <h1 class="text-danger-emphasis">⚠️ En 5ème année, les élèves n'ont qu'un seul rendu. De fait, seul le rendu 1 sera rempli.</h1>
+            </div>
+        {% endif %}
         <h3> Rentrée : {{ point.rentree }}</h3>
 
         <div class="row">
             <div class="col-md-6">
                 <div class="card text-white bg-primary mb-3">
-                    <div class="card-header">Rendu 1 - {{ point.2.total }} points OPEN {{ point.2.realTotal != point.2.total ?"arrondis à "~point.2.realTotal ~ " points": ""  }}</div>
+                    <div class="card-header">Rendu 1 - {{ point.2.total }} points OPEN {{ point.2.realTotal != point.2.total ?"arrondis à "~point.2.realTotal ~ " points": ""  }} dont {{ point.2.realTotalGuild }} points OPEN chez Couch Gaming</div>
                     <div class="card-body bg-light">
                         <h5 class="card-title">Points OPEN gagnés sur les présences : {{ point.2.p }}</h5>
                         <ul>
@@ -32,7 +37,7 @@
             </div>
             <div class="col-md-6">
                 <div class="card text-white bg-primary mb-3">
-                    <div class="card-header">Rendu 2 - {{ point.3.total }} points OPEN {{ point.3.realTotal != point.3.total ? "arrondis à "~ point.3.realTotal ~ " points": ""  }}</div>
+                    <div class="card-header">Rendu 2 - {{ point.3.total }} points OPEN {{ point.3.realTotal != point.3.total ? "arrondis à "~ point.3.realTotal ~ " points": ""  }} dont {{ point.3.realTotalGuild }} points OPEN chez Couch Gaming</div>
                     <div class="card-body bg-light">
                         <h5 class="card-title">Points OPEN gagnés sur les présences : {{ point.3.p }}</h5>
                         <ul>
