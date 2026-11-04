@@ -235,9 +235,6 @@ final class StatusCodesTest extends ApiTestCase
     {
         $this->superAdmin();
 
-        $this->request('POST', '/api/guild_informations', ['guildId' => self::GUILD_B, 'name' => 'Beta', 'slug' => 'beta']);
-        $this->assertStatus(201);
-
         $this->request('GET', '/api/guild_informations');
         $this->assertStatus(200);
 

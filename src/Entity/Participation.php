@@ -15,6 +15,7 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\QueryParameter;
 use App\Repository\ParticipationRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Ignore;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ParticipationRepository::class)]
@@ -124,6 +125,11 @@ class Participation
     private ?Date $date = null;
 
 
+    #[ORM\Column(nullable: false)]
+    #[Assert\NotNull]
+    #[ApiProperty(description: "Événement auquel l'utilisateur participe (IRI de la date).", example: '/api/dates/1')]
+    private string $guild_id;
+
     public function getUser(): ?User
     {
         return $this->user;
@@ -145,6 +151,18 @@ class Participation
     {
         $this->date = $date;
 
+        return $this;
+    }
+
+    #[Ignore]
+    public function getGuildId(): string
+    {
+        return $this->guild_id;
+    }
+
+    public function setGuildId(string $guild_id): self
+    {
+        $this->guild_id = $guild_id;
         return $this;
     }
 }

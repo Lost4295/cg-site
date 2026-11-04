@@ -45,19 +45,6 @@ use Symfony\Component\Serializer\Attribute\Ignore;
         summary: 'Liste les guildes.',
     ),
 )]
-#[Post(
-    uriTemplate: '/guild_informations',
-    openapi: new Operation(
-        responses: [
-            '201' => new Response(description: 'La guilde a été créée.'),
-            '400' => new Response(description: 'Requête invalide (corps mal formé ou types incorrects).'),
-            '422' => new Response(description: 'Les données ne respectent pas les contraintes de validation.'),
-            '500' => new Response(description: 'Erreur interne du serveur.'),
-        ],
-        summary: 'Crée une guilde.',
-    ),
-    security: "is_granted('ROLE_SUPER_ADMIN')",
-)]
 class GuildInformation
 {
 
@@ -81,10 +68,10 @@ class GuildInformation
     #[ApiProperty(description: "Nom affiché de la guilde (association).", example: 'BDE Informatique')]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255, nullable: true, unique: true)]
+    #[ORM\Column(length: 255, unique: true)]
     #[Groups(['user:read'])]
     #[ApiProperty(description: "Identifiant court et lisible de la guilde, utilisable à la place du guild_id dans les URL pour rechercher des points.", example: 'bde-info')]
-    private ?string $slug = null;
+    private string $slug;
 
 
     #[ApiProperty(
