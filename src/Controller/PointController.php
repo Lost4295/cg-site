@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\GuildInformation;
 use App\Entity\Point;
 use App\Entity\Trimestre;
 use App\Entity\User;
@@ -71,7 +72,7 @@ final class PointController extends AbstractController
         $userPoints = [];
         $calculator = new PointCalculatorService();
         foreach ($users as $user) {
-            $id= $user->getId();
+            $id = $user->getId();
             $userPoints[$id] = $calculator->compute($user, $allPoints, $allTrimestres);
             for ($i = 1; $i <= 3; $i++) {
                 $userPoints[$id][$i]['total'] = min($userPoints[$id][$i]['total'] ?? 0, 9);
@@ -83,7 +84,7 @@ final class PointController extends AbstractController
     }
 
     #[Route('/points-open/{id}', name: 'points_responsible_precise', requirements: ['id' => '\d+'])]
-    public function getOPENSforUser(int $id, Request $request, EntityManagerInterface $em): Response
+    public function getOPENSforUser(int $id, EntityManagerInterface $em): Response
     {
         $allPoints = $em->getRepository(Point::class)->findAll();
         $allTrimestres = $em->getRepository(Trimestre::class)->findAll();
@@ -94,34 +95,46 @@ final class PointController extends AbstractController
         }
         $userPoints = $calculator->compute($user, $allPoints, $allTrimestres);
         $userPoints['rentree'] = $user->getRentree();
-        $userPoints[1]['p'] = 0;
-        $userPoints[2]['p'] = 0;
-        $userPoints[3]['p'] = 0;
-        $userPoints[1]['o'] = 0;
-        $userPoints[2]['o'] = 0;
-        $userPoints[3]['o'] = 0;
 
-        $dates = [1 => [], 2 => [], 3 => []];
+        $assos = [];
         for ($i = 1; $i <= 3; $i++) {
+            $assos[$i] = [];
             foreach ($userPoints[$i]['points'] as $point) {
-                if (in_array($point->getReason(), [ "Présence à l'association en présentiel", "Bonne réponse", "Mauvaise réponse", "Image acceptée"])) {
-                    $userPoints[$i]['p']+= $point->getPoints();
-                    $dates[$i][] = ['date' =>$point->getDate()->format('d/m/Y'), 'points'=>$point->getPoints()];
+                if ($point->getGuildId() && !isset($assos[$i][$point->getGuildId()])) {
+                    $assos[$i][$point->getGuildId()] = [];
+                }
+                $assos[$i][$point->getGuildId()][] = $point;
+            }
+        }
+        $resolved = [];
+        for ($i = 1; $i <= 3; $i++) {
+            $resolved[$i] = [];
+            foreach ($assos[$i] as $guildId => $points) {
+                $guild = $em->getRepository(GuildInformation::class)->find($guildId);
+                if ($guild) {
+                    if (!isset($resolved[$i][$guild->getName()])) {
+                        $resolved[$i][$guild->getName()] = 0;
+                    }
+                    foreach ($points as $point) {
+                        $resolved[$i][$guild->getName()] += $point->getPoints();
+                    }
                 } else {
-                    $userPoints[$i]['o']+= $point->getPoints();
+                    foreach ($points as $point) {
+                        $resolved[$i][$guildId] += $point->getPoints();
+                    }
                 }
             }
         }
-        $userPoints[1]['realTotal'] = round(min($userPoints[1]['total'], 9),2);
-        $userPoints[2]['realTotal'] = round(min($userPoints[2]['total'], 9),2);
-        $userPoints[3]['realTotal'] = round(min($userPoints[3]['total'], 9),2);
-        $userPoints[1]['realTotalGuild'] = round(min($userPoints[1]['total_guild'], 9),2);
-        $userPoints[2]['realTotalGuild'] = round(min($userPoints[2]['total_guild'], 9),2);
-        $userPoints[3]['realTotalGuild'] = round(min($userPoints[3]['total_guild'], 9),2);
+        $userPoints[1]['realTotal'] = round(min($userPoints[1]['total'], 9), 2);
+        $userPoints[2]['realTotal'] = round(min($userPoints[2]['total'], 9), 2);
+        $userPoints[3]['realTotal'] = round(min($userPoints[3]['total'], 9), 2);
+        $userPoints[1]['realTotalGuild'] = round(min($userPoints[1]['total_guild'], 9), 2);
+        $userPoints[2]['realTotalGuild'] = round(min($userPoints[2]['total_guild'], 9), 2);
+        $userPoints[3]['realTotalGuild'] = round(min($userPoints[3]['total_guild'], 9), 2);
 
         return $this->render('point/point_detail.html.twig', [
             'point' => $userPoints,
-            'dates' => $dates
+            'list' => $resolved
         ]);
     }
 

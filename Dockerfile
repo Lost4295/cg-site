@@ -3,7 +3,7 @@ FROM php:8.2-fpm AS base
 ENV PATH=$PATH:/usr/local/bin
 RUN apt-get update -o Acquire::Retries=3 \
  && apt-get install -y --no-install-recommends \
-    curl unzip git nginx \
+    curl unzip git nginx openssl \
     zlib1g-dev libzip-dev \
     libwebp-dev libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
     libicu-dev \
