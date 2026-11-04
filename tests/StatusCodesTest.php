@@ -211,7 +211,9 @@ final class StatusCodesTest extends ApiTestCase
     {
         foreach (['dates', 'points', 'users', 'tags', 'participations', 'guild_informations'] as $resource) {
             yield "GET collection $resource" => ['GET', "/api/$resource", null];
-            yield "POST $resource" => ['POST', "/api/$resource", []];
+            if ('guild_informations' !== $resource) {
+                yield "POST $resource" => ['POST', "/api/$resource", []];
+            }
         }
         foreach (['dates', 'points', 'users', 'tags', 'participations'] as $resource) {
             yield "GET item $resource" => ['GET', "/api/$resource/1", null];
@@ -231,9 +233,14 @@ final class StatusCodesTest extends ApiTestCase
         $this->assertStatus(500);
     }
 
-    public function testGuildInformation200And201And404(): void
+    public function testGuildInformationReads200And404(): void
     {
         $this->superAdmin();
+        $this->em->persist((new \App\Entity\GuildInformation())
+            ->setGuildId(self::GUILD_B)
+            ->setName('Beta')
+            ->setSlug('beta'));
+        $this->em->flush();
 
         $this->request('GET', '/api/guild_informations');
         $this->assertStatus(200);
@@ -245,15 +252,15 @@ final class StatusCodesTest extends ApiTestCase
         $this->assertStatus(404);
     }
 
-    public function testGuildInformationPost400And422(): void
+    public function testGuildInformationIsReadOnly(): void
     {
         $this->superAdmin();
 
         $this->rawRequest('POST', '/api/guild_informations', '{bad');
-        $this->assertStatus(400);
+        $this->assertStatus(405);
 
         $this->request('POST', '/api/guild_informations', []);
-        $this->assertStatus(422);
+        $this->assertStatus(405);
     }
 
     public function testTagAndParticipationCollections200(): void

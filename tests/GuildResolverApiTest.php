@@ -8,7 +8,8 @@ final class GuildResolverApiTest extends ApiTestCase
 {
     private function createGuild(string $id, string $name): void
     {
-        $g = (new GuildInformation())->setGuildId($id)->setName($name);
+        $slug = strtolower(str_replace(' ', '-', $name));
+        $g = (new GuildInformation())->setGuildId($id)->setName($name)->setSlug($slug);
         $this->em->persist($g);
         $this->em->flush();
     }
@@ -47,25 +48,22 @@ final class GuildResolverApiTest extends ApiTestCase
         $this->assertStatus(200);
     }
 
-    public function testSuperAdminSeesAllAndCanCreate(): void
+    public function testSuperAdminSeesAllGuilds(): void
     {
         $this->createGuild(self::GUILD_A, 'Alpha');
         $this->authenticate($this->createUser('root@test.fr', ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN']));
 
         $data = $this->request('GET', '/api/guild_informations');
         $this->assertCount(1, $data['member']);
-
-        $this->request('POST', '/api/guild_informations', ['guildId' => self::GUILD_B, 'name' => 'Beta']);
-        $this->assertStatus(201);
     }
 
-    public function testAdminCannotWrite(): void
+    public function testGuildInformationIsReadOnly(): void
     {
         $this->authenticate($this->createUser('me@test.fr', ['ROLE_ADMIN'], [self::GUILD_A]));
 
         $this->request('POST', '/api/guild_informations', ['guildId' => self::GUILD_A, 'name' => 'Alpha']);
 
-        $this->assertStatus(403);
+        $this->assertStatus(405);
     }
 
     public function testSummaryShowsGuildNames(): void

@@ -137,7 +137,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[Ignore]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $avatar;
+    private ?string $avatar = null;
 
     #[Ignore]
     #[ORM\Column(nullable: true)]
@@ -877,4 +877,3 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this;
     }
 }
-

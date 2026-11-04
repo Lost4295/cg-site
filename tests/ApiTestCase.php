@@ -32,6 +32,10 @@ abstract class ApiTestCase extends WebTestCase
 
     protected function createUser(string $email, array $roles = ['ROLE_ADMIN'], array $guildIds = [self::GUILD_A], ?string $plainPassword = null): User
     {
+        if (in_array('ROLE_ADMIN', $roles, true)) {
+            $roles[] = 'ROLE_GUILD_HANDLER';
+        }
+
         $user = (new User())
             ->setId(substr(md5($email), 0, 32))
             ->setEmail($email)
@@ -39,7 +43,7 @@ abstract class ApiTestCase extends WebTestCase
             ->setNom('Nom')
             ->setPrenom('Prenom')
             ->setClasse('3SI1')
-            ->setRoles($roles)
+            ->setRoles(array_unique($roles))
             ->setGuildIds($guildIds)
             ->setDateInscr(new \DateTime())
             ->setAvatar('avatar');

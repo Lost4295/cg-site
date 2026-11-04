@@ -34,7 +34,7 @@ final class EventControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', $this->path);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('Event index');
+        self::assertPageTitleContains('Couch Gaming - Liste des événements');
 
         // Use the $crawler to perform additional assertions e.g.
         // self::assertSame('Some text on the page', $crawler->filter('.p')->first()->text());
@@ -42,31 +42,18 @@ final class EventControllerTest extends WebTestCase
 
     public function testNew(): void
     {
-        $this->markTestIncomplete();
         $this->client->request('GET', sprintf('%snew', $this->path));
 
-        self::assertResponseStatusCodeSame(200);
-
-        $this->client->submitForm('Save', [
-            'event[name]' => 'Testing',
-            'event[description]' => 'Testing',
-            'event[date]' => 'Testing',
-            'event[image]' => 'Testing',
-        ]);
-
-        self::assertResponseRedirects($this->path);
-
-        self::assertSame(1, $this->eventRepository->count());
+        self::assertResponseStatusCodeSame(404);
     }
 
     public function testShow(): void
     {
-        $this->markTestIncomplete();
         $fixture = new Event();
         $fixture->setName('My Title');
-        $fixture->setDescription('My Title');
-        $fixture->setDate('My Title');
-        $fixture->setImage('My Title');
+        $fixture->setDescription('Event description');
+        $fixture->setDate(new \DateTime('2030-01-01T10:00:00+00:00'));
+        $fixture->setImage('event.png');
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -74,58 +61,21 @@ final class EventControllerTest extends WebTestCase
         $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('Event');
-
-        // Use assertions to check that the properties are properly displayed.
+        self::assertPageTitleContains('My Title - Événement');
+        self::assertSelectorTextContains('h1.event-hero-title', 'My Title');
     }
 
     public function testEdit(): void
     {
-        $this->markTestIncomplete();
-        $fixture = new Event();
-        $fixture->setName('Value');
-        $fixture->setDescription('Value');
-        $fixture->setDate('Value');
-        $fixture->setImage('Value');
+        $this->client->request('GET', sprintf('%s1/edit', $this->path));
 
-        $this->manager->persist($fixture);
-        $this->manager->flush();
-
-        $this->client->request('GET', sprintf('%s%s/edit', $this->path, $fixture->getId()));
-
-        $this->client->submitForm('Update', [
-            'event[name]' => 'Something New',
-            'event[description]' => 'Something New',
-            'event[date]' => 'Something New',
-            'event[image]' => 'Something New',
-        ]);
-
-        self::assertResponseRedirects('/event/');
-
-        $fixture = $this->eventRepository->findAll();
-
-        self::assertSame('Something New', $fixture[0]->getName());
-        self::assertSame('Something New', $fixture[0]->getDescription());
-        self::assertSame('Something New', $fixture[0]->getDate());
-        self::assertSame('Something New', $fixture[0]->getImage());
+        self::assertResponseStatusCodeSame(404);
     }
 
     public function testRemove(): void
     {
-        $this->markTestIncomplete();
-        $fixture = new Event();
-        $fixture->setName('Value');
-        $fixture->setDescription('Value');
-        $fixture->setDate('Value');
-        $fixture->setImage('Value');
+        $this->client->request('DELETE', sprintf('%s1', $this->path));
 
-        $this->manager->persist($fixture);
-        $this->manager->flush();
-
-        $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
-        $this->client->submitForm('Delete');
-
-        self::assertResponseRedirects('/event/');
-        self::assertSame(0, $this->eventRepository->count());
+        self::assertResponseStatusCodeSame(405);
     }
 }
