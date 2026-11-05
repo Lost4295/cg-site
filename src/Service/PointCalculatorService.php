@@ -45,7 +45,7 @@ class PointCalculatorService
         }
         $result['id'] = $user->getId();
         $result['visible'] = $user->isVisibility();
-        $result['name'] = $user->getNom() . " " . $user->getPrenom();
+        $result['name'] = $user->getFullName();
         $result['classe'] = $user->getClasse();
         $result['warning'] = $user->getIsAdmin() || $this->hasResultsUnderZero($result) ? "⚠️" : "";
         $result['is_janvier'] = $user->isJanvier();

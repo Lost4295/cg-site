@@ -18,6 +18,12 @@
             l'administrateur dans l'association ; ou bien, il y a une erreur). Veuillez demander au président correspondant ses points afin de vous en assurer.</p>
 
         <br>
+        <div class="row">
+        <div class="col">
+            <a href="{{ path('export_json') }}" class="btn btn-primary">Exporter en JSON</a>
+            <a href="{{ path('export_xlsx') }}" class="btn btn-primary">Exporter en XLSX</a>
+        </div>
+        </div>
         <div id="wrapper"></div>
     </div>
 {% endblock %}
