@@ -14,7 +14,9 @@ class PointCalculatorService
 
         /** @var Trimestre[] $trimestres */
         foreach ($trimestres as $t) {
-            if ($t->getNiveau() !== $user->getOnlyClasse()) {continue;}
+            if ($t->getNiveau() !== $user->getOnlyClasse()) {
+                continue;
+            }
             $result[$t->getTrimestre()] = [
                 'points' => [],
                 'total' => 0,
@@ -25,14 +27,16 @@ class PointCalculatorService
         }
         /** @var Point[] $points */
         foreach ($points as $point) {
-            if ($point->getUser()->getId() !== $user->getId()) {continue;}
+            if ($point->getUser()->getId() !== $user->getId()) {
+                continue;
+            }
             $date = $point->getDate();
             foreach ($result as $k => &$quarter) {
                 if ($date >= $quarter['start'] && $date <= $quarter['end']) {
                     $quarter['points'][] = $point;
                     $quarter['total'] += $point->getPoints();
                     if ($point->getGuildId() === $guildId) {
-                        $quarter['total_guild'] += (float) $point->getPoints();
+                        $quarter['total_guild'] += (float)$point->getPoints();
                     }
                     break;
                 }
@@ -41,11 +45,20 @@ class PointCalculatorService
         }
         $result['id'] = $user->getId();
         $result['visible'] = $user->isVisibility();
-        $result['name'] = $user->getNom() . " " . $user->getPrenom();
+        $result['name'] = $user->getFullName();
         $result['classe'] = $user->getClasse();
-        $result['warning'] = $user->getIsAdmin() ? "⚠️" : "";
-        $result['is_janvier'] =$user->isJanvier();
+        $result['warning'] = $user->getIsAdmin() || $this->hasResultsUnderZero($result) ? "⚠️" : "";
+        $result['is_janvier'] = $user->isJanvier();
 
         return $result;
+    }
+
+    private function hasResultsUnderZero(array $result): bool
+    {
+        if (!isset($result[2], $result[3])) {
+            return true;
+        }
+        return $result[2]['total'] < 0 || $result[2]['total_guild'] < 0
+            || $result[3]['total'] < 0 || $result[3]['total_guild'] < 0;
     }
 }

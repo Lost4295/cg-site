@@ -25,13 +25,10 @@
                 <div class="card text-white bg-primary mb-3">
                     <div class="card-header">Rendu 1 - {{ point.2.total }} points OPEN {{ point.2.realTotal != point.2.total ?"arrondis à "~point.2.realTotal ~ " points": ""  }} dont {{ point.2.realTotalGuild }} points OPEN chez Couch Gaming</div>
                     <div class="card-body bg-light">
-                        <h5 class="card-title">Points OPEN gagnés sur les présences : {{ point.2.p }}</h5>
-                        <ul>
-                            {% for date in dates.2 %}
-                                <li>{{ date.date }} : {{ date.points }} pt</li>
-                            {% endfor %}
-                        </ul>
-                        <p class="card-text">Points OPEN gagnés grâce à l'activité : {{ point.2.o }}</p>
+                        <h5>Points par association :</h5>
+                        {% for name, points in list.2 %}
+                            <p>{{ name }} : {{ points }}</p>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -39,13 +36,10 @@
                 <div class="card text-white bg-primary mb-3">
                     <div class="card-header">Rendu 2 - {{ point.3.total }} points OPEN {{ point.3.realTotal != point.3.total ? "arrondis à "~ point.3.realTotal ~ " points": ""  }} dont {{ point.3.realTotalGuild }} points OPEN chez Couch Gaming</div>
                     <div class="card-body bg-light">
-                        <h5 class="card-title">Points OPEN gagnés sur les présences : {{ point.3.p }}</h5>
-                        <ul>
-                            {% for date in dates.3 %}
-                                <li>{{ date.date }} : {{ date.points }} pt </li>
-                            {% endfor %}
-                        </ul>
-                        <p class="card-text">Points OPEN gagnés grâce à l'activité : {{ point.3.o }}</p>
+                        <h5>Points par association :</h5>
+                        {%  for name, points in list.3 %}
+                            <p>{{ name }} : {{ points }}</p>
+                        {% endfor %}
                     </div>
                 </div>
             </div>

@@ -24,6 +24,9 @@ class AddAdminType extends AbstractType
                 'choice_value' => 'id',
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
                     return $er->createQueryBuilder('u')
+                        ->where('u.email IS NOT NULL')
+                        ->andWhere('u.email != :empty')
+                        ->setParameter('empty', '')
                         ->orderBy('u.prenom', 'ASC');
                 },
                 'label' => 'Utilisateur',

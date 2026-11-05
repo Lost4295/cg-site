@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\GuildInformation;
 use App\Entity\User;
 use App\Form\AddAdminType;
+use App\Form\AddAPIUserType;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -13,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -57,11 +59,10 @@ class DashboardController extends AbstractDashboardController
     }
 
 
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted('ROLE_SUPER_ADMIN')]
     #[Route('/add/admin', name: 'add_admin_user')]
     public function dashboardUsers(Request $request, EntityManagerInterface $em): Response
     {
-
         $form = $this->createForm(AddAdminType::class);
 
         $form->handleRequest($request);
@@ -72,12 +73,39 @@ class DashboardController extends AbstractDashboardController
             $user->addRole('ROLE_GUILD_HANDLER');
             /** @var GuildInformation $guild */
             foreach ($data['guilds'] as $guild) {
-                $user->setGuildIds([...$user->getGuildIds() ,$guild->getGuildId()]);
+                $user->setGuildIds([...$user->getGuildIds(), $guild->getGuildId()]);
             }
             $em->flush();
             $this->addFlash('success', 'Enregistrement réussi !');
         }
         return $this->render('admin/addadmin.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[Route('/add/api_user', name: 'add_api_user')]
+    public function dashboardApiUsers(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher): Response
+    {
+        $form = $this->createForm(AddAPIUserType::class);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            /** @var User $user */
+            $user = $data['user'];
+            $password = $data['password'];
+            $password = $hasher->hashPassword($user, $password);
+            $user->setPassword($password);
+            $user->addRole('ROLE_GUILD_HANDLER');
+            /** @var GuildInformation $guild */
+            foreach ($data['guilds'] as $guild) {
+                $user->setGuildIds([...$user->getGuildIds(), $guild->getGuildId()]);
+            }
+            $em->flush();
+            $this->addFlash('success', 'Enregistrement réussi !');
+        }
+        return $this->render('admin/addapiuser.html.twig', [
             'form' => $form->createView(),
         ]);
     }
