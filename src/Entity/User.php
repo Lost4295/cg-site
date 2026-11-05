@@ -27,7 +27,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[
+    ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
 #[ApiResource(
     shortName: 'User',
@@ -70,7 +71,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
         '500' => new Response(description: 'Erreur interne du serveur.'),
     ],
     summary: 'Modifie partiellement un utilisateur.',
-))]
+    ),
+    security: "is_granted('ROLE_SUPER_ADMIN')",
+)]
 #[Post(openapi: new Operation(
     responses: [
         '201' => new Response(description: 'L\'utilisateur a été créé.'),
