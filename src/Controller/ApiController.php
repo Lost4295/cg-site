@@ -300,6 +300,7 @@ final class ApiController extends AbstractController
             ["label" => '5SI1', "description" => 'Cinquième année SI Groupe 1', "value" => '5SI1', "emoji" => '5️⃣'],
             ["label" => '5SI2', "description" => 'Cinquième année SI Groupe 2', "value" => '5SI2', "emoji" => '5️⃣'],
             ["label" => '5SI3', "description" => 'Cinquième année SI Groupe 3', "value" => '5SI3', "emoji" => '5️⃣'],
+            ["label" => '5SI4', "description" => 'Cinquième année SI Groupe 4', "value" => '5SI4', "emoji" => '5️⃣'],
             ["label" => '5SRC1', "description" => 'Cinquième année SRC Groupe 1', "value" => '5SRC1', "emoji" => '5️⃣'],
             ["label" => '5SRC2', "description" => 'Cinquième année SRC Groupe 2', "value" => '5SRC2', "emoji" => '5️⃣'],
             ["label" => '5SRC3', "description" => 'Cinquième année SRC Groupe 3', "value" => '5SRC3', "emoji" => '5️⃣'],
