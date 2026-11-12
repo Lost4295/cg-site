@@ -1,0 +1,22 @@
+{% for image in images %}
+    <div class="image-card" data-image-id="{{ image.id }}">
+        <div class="image-card-preview">
+            <span class="image-card-id">#{{ image.id }}</span>
+            <img
+                src="{{ image.image }}"
+                alt="Image de {{ image.user.fullName }}"
+                class="clickable-image"
+                loading="lazy"
+            />
+        </div>
+        <div class="image-card-body">
+            <div class="image-card-user">
+                {{ image.user.fullName }}
+            </div>
+            <div class="image-card-actions">
+                <button type="button" class="btn-validate" data-url="{{ path('validate_images', {id: image.id}) }}">Valider</button>
+                <button type="button" class="btn-reject" data-url="{{ path('refuse_images', {id: image.id}) }}">Refuser</button>
+            </div>
+        </div>
+    </div>
+{% endfor %}

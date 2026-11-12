@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
@@ -27,12 +28,16 @@ final class ImagesController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/user_images/check', name: 'check_images')]
-    public function index(EntityManagerInterface $em): Response
+    public function index(EntityManagerInterface $em, Request $request): Response
     {
         $images = $em->getRepository(Image::class)->findBy(["verified" => false, 'guildId'=>'510739348069679115']);
-        return $this->render('images/index.html.twig', [
+        $template = $request->query->get('partial') === '1' ? 'images/_cards.html.twig' : 'images/index.html.twig';
+        $response = $this->render($template, [
             'images'=>$images
         ]);
+        $response->headers->set('Cache-Control', 'no-store, private');
+
+        return $response;
     }
 
     /**

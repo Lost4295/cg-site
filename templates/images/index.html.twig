@@ -8,8 +8,6 @@
 
 {% block body %}
     <div class="container check-images-container">
-
-        <!-- Page Header -->
         <div class="check-images-header">
             <h1>🖼️ Vérifier les images</h1>
             <p>Validez ou refusez les images de présence soumises par les utilisateurs</p>
@@ -18,39 +16,16 @@
             </div>
         </div>
 
-        <!-- Images Grid -->
-        <div class="images-grid">
-            {% for image in images %}
-                <div class="image-card">
-                    <div class="image-card-preview">
-                        <span class="image-card-id">#{{ image.id }}</span>
-                        <img
-                            src="{{ image.image }}"
-                            alt="Image de {{ image.user.fullName }}"
-                            class="clickable-image"
-                            loading="lazy"
-                        />
-                    </div>
-                    <div class="image-card-body">
-                        <div class="image-card-user">
-                            {{ image.user.fullName }}
-                        </div>
-                        <div class="image-card-actions">
-                            <button id="v-{{ image.id }}" class="btn-validate">Valider</button>
-                            <button id="r-{{ image.id }}" class="btn-reject">Refuser</button>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                <div class="empty-state">
-                    <div class="empty-state-icon">🎉</div>
-                    <p class="empty-state-text">Aucune image en attente !</p>
-                    <p class="empty-state-subtext">Toutes les images ont été vérifiées</p>
-                </div>
-            {% endfor %}
-            <input type="hidden" value="{{ csrf_token('image') }}" id="_token" name="_token"/>
+        <p class="images-update-error" role="status" hidden></p>
+        <div class="images-grid" data-refresh-url="{{ path('check_images', {partial: 1}) }}">
+            {% include 'images/_cards.html.twig' %}
+            <div class="empty-state" {% if images|length > 0 %}hidden{% endif %}>
+                <div class="empty-state-icon">🎉</div>
+                <p class="empty-state-text">Aucune image en attente !</p>
+                <p class="empty-state-subtext">Toutes les images ont été vérifiées</p>
+            </div>
         </div>
-        <!-- Modal pour afficher l'image en grand -->
+        <input type="hidden" value="{{ csrf_token('image') }}" id="_token" name="_token"/>
         <div id="imageModal" class="image-modal">
             <span class="image-modal-close">&times;</span>
             <img class="image-modal-content" id="modalImage" alt="Image agrandie">
@@ -61,26 +36,65 @@
 {% block additionnal_javascripts %}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Gestion de la modale d'image
             const modal = document.getElementById('imageModal');
             const modalImage = document.getElementById('modalImage');
             const closeModal = document.querySelector('.image-modal-close');
+            const grid = document.querySelector('.images-grid');
+            const counter = document.querySelector('.images-counter');
+            const emptyState = grid.querySelector('.empty-state');
+            const updateError = document.querySelector('.images-update-error');
+            const token = document.getElementById('_token');
+            let revision = 0;
+            let refreshing = false;
 
-            document.querySelectorAll('.clickable-image').forEach(function (image) {
-                image.addEventListener('click', function () {
-                    modalImage.src = this.src;
-                    modalImage.alt = this.alt;
-                    modal.style.display = 'flex';
-                });
-            });
+            function updateCount() {
+                const count = grid.querySelectorAll('.image-card').length;
+                counter.textContent = '📷 ' + count + ' image(s) en attente';
+                emptyState.hidden = count !== 0;
+            }
 
-// Fermer avec la croix
+            async function refreshImages() {
+                if (refreshing) {
+                    return;
+                }
+                refreshing = true;
+                const currentRevision = revision;
+                try {
+                    const response = await fetch(grid.dataset.refreshUrl, {cache: 'no-store'});
+                    if (!response.ok || response.redirected) {
+                        throw new Error('Actualisation impossible (HTTP ' + response.status + ')');
+                    }
+                    const html = await response.text();
+                    if (currentRevision !== revision) {
+                        return;
+                    }
+                    const fragment = document.createElement('template');
+                    fragment.innerHTML = html;
+                    const incoming = new Map(Array.from(fragment.content.querySelectorAll('.image-card'), card => [card.dataset.imageId, card]));
+                    grid.querySelectorAll('.image-card').forEach(function (card) {
+                        if (incoming.has(card.dataset.imageId)) {
+                            incoming.delete(card.dataset.imageId);
+                        } else if (!card.querySelector('button:disabled')) {
+                            card.remove();
+                        }
+                    });
+                    incoming.forEach(card => grid.insertBefore(card, emptyState));
+                    updateCount();
+                    updateError.hidden = true;
+                } catch (error) {
+                    console.error('Erreur lors de l’actualisation des images :', error);
+                    updateError.textContent = 'Impossible d’actualiser les images. Une nouvelle tentative sera effectuée.';
+                    updateError.hidden = false;
+                } finally {
+                    refreshing = false;
+                }
+            }
+
             closeModal.addEventListener('click', function () {
                 modal.style.display = 'none';
                 modalImage.src = '';
             });
 
-// Fermer en cliquant sur le fond sombre
             modal.addEventListener('click', function (event) {
                 if (event.target === modal) {
                     modal.style.display = 'none';
@@ -88,50 +102,56 @@
                 }
             });
 
-// Fermer avec la touche Échap
             document.addEventListener('keydown', function (event) {
                 if (event.key === 'Escape') {
                     modal.style.display = 'none';
                     modalImage.src = '';
                 }
             });
-            const buttons = document.querySelectorAll('button');
-            buttons.forEach(function (button) {
-                button.addEventListener('click', function () {
-                    const [action, id] = button.id.split('-');
-                    let url = '';
-                    if (action === 'v') {
-                        url = '/user_images/validate/' + id;
-                    } else if (action === 'r') {
-                        url = '/user_images/reject/' + id;
-                    }
-                    const token = document.querySelector('input[name="_token"]');
-                    fetch(url, {
+
+            grid.addEventListener('click', async function (event) {
+                const image = event.target.closest('.clickable-image');
+                if (image && grid.contains(image)) {
+                    modalImage.src = image.src;
+                    modalImage.alt = image.alt;
+                    modal.style.display = 'flex';
+                    return;
+                }
+
+                const button = event.target.closest('.image-card-actions button');
+                if (!button || !grid.contains(button) || button.disabled) {
+                    return;
+                }
+                const card = button.closest('.image-card');
+                const buttons = card.querySelectorAll('.image-card-actions button');
+                buttons.forEach(item => item.disabled = true);
+                button.classList.add('loading');
+                revision++;
+                try {
+                    const response = await fetch(button.dataset.url, {
                         method: 'POST',
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest',
                             'Content-Type': 'application/x-www-form-urlencoded'
                         },
-                        body: new URLSearchParams({
-                            _token: token.value
-                        })
-                    })
-                        .then(async response => {
-                            const txt= await response.json()
-                            if (response.ok) {
-                                alert(txt.status)
-                                location.reload();
-                            } else {
-                                alert('Une erreur est survenue.');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Erreur:', error);
-                            alert('Une erreur est survenue.');
-                        });
-                });
+                        body: new URLSearchParams({_token: token.value})
+                    });
+                    if (!response.ok || response.redirected) {
+                        throw new Error('Traitement impossible (HTTP ' + response.status + ')');
+                    }
+                    const result = await response.json();
+                    card.remove();
+                    updateCount();
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    alert('Une erreur est survenue.');
+                    buttons.forEach(item => item.disabled = false);
+                    button.classList.remove('loading');
+                } finally {
+                    revision++;
+                }
             });
+            window.setInterval(refreshImages, 10000);
         });
-
     </script>
 {% endblock %}
