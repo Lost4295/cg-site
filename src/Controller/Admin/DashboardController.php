@@ -54,7 +54,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkTo(PointCrudV2Controller::class, 'Points des utilisateurs (V2)', 'fas fa-list')
             ->setPermission('ROLE_GUILD_HANDLER');
         yield MenuItem::linkTo(UserCrudController::class, 'Utilisateurs', 'fas fa-users')->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToRoute('Ajouter un utilisateur comme administrateur', 'fas fa-user-plus', 'add_admin_user')->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToRoute('Ajouter un utilisateur comme administrateur', 'fas fa-user-plus', 'add_admin_user')->setPermission('ROLE_SUPER_ADMIN');
+        yield MenuItem::linkToRoute('Ajouter un utilisateur comme utilisateur API', 'fas fa-user-plus', 'add_api_user')->setPermission('ROLE_SUPER_ADMIN');
         yield MenuItem::linkTo(EventCrudController::class, 'Événements', 'fas fa-bars')->setPermission('ROLE_ADMIN');
     }
 
