@@ -22,6 +22,7 @@ deploy:
               docker rm -f cg-site || true
               docker run -d -p 80:80 -p 443:443 \
                 -v public:/var/www/html/public/ \
+                -v /home/buser/jwt:/var/www/html/config/jwt/ \
                 --network=my-net \
                 --env-file ~/cg-site/config/.env.prod.local \
                 --name cg-site cg-site
