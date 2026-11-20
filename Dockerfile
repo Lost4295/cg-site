@@ -1,4 +1,4 @@
-FROM php:8.2-fpm AS base
+FROM php:8.6-rc-fpm AS base
 
 ENV PATH=$PATH:/usr/local/bin
 RUN apt-get update -o Acquire::Retries=3 \
