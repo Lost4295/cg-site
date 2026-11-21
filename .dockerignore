@@ -12,5 +12,6 @@
 var/cache/
 var/log/
 
+vendor/
 .idea/
 .vscode/

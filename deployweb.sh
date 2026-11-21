@@ -1,6 +1,11 @@
 #!/bin/bash
-ls /var/www/html
-composer install
+set -Eeuo pipefail
+
+cd /var/www/html
+
+ls -lah /var/www/html
+composer install    --no-interaction --prefer-dist --optimize-autoloader
+
 php /var/www/html/bin/console doctrine:database:create --if-not-exists
 php /var/www/html/bin/console doctrine:schema:update --force --dump-sql
 mkdir /var/www/html/public/img
