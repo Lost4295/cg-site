@@ -8,7 +8,7 @@ RUN apt-get update -o Acquire::Retries=3 \
     libwebp-dev libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
     libicu-dev \
  && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
- && docker-php-ext-install -j"$(nproc)" pdo pdo_mysql opcache gd zip intl \
+ && docker-php-ext-install -j1 pdo_mysql gd zip intl \
  && mkdir -p /var/log/nginx/80 /var/log/nginx/443 \
  && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
