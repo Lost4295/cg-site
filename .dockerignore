@@ -1,17 +1,30 @@
 .idea
 .git
 .gitignore
+.github
+.gitlab-ci.yml
 
 .env.local
 .env.*.local
+.env.local.php
 .auth.json
 
 **/.DS_Store
 
 *.iml
-var/cache/
-var/log/
+var/
 
 vendor/
 .idea/
 .vscode/
+
+composer.phar
+compose*.yaml
+tests/
+phpunit.dist.xml
+
+# Générés au build ou montés par Kubernetes
+public/bundles/
+public/img/
+# Clés JWT : secret Kubernetes cg-site-jwt, jamais dans l'image
+config/jwt/*.pem

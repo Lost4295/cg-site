@@ -1,14 +1,10 @@
-#!/bin/sh
-set -e
+#!/bin/bash
+# Lance php-fpm et nginx ; si l'un des deux s'arrête, le conteneur s'arrête
+# et Kubernetes le redémarre.
+set -euo pipefail
 
-# (facultatif) créer les répertoires runtime
-mkdir -p /run/nginx /var/log/nginx
+php-fpm -F &
+nginx -g 'daemon off;' &
 
-# Démarre php-fpm en avant-plan (foreground) dans le fond
-/usr/local/sbin/php-fpm -F &
-
-# Vérifie qu'il écoute bien (optionnel, debug)
-# sleep 0.5; ss -ltnp | grep ':9000' || echo "⚠️ php-fpm ne semble pas écouter sur 9000"
-
-# Démarre nginx en avant-plan
-exec /usr/sbin/nginx -g "daemon off;"
+wait -n
+exit $?
