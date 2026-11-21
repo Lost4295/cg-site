@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\Link;
 use ApiPlatform\OpenApi\Model\Operation;
 use ApiPlatform\OpenApi\Model\Response;
 use ApiPlatform\Metadata\Delete;
@@ -13,6 +14,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\QueryParameter;
+use App\Repository\ParticipationItemProvider;
 use App\Repository\ParticipationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Ignore;
@@ -26,7 +28,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 Elle est optionnelle, et présente si vous avez besoin de noter les présences des membres à une Date."
 )]
 #[Get(
-    uriTemplate: '/participations/{id}',
+    uriTemplate: '/participations/{userId}/{dateId}',
+    uriVariables: [
+        'userId' => new Link(
+            toProperty: 'user',
+            fromClass: User::class,
+            identifiers: ['id'],
+        ),
+        'dateId' => new Link(
+            toProperty: 'date',
+            fromClass: Date::class,
+            identifiers: ['id'],
+        ),
+    ],
     openapi: new Operation(
         responses: [
             '200' => new Response(description: 'La participation demandée.'),
@@ -34,7 +48,7 @@ Elle est optionnelle, et présente si vous avez besoin de noter les présences d
             '500' => new Response(description: 'Erreur interne du serveur.'),
         ],
         summary: 'Récupère une participation.',
-    ))]
+    ), provider: ParticipationItemProvider::class)]
 #[GetCollection(
     uriTemplate: '/participations',
     openapi: new Operation(
@@ -52,7 +66,19 @@ Elle est optionnelle, et présente si vous avez besoin de noter les présences d
         ),
     ])]
 #[Delete(
-    uriTemplate: '/participations/{id}',
+    uriTemplate: '/participations/{userId}/{dateId}',
+    uriVariables: [
+        'userId' => new Link(
+            toProperty: 'user',
+            fromClass: User::class,
+            identifiers: ['id'],
+        ),
+        'dateId' => new Link(
+            toProperty: 'date',
+            fromClass: Date::class,
+            identifiers: ['id'],
+        ),
+    ],
     openapi: new Operation(
         responses: [
             '204' => new Response(description: 'La participation a été supprimée.'),
@@ -61,12 +87,23 @@ Elle est optionnelle, et présente si vous avez besoin de noter les présences d
             '500' => new Response(description: 'Erreur interne du serveur.'),
         ],
         summary: 'Supprime une participation.',
-    ),
-    security: "is_granted('ROLE_SUPER_ADMIN')",
+    ), security: "is_granted('ROLE_SUPER_ADMIN')",
+    provider: ParticipationItemProvider::class,
 )]
 #[Patch(
-    uriTemplate: '/participations/{id}',
-
+    uriTemplate: '/participations/{userId}/{dateId}',
+    uriVariables: [
+        'userId' => new Link(
+            toProperty: 'user',
+            fromClass: User::class,
+            identifiers: ['id'],
+        ),
+        'dateId' => new Link(
+            toProperty: 'date',
+            fromClass: Date::class,
+            identifiers: ['id'],
+        ),
+    ],
     openapi: new Operation(
         responses: [
             '200' => new Response(description: 'La participation a été modifiée.'),
@@ -78,6 +115,7 @@ Elle est optionnelle, et présente si vous avez besoin de noter les présences d
         summary: 'Modifie partiellement une participation.',
     ),
     securityPostDenormalize: "is_granted('ROLE_SUPER_ADMIN') or user.hasGuild(object.getGuildId())",
+    provider: ParticipationItemProvider::class,
 )]
 #[Post(
     uriTemplate: '/participations',
@@ -93,8 +131,19 @@ Elle est optionnelle, et présente si vous avez besoin de noter les présences d
     securityPostDenormalize: "is_granted('ROLE_SUPER_ADMIN') or user.hasGuild(object.getGuildId())",
 )]
 #[Put(
-    uriTemplate: '/participations/{id}',
-
+    uriTemplate: '/participations/{userId}/{dateId}',
+    uriVariables: [
+        'userId' => new Link(
+            toProperty: 'user',
+            fromClass: User::class,
+            identifiers: ['id'],
+        ),
+        'dateId' => new Link(
+            toProperty: 'date',
+            fromClass: Date::class,
+            identifiers: ['id'],
+        ),
+    ],
     openapi: new Operation(
         responses: [
             '200' => new Response(description: 'La participation a été remplacée.'),
@@ -106,6 +155,7 @@ Elle est optionnelle, et présente si vous avez besoin de noter les présences d
         summary: 'Remplace une participation.',
     ),
     securityPostDenormalize: "is_granted('ROLE_SUPER_ADMIN') or user.hasGuild(object.getGuildId())",
+    provider: ParticipationItemProvider::class,
 )]
 class Participation
 {
@@ -118,7 +168,7 @@ class Participation
     private ?User $user = null;
 
     #[ORM\Id]
-    #[ORM\OneToOne(inversedBy: 'participations', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(targetEntity: Date::class, cascade: ['persist', 'remove'], inversedBy: 'participations')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull]
     #[ApiProperty(description: "Événement auquel l'utilisateur participe (IRI de la date).", example: '/api/dates/1')]

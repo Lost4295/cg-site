@@ -252,7 +252,7 @@ class Date
     )]
     private ?bool $distanciel = null;
 
-    #[ORM\OneToOne(mappedBy: 'date', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'date', cascade: ['persist', 'remove'])]
     #[Groups(['user:read'])]
     #[ApiProperty(
         description: "Participation associée à cette date : permet de suivre la présence des utilisateurs à l'événement.",
