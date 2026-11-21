@@ -31,7 +31,7 @@ variables:
       variables:
           TAG_PREFIX: prod
           K8S_PLATFORM_BRANCH: main
-.
+
 gitleaks:
     stage: test
     tags:
